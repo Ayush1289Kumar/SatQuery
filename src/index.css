@@ -1,0 +1,139 @@
+@import "tailwindcss";
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/space-grotesk";
+
+/* ============================================================
+   SatQuery AI — design tokens
+   Keep in sync with /DESIGN.md
+   ============================================================ */
+@theme {
+  /* Brand + status colors */
+  --color-primary: #0f6bff;
+  --color-primary-dark: #0b56d0;
+  --color-primary-50: #eef4ff;
+  --color-warning: #f59e0b;
+  --color-danger: #dc2626;
+  --color-success: #16a34a;
+
+  /* Blue-undertone neutral ramp */
+  --color-ink-900: #0b1220;
+  --color-ink-800: #1e293b;
+  --color-ink-700: #334155;
+  --color-ink-600: #475569;
+  --color-ink-500: #64748b;
+  --color-surface: #f6f8fb;
+  --color-surface-50: #ffffff;
+  --color-edge: #e5eaf1;
+
+  /* Map highlight colors */
+  --color-water: #2563eb;
+  --color-vegetation: #16a34a;
+  --color-land: #78350f;
+
+  /* Typography */
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, sans-serif;
+  --font-display: "Space Grotesk Variable", "Inter Variable", ui-sans-serif,
+    system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  /* Radius */
+  --radius-card: 0.75rem;
+  --radius-ctl: 0.5rem;
+
+  /* Elevation */
+  --shadow-card: 0 1px 2px rgba(11, 18, 32, 0.05), 0 1px 3px rgba(11, 18, 32, 0.04);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply bg-surface text-ink-700 antialiased;
+  font-family: var(--font-sans);
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+  @apply text-ink-900;
+}
+
+/* Accessible focus rings */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+  border-radius: var(--radius-ctl);
+}
+
+/* Decorative ambient canvas — default (motion allowed) */
+.ambient-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Ensure Leaflet map fills its container */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  background: var(--color-surface);
+  font-family: var(--font-sans);
+}
+
+/* Leaflet popups should feel on-brand */
+.leaflet-popup-content-wrapper {
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+.leaflet-popup-content {
+  margin: 10px 14px;
+  line-height: 1.45;
+}
+
+/* ============================================================
+   Motion
+   ============================================================ */
+
+/* Scroll-reveal base (activated by the Reveal component) */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Respect reduced motion globally */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+  /* Replace the animated spinner with a static state */
+  .animate-spin {
+    animation: none !important;
+    border-top-color: var(--color-primary) !important;
+  }
+}

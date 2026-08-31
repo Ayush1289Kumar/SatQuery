@@ -33,10 +33,10 @@ export default function ResultsScreen({ images, question, result, onRestart }: R
       {/* Left: map evidence + layers */}
       <div className="space-y-4">
         <Card className="p-0 overflow-hidden">
-          <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
+          <div className="flex items-center justify-between border-b border-edge px-4 py-3">
             <div className="flex items-center gap-3">
-              <h3 className="text-sm font-bold text-slate-900">Map evidence</h3>
-              <div className="hidden sm:flex items-center gap-2 text-xs text-slate-500">
+              <h3 className="text-sm font-semibold text-ink-900">Map evidence</h3>
+              <div className="hidden sm:flex items-center gap-2 text-xs text-ink-500">
                 {result.layers.map((l, i) => (
                   <span key={l.id} className="flex items-center gap-1">
                     <span className="h-2 w-2 rounded-full" style={{ background: layerColor(l, i) }} />
@@ -53,7 +53,7 @@ export default function ResultsScreen({ images, question, result, onRestart }: R
                     const v = e.target.value
                     setView(v === 'all' ? 'all' : Number(v))
                   }}
-                  className="rounded-md border border-slate-300 px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-primary/40"
+                  className="rounded-md border border-edge bg-surface-50 px-2 py-1 text-xs text-ink-700 focus:outline-none focus:ring-2 focus:ring-primary/40"
                   aria-label="Compare layer"
                 >
                   <option value="all">Compare (all)</option>
@@ -71,10 +71,10 @@ export default function ResultsScreen({ images, question, result, onRestart }: R
 
         {/* Legend */}
         <Card>
-          <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wide">Legend</h4>
+          <h4 className="text-xs font-semibold uppercase tracking-wide text-ink-500">Legend</h4>
           <div className="mt-2 flex flex-wrap gap-3">
             {HIGHLIGHT_LEGEND.map((l) => (
-              <span key={l.type} className="flex items-center gap-1.5 text-xs text-slate-600">
+              <span key={l.type} className="flex items-center gap-1.5 text-xs text-ink-600">
                 <span className="h-3 w-3 rounded-sm" style={{ background: HIGHLIGHT_COLORS[l.type] }} />
                 {l.label}
               </span>
@@ -94,25 +94,25 @@ export default function ResultsScreen({ images, question, result, onRestart }: R
 
         <Card>
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold text-slate-900">Result</h3>
+            <h3 className="text-sm font-semibold text-ink-900">Result</h3>
             <span
               className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold ${
-                lowConfidence ? 'bg-amber-100 text-amber-800' : 'bg-green-100 text-success'
+                lowConfidence ? 'bg-amber-100 text-amber-800' : 'bg-success/15 text-success'
               }`}
             >
               {pct}% confidence
             </span>
           </div>
-          <p className="mt-3 text-sm leading-relaxed text-slate-700">{result.answer}</p>
+          <p className="mt-3 text-sm leading-relaxed text-ink-700">{result.answer}</p>
         </Card>
 
         {/* Workflow summary */}
-        <details className="rounded-xl bg-white shadow-sm ring-1 ring-slate-200">
-          <summary className="cursor-pointer select-none px-4 py-3 text-sm font-semibold text-slate-800">
-            Model & workflow
+        <details className="rounded-xl bg-surface-50 shadow-card ring-1 ring-edge">
+          <summary className="cursor-pointer select-none px-4 py-3 text-sm font-semibold text-ink-800">
+            Model &amp; workflow
           </summary>
-          <div className="border-t border-slate-200 px-4 py-3 text-xs text-slate-500">
-            <p className="font-medium text-slate-700">{result.workflowLabel}</p>
+          <div className="border-t border-edge px-4 py-3 text-xs text-ink-500">
+            <p className="font-medium text-ink-700">{result.workflowLabel}</p>
             <div className="mt-2 flex flex-col gap-1">
               {result.modelNames.map((m) => (
                 <span key={m} className="font-mono">{m}</span>

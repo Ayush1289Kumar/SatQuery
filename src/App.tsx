@@ -5,6 +5,8 @@ import UploadScreen from './components/UploadScreen'
 import AskScreen from './components/AskScreen'
 import AnalyzingScreen from './components/AnalyzingScreen'
 import ResultsScreen from './components/ResultsScreen'
+import AmbientCanvas from './components/AmbientCanvas'
+import Reveal from './components/Reveal'
 
 type Step = 'upload' | 'ask' | 'analyzing' | 'results'
 
@@ -63,19 +65,33 @@ export default function App() {
   }
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex min-h-full flex-col">
+      {/* Visible-on-focus skip link for keyboard users */}
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
+      >
+        Skip to content
+      </a>
+
       <Header />
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6">
+
+      <main id="main" className="mx-auto w-full max-w-6xl flex-1 px-4 pb-12 pt-6">
         {step === 'upload' && (
-          <UploadScreen
-            mode={mode}
-            images={images}
-            onSelectMode={setMode}
-            onAddImages={(imgs) => setImages(imgs)}
-            onRemoveImage={(id) => setImages((prev) => prev.filter((i) => i.id !== id))}
-            onContinue={goAsk}
-            onRunScenario={runScenario}
-          />
+          <Reveal>
+            <Hero />
+            <div className="mt-6">
+              <UploadScreen
+                mode={mode}
+                images={images}
+                onSelectMode={setMode}
+                onAddImages={(imgs) => setImages(imgs)}
+                onRemoveImage={(id) => setImages((prev) => prev.filter((i) => i.id !== id))}
+                onContinue={goAsk}
+                onRunScenario={runScenario}
+              />
+            </div>
+          </Reveal>
         )}
         {step === 'ask' && (
           <AskScreen
@@ -98,6 +114,7 @@ export default function App() {
           <ResultsScreen images={images} question={question} result={result} onRestart={reset} />
         )}
       </main>
+
       <Footer />
     </div>
   )
@@ -116,13 +133,13 @@ function defaultResultFor(_q: string): AnalysisResult {
 
 function Header() {
   return (
-    <header className="border-b border-slate-200 bg-white">
+    <header className="sticky top-0 z-30 border-b border-edge bg-surface-50/85 backdrop-blur">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-3">
-        <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white">
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white shadow-card">
             <SatIcon />
           </div>
-          <span className="text-lg font-bold text-slate-900">SatQuery AI</span>
+          <span className="font-display text-lg font-semibold text-ink-900">SatQuery AI</span>
         </div>
         <span className="rounded-full bg-primary-50 px-3 py-1 text-xs font-medium text-primary">
           MVP Prototype
@@ -132,9 +149,30 @@ function Header() {
   )
 }
 
+/** Calm hero band shown on the upload step with an animated aurora backdrop. */
+function Hero() {
+  return (
+    <section className="relative overflow-hidden rounded-card ring-1 ring-edge">
+      <AmbientCanvas />
+      <div className="relative px-6 py-8 sm:px-8 sm:py-10">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">
+          Satellite image Q&amp;A
+        </p>
+        <h1 className="mt-2 max-w-2xl text-2xl font-semibold sm:text-3xl">
+          Ask satellite imagery in plain English — see the evidence on the map.
+        </h1>
+        <p className="mt-3 max-w-2xl text-sm text-ink-500 sm:text-base">
+          Upload one image, a dated pair, or an optical + SAR combo. We route your question to the
+          right model and show you highlighted map proof alongside a clear answer.
+        </p>
+      </div>
+    </section>
+  )
+}
+
 function Footer() {
   return (
-    <footer className="border-t border-slate-200 bg-white px-4 py-3 text-center text-xs text-slate-400">
+    <footer className="border-t border-edge bg-surface-50/85 px-4 py-4 text-center text-xs text-ink-500">
       SatQuery AI — demo prototype. Results are simulated and not for operational use.
     </footer>
   )
@@ -142,7 +180,7 @@ function Footer() {
 
 function SatIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
       <path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z" />
       <circle cx="12" cy="12" r="3" />
     </svg>
