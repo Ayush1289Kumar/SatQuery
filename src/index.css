@@ -1,48 +1,63 @@
 @import "tailwindcss";
-@import "@fontsource-variable/inter";
-@import "@fontsource-variable/space-grotesk";
+@import "@fontsource-variable/plus-jakarta-sans";
+@import "@fontsource-variable/fraunces";
 
 /* ============================================================
-   SatQuery AI — design tokens
-   Keep in sync with /DESIGN.md
+   SatQuery AI — design tokens (Midnight theme)
+   Dark obsidian + electric blue/violet/cyan palette
    ============================================================ */
 @theme {
-  /* Brand + status colors */
-  --color-primary: #0f6bff;
-  --color-primary-dark: #0b56d0;
-  --color-primary-50: #eef4ff;
+  /* Brand + accent colors */
+  --color-primary: #3b82f6;
+  --color-primary-dark: #2563eb;
+  --color-primary-50: rgba(59, 130, 246, 0.12);
+  --color-primary-glow: rgba(59, 130, 246, 0.35);
+  --color-violet: #8b5cf6;
+  --color-violet-50: rgba(139, 92, 246, 0.12);
+  --color-cyan: #22d3ee;
+  --color-cyan-50: rgba(34, 211, 238, 0.12);
+  --color-green: #10b981;
+  --color-amber: #f59e0b;
+  --color-red: #f87171;
   --color-warning: #f59e0b;
-  --color-danger: #dc2626;
-  --color-success: #16a34a;
+  --color-danger: #ef4444;
+  --color-success: #10b981;
 
-  /* Blue-undertone neutral ramp */
-  --color-ink-900: #0b1220;
-  --color-ink-800: #1e293b;
-  --color-ink-700: #334155;
-  --color-ink-600: #475569;
-  --color-ink-500: #64748b;
-  --color-surface: #f6f8fb;
-  --color-surface-50: #ffffff;
-  --color-edge: #e5eaf1;
+  /* Dark neutral ramp */
+  --color-ink-900: #ffffff;
+  --color-ink-800: rgba(255, 255, 255, 0.90);
+  --color-ink-700: rgba(255, 255, 255, 0.75);
+  --color-ink-600: rgba(255, 255, 255, 0.60);
+  --color-ink-500: rgba(255, 255, 255, 0.45);
+  --color-ink-400: rgba(255, 255, 255, 0.30);
+
+  /* Surfaces */
+  --color-surface: #000000;
+  --color-surface-50: #080b1c;
+  --color-surface-100: rgba(255, 255, 255, 0.04);
+  --color-surface-200: rgba(255, 255, 255, 0.07);
+  --color-edge: rgba(255, 255, 255, 0.10);
+  --color-edge-strong: rgba(255, 255, 255, 0.18);
 
   /* Map highlight colors */
-  --color-water: #2563eb;
-  --color-vegetation: #16a34a;
-  --color-land: #78350f;
+  --color-water: #22d3ee;
+  --color-vegetation: #10b981;
+  --color-land: #f59e0b;
 
   /* Typography */
-  --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system,
+  --font-sans: "Plus Jakarta Sans Variable", ui-sans-serif, system-ui, -apple-system,
     "Segoe UI", Roboto, sans-serif;
-  --font-display: "Space Grotesk Variable", "Inter Variable", ui-sans-serif,
-    system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-display: "Fraunces Variable", Georgia, ui-serif, serif;
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 
   /* Radius */
-  --radius-card: 0.75rem;
-  --radius-ctl: 0.5rem;
+  --radius-card: 1rem;
+  --radius-ctl: 0.625rem;
 
-  /* Elevation */
-  --shadow-card: 0 1px 2px rgba(11, 18, 32, 0.05), 0 1px 3px rgba(11, 18, 32, 0.04);
+  /* Elevation (glow-based in dark theme) */
+  --shadow-card: 0 0 0 1px rgba(255,255,255,0.08), 0 4px 24px rgba(0,0,0,0.6);
+  --shadow-glow-blue: 0 0 40px -8px rgba(59, 130, 246, 0.50);
+  --shadow-glow-violet: 0 0 40px -8px rgba(139, 92, 246, 0.45);
 }
 
 html,
@@ -52,17 +67,20 @@ body,
 }
 
 body {
-  @apply bg-surface text-ink-700 antialiased;
+  background: #000000;
+  color: rgba(255, 255, 255, 0.85);
   font-family: var(--font-sans);
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h1,
 h2,
 h3 {
   font-family: var(--font-display);
-  letter-spacing: -0.01em;
-  @apply text-ink-900;
+  letter-spacing: -0.02em;
+  color: #ffffff;
 }
 
 /* Accessible focus rings */
@@ -72,7 +90,128 @@ h3 {
   border-radius: var(--radius-ctl);
 }
 
-/* Decorative ambient canvas — default (motion allowed) */
+/* ============================================================
+   Glass Utilities
+   ============================================================ */
+
+/* Standard glass card */
+.glass-card {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: var(--radius-card);
+}
+
+/* Elevated glass card */
+.glass-card-elevated {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: var(--radius-card);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.08);
+}
+
+/* Liquid glass button base */
+.glass-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.875rem;
+  padding: 0.625rem 1.5rem;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+  border: 1px solid transparent;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.glass-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 60%);
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.glass-btn:hover::before {
+  opacity: 1;
+}
+
+.glass-btn-primary {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: #ffffff;
+  border-color: rgba(59, 130, 246, 0.5);
+  box-shadow: 0 0 28px -4px rgba(59, 130, 246, 0.55), inset 0 1px 0 rgba(255,255,255,0.20);
+}
+
+.glass-btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 0 40px -4px rgba(59, 130, 246, 0.70), inset 0 1px 0 rgba(255,255,255,0.25);
+}
+
+.glass-btn-primary:active:not(:disabled) {
+  transform: translateY(0) scale(0.99);
+}
+
+.glass-btn-primary:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
+.glass-btn-secondary {
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.80);
+  border-color: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(12px);
+}
+
+.glass-btn-secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.11);
+  border-color: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.glass-btn-ghost {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.60);
+  border-color: transparent;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+
+.glass-btn-ghost:hover:not(:disabled) {
+  color: rgba(255, 255, 255, 0.90);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/* ============================================================
+   Viewport glow frame
+   ============================================================ */
+
+.glow-frame {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(59, 130, 246, 0.13) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 100% 50%, rgba(139, 92, 246, 0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 0% 50%, rgba(34, 211, 238, 0.06) 0%, transparent 70%);
+}
+
+/* ============================================================
+   Ambient canvas (Hero)
+   ============================================================ */
 .ambient-canvas {
   position: absolute;
   inset: 0;
@@ -81,40 +220,86 @@ h3 {
   pointer-events: none;
 }
 
-/* Ensure Leaflet map fills its container */
+/* ============================================================
+   Leaflet Map — dark overrides
+   ============================================================ */
 .leaflet-container {
   width: 100%;
   height: 100%;
-  background: var(--color-surface);
+  background: #080b1c;
   font-family: var(--font-sans);
 }
 
-/* Leaflet popups should feel on-brand */
 .leaflet-popup-content-wrapper {
   border-radius: var(--radius-card);
-  box-shadow: var(--shadow-card);
+  background: rgba(8, 11, 28, 0.92);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.85);
+  backdrop-filter: blur(12px);
 }
+
 .leaflet-popup-content {
   margin: 10px 14px;
   line-height: 1.45;
 }
 
-/* ============================================================
-   Motion
-   ============================================================ */
+.leaflet-popup-tip {
+  background: rgba(8, 11, 28, 0.92);
+}
 
-/* Scroll-reveal base (activated by the Reveal component) */
+/* ============================================================
+   Motion — scroll-reveal
+   ============================================================ */
 .reveal {
   opacity: 0;
-  transform: translateY(14px);
+  transform: translateY(16px);
   transition:
-    opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: opacity, transform;
 }
 .reveal.is-visible {
   opacity: 1;
   transform: none;
+}
+
+/* Staggered reveal children */
+.reveal-stagger > * {
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal-stagger.is-visible > *:nth-child(1) { opacity: 1; transform: none; transition-delay: 0ms; }
+.reveal-stagger.is-visible > *:nth-child(2) { opacity: 1; transform: none; transition-delay: 80ms; }
+.reveal-stagger.is-visible > *:nth-child(3) { opacity: 1; transform: none; transition-delay: 160ms; }
+.reveal-stagger.is-visible > *:nth-child(4) { opacity: 1; transform: none; transition-delay: 240ms; }
+.reveal-stagger.is-visible > *:nth-child(5) { opacity: 1; transform: none; transition-delay: 320ms; }
+
+/* Pulsing neon ring animation */
+@keyframes neon-pulse {
+  0%, 100% { box-shadow: 0 0 12px 2px rgba(59, 130, 246, 0.5); }
+  50% { box-shadow: 0 0 28px 6px rgba(59, 130, 246, 0.8), 0 0 60px 12px rgba(139, 92, 246, 0.3); }
+}
+
+@keyframes spin-neon {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes float-gentle {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+.animate-float {
+  animation: float-gentle 4s ease-in-out infinite;
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 /* Respect reduced motion globally */
@@ -127,13 +312,8 @@ h3 {
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
-  .reveal {
+  .reveal, .reveal-stagger > * {
     opacity: 1;
     transform: none;
-  }
-  /* Replace the animated spinner with a static state */
-  .animate-spin {
-    animation: none !important;
-    border-top-color: var(--color-primary) !important;
   }
 }

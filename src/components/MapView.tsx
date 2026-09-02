@@ -24,9 +24,10 @@ export default function MapView({ layers, heightClass = 'h-64 md:h-96' }: MapVie
 
     const map = L.map(el, { zoomControl: false }).setView([19.05, 72.92], 12)
     L.control.zoom({ position: 'bottomright' }).addTo(map)
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
       maxZoom: 19,
-      attribution: '&copy; OpenStreetMap contributors',
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com">CARTO</a>',
+      subdomains: 'abcd',
     }).addTo(map)
     mapRef.current = map
 

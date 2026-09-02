@@ -28,11 +28,11 @@ export default function AmbientCanvas() {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
     }
 
-    // Three drifting color sources: primary blue, soft violet, clean teal.
+    // Three drifting color sources: moss green, warm sand, sage.
     const blobs = [
-      { r: 120, g: 180, b: 255, baseX: 0.2, baseY: 0.25, amp: 0.12, speed: 0.00016, radius: 0.5 },
-      { r: 190, g: 190, b: 255, baseX: 0.8, baseY: 0.1, amp: 0.1, speed: 0.00012, radius: 0.45 },
-      { r: 120, g: 225, b: 210, baseX: 0.55, baseY: 0.85, amp: 0.14, speed: 0.0002, radius: 0.42 },
+      { r: 134, g: 178, b: 132, baseX: 0.2, baseY: 0.25, amp: 0.12, speed: 0.00016, radius: 0.5 },
+      { r: 231, g: 203, b: 158, baseX: 0.8, baseY: 0.1, amp: 0.1, speed: 0.00012, radius: 0.45 },
+      { r: 168, g: 196, b: 153, baseX: 0.55, baseY: 0.85, amp: 0.14, speed: 0.0002, radius: 0.42 },
     ]
 
     const draw = (t: number) => {

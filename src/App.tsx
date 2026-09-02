@@ -5,7 +5,7 @@ import UploadScreen from './components/UploadScreen'
 import AskScreen from './components/AskScreen'
 import AnalyzingScreen from './components/AnalyzingScreen'
 import ResultsScreen from './components/ResultsScreen'
-import AmbientCanvas from './components/AmbientCanvas'
+import GlobeHero from './components/GlobeHero'
 import Reveal from './components/Reveal'
 
 type Step = 'upload' | 'ask' | 'analyzing' | 'results'
@@ -29,7 +29,6 @@ export default function App() {
     timersRef.current.push(t)
   }
 
-  /** Runs the mock AI pipeline, progressing through the analyzing steps. */
   const startAnalysis = (produce: () => AnalysisResult) => {
     setResult(null)
     setActiveStep(0)
@@ -65,22 +64,25 @@ export default function App() {
   }
 
   return (
-    <div className="flex min-h-full flex-col">
-      {/* Visible-on-focus skip link for keyboard users */}
+    <div className="relative flex min-h-full flex-col bg-[#000000]">
+      {/* Viewport glow frame */}
+      <div className="glow-frame" aria-hidden />
+
+      {/* Skip link */}
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-[#3b82f6] focus:px-5 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
       >
         Skip to content
       </a>
 
       <Header />
 
-      <main id="main" className="mx-auto w-full max-w-6xl flex-1 px-4 pb-12 pt-6">
+      <main id="main" className="relative z-10 mx-auto w-full max-w-6xl flex-1 px-4 pb-16 pt-6">
         {step === 'upload' && (
           <Reveal>
-            <Hero />
-            <div className="mt-6">
+            <HeroSection />
+            <div className="mt-8">
               <UploadScreen
                 mode={mode}
                 images={images}
@@ -133,38 +135,98 @@ function defaultResultFor(_q: string): AnalysisResult {
 
 function Header() {
   return (
-    <header className="sticky top-0 z-30 border-b border-edge bg-surface-50/85 backdrop-blur">
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-3">
-        <div className="flex items-center gap-2.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white shadow-card">
+    <header className="sticky top-0 z-30 border-b border-[rgba(255,255,255,0.08)] bg-[rgba(0,0,0,0.70)] backdrop-blur-xl">
+      <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-3.5">
+        <div className="flex items-center gap-3">
+          {/* Logo mark */}
+          <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[#3b82f6] to-[#8b5cf6] shadow-[0_0_20px_-4px_rgba(59,130,246,0.7)]">
             <SatIcon />
+            <div className="absolute inset-0 rounded-xl ring-1 ring-white/20" />
           </div>
-          <span className="font-display text-lg font-semibold text-ink-900">SatQuery AI</span>
+          <div>
+            <span className="font-display text-lg font-semibold tracking-tight text-white">SatQuery</span>
+            <span className="ml-1 font-display text-lg font-light text-[rgba(255,255,255,0.45)]">AI</span>
+          </div>
         </div>
-        <span className="rounded-full bg-primary-50 px-3 py-1 text-xs font-medium text-primary">
-          MVP Prototype
-        </span>
+        <div className="flex items-center gap-3">
+          <span className="hidden rounded-full border border-[rgba(59,130,246,0.35)] bg-[rgba(59,130,246,0.12)] px-3 py-1 text-xs font-semibold text-[#3b82f6] sm:inline-flex">
+            MVP Prototype
+          </span>
+          <div className="h-2 w-2 animate-pulse rounded-full bg-[#10b981] shadow-[0_0_8px_rgba(16,185,129,0.7)]" title="Online" />
+        </div>
       </div>
     </header>
   )
 }
 
-/** Calm hero band shown on the upload step with an animated aurora backdrop. */
-function Hero() {
+/** Hero section: globe fills a wide full-row strip below the copy on mobile,
+ *  and sits beside it on desktop — always contained within overflow-hidden. */
+function HeroSection() {
   return (
-    <section className="relative overflow-hidden rounded-card ring-1 ring-edge">
-      <AmbientCanvas />
-      <div className="relative px-6 py-8 sm:px-8 sm:py-10">
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">
-          Satellite image Q&amp;A
-        </p>
-        <h1 className="mt-2 max-w-2xl text-2xl font-semibold sm:text-3xl">
-          Ask satellite imagery in plain English — see the evidence on the map.
-        </h1>
-        <p className="mt-3 max-w-2xl text-sm text-ink-500 sm:text-base">
-          Upload one image, a dated pair, or an optical + SAR combo. We route your question to the
-          right model and show you highlighted map proof alongside a clear answer.
-        </p>
+    <section className="relative overflow-hidden rounded-2xl border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.02)]">
+      {/* Subtle gradient backdrop */}
+      <div
+        aria-hidden
+        className="absolute inset-0 bg-gradient-to-br from-[rgba(139,92,246,0.10)] via-transparent to-[rgba(59,130,246,0.08)]"
+      />
+      {/* Grid pattern overlay */}
+      <div
+        aria-hidden
+        className="absolute inset-0 opacity-[0.03]"
+        style={{
+          backgroundImage: 'linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)',
+          backgroundSize: '48px 48px',
+        }}
+      />
+
+      {/*
+        Layout:
+        - mobile / tablet (<lg):  copy stacked on top, then globe taking up 560px below
+        - desktop (≥lg):  two-column side-by-side, globe column is wider (1.3fr)
+      */}
+      <div className="relative flex flex-col lg:grid lg:grid-cols-[1fr_1.3fr] lg:items-center">
+        {/* Left: copy */}
+        <div className="px-8 py-10 sm:px-10 sm:py-12 lg:py-14">
+          <div className="inline-flex items-center gap-2 rounded-full border border-[rgba(139,92,246,0.35)] bg-[rgba(139,92,246,0.10)] px-3 py-1 text-xs font-semibold uppercase tracking-widest text-[#8b5cf6]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#8b5cf6] animate-pulse" />
+            Satellite Image Q&A
+          </div>
+          <h1 className="mt-4 max-w-xl text-3xl font-semibold leading-tight sm:text-4xl lg:text-[2.6rem]">
+            Ask satellite imagery{' '}
+            <em className="not-italic text-transparent bg-clip-text bg-gradient-to-r from-[#3b82f6] to-[#8b5cf6]">
+              in plain English
+            </em>{' '}
+            — see the evidence on the map.
+          </h1>
+          <p className="mt-4 max-w-lg text-sm leading-relaxed text-[rgba(255,255,255,0.55)]">
+            Upload one image, a dated pair, or an optical + SAR combo. We route your
+            question to the right model and show you highlighted map proof alongside
+            a clear answer.
+          </p>
+
+          {/* Stat pills */}
+          <div className="mt-8 flex flex-wrap gap-3">
+            {[
+              { icon: '🛰', label: 'Multi-spectral', color: 'rgba(59,130,246,0.15)', border: 'rgba(59,130,246,0.30)', text: '#3b82f6' },
+              { icon: '🔬', label: 'Sub-meter res.', color: 'rgba(139,92,246,0.15)', border: 'rgba(139,92,246,0.30)', text: '#8b5cf6' },
+              { icon: '⚡', label: '<10s latency', color: 'rgba(34,211,238,0.15)', border: 'rgba(34,211,238,0.30)', text: '#22d3ee' },
+            ].map((s) => (
+              <span
+                key={s.label}
+                className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold"
+                style={{ background: s.color, borderColor: s.border, color: s.text }}
+              >
+                <span>{s.icon}</span>
+                {s.label}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Right: globe — 560px on mobile/tablet, 680px on desktop, always inside card */}
+        <div className="relative h-[560px] lg:h-[680px]">
+          <GlobeHero className="h-full w-full" />
+        </div>
       </div>
     </section>
   )
@@ -172,15 +234,20 @@ function Hero() {
 
 function Footer() {
   return (
-    <footer className="border-t border-edge bg-surface-50/85 px-4 py-4 text-center text-xs text-ink-500">
-      SatQuery AI — demo prototype. Results are simulated and not for operational use.
+    <footer className="relative z-10 border-t border-[rgba(255,255,255,0.07)] bg-[rgba(0,0,0,0.50)] px-4 py-5">
+      <div className="mx-auto flex w-full max-w-6xl items-center justify-between">
+        <span className="text-xs text-[rgba(255,255,255,0.30)]">
+          SatQuery AI — demo prototype. Results are simulated and not for operational use.
+        </span>
+        <span className="text-xs text-[rgba(255,255,255,0.20)]">© 2024</span>
+      </div>
     </footer>
   )
 }
 
 function SatIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true" className="text-white">
       <path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z" />
       <circle cx="12" cy="12" r="3" />
     </svg>

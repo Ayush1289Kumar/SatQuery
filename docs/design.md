@@ -13,36 +13,36 @@ decision-makers working under pressure — never like a generic corporate dashbo
 - **Calm in a crisis** — light, high-contrast UI that reads well in daylight / field conditions.
 - **Motion earns its place** — animate for meaningful feedback, structure, or subtle delight.
 
-## Color Palette (HSL-first, blue-undertone neutrals)
+## Color Palette (HSL-first, warm "Terra" undertones)
 
 | Token | Value | Usage |
 | :--- | :--- | :--- |
-| `primary` | `#0f6bff` | Trust, water, authority — actions, links, active states |
-| `primary-dark` | `#0b56d0` | Primary hover / pressed |
-| `primary-50` | `#eef4ff` | Soft primary surfaces, chips, active backgrounds |
-| `ink-900` | `#0b1220` | Headings / strong text |
-| `ink-800` | `#1e293b` | Elevated text / summary headings |
-| `ink-700` | `#334155` | Body text |
-| `ink-600` | `#475569` | Legend / secondary text |
-| `ink-500` | `#64748b` | Muted text |
-| `surface` | `#f6f8fb` | App background (cool, high contrast) |
+| `primary` | `#166534` | Forest green — growth, land, authority — actions, links, active states |
+| `primary-dark` | `#14532d` | Primary hover / pressed |
+| `primary-50` | `#eaf4ec` | Soft primary surfaces, chips, active backgrounds |
+| `ink-900` | `#1c1917` | Headings / strong text |
+| `ink-800` | `#292524` | Elevated text / summary headings |
+| `ink-700` | `#44403c` | Body text |
+| `ink-600` | `#57534e` | Legend / secondary text |
+| `ink-500` | `#78716c` | Muted text |
+| `surface` | `#faf7f2` | App background (warm paper, high contrast) |
 | `surface-50` | `#ffffff` | Card surface |
-| `edge` | `#e5eaf1` | Borders / dividers (blue-tinted, not cold gray) |
-| `success` | `#16a34a` | Confident / verified states |
-| `warning` | `#f59e0b` | Low-confidence caution, flood highlight |
-| `danger` | `#dc2626` | Errors, destructive actions, built-up highlight |
-| `water` | `#2563eb` | Water highlight on map |
-| `vegetation` | `#16a34a` | Vegetation highlight on map |
+| `edge` | `#e9e2d9` | Borders / dividers (warm sand-tinted, not cold gray) |
+| `success` | `#15803d` | Confident / verified states |
+| `warning` | `#c2410c` | Low-confidence caution, flood highlight (terracotta) |
+| `danger` | `#991b1b` | Errors, destructive actions, built-up highlight |
+| `water` | `#0e7490` | Water highlight on map (teal) |
+| `vegetation` | `#15803d` | Vegetation highlight on map |
 | `land` | `#78350f` | Land-change highlight on map |
 
 **Rule:** never use pure `#000`/`#fff` next to color; always the ink/surface tokens above to keep
-a harmonious, high-contrast, blue-undertone feel.
+a harmonious, high-contrast, warm-undertone "field report" feel.
 
 ## Typography
 
-- **Display / headings:** `'Space Grotesk Variable'`, system-ui, sans-serif — geometric, modern, authoritative.
-- **Body / UI:** `'Inter Variable'`, system-ui, sans-serif — neutral & readable.
-- **Code / model names:** `'JetBrains Mono'`, ui-monospace, monospace.
+- **Display / headings:** `'Fraunces Variable'`, Georgia, ui-serif, serif — editorial, warm, field-report character.
+- **Body / UI:** `'Public Sans Variable'`, system-ui, sans-serif — neutral, civic, highly readable.
+- **Code / model names:** ui-monospace stack (system mono).
 
 Fonts are **self-hosted** via `@fontsource-variable` (offline-field reliability), never a CDN.
 

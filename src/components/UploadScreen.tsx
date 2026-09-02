@@ -3,15 +3,15 @@ import type { UploadMode, UploadedImage } from '../types'
 import { DEMO_SCENARIOS, type DemoScenario } from '../data/mock'
 import { Button, Card } from './ui'
 
-const MODES: { id: UploadMode; label: string; desc: string; slots: number }[] = [
-  { id: 'single', label: 'Single image', desc: 'One optical satellite image', slots: 1 },
-  { id: 'twoDate', label: 'Compare two dates', desc: 'Same area, two dates', slots: 2 },
-  { id: 'opticalSar', label: 'Optical + SAR', desc: 'Fused analysis pair', slots: 2 },
+const MODES: { id: UploadMode; label: string; desc: string; slots: number; icon: string }[] = [
+  { id: 'single',     label: 'Single Image',     desc: 'One optical satellite image',  slots: 1, icon: '🛰' },
+  { id: 'twoDate',    label: 'Compare Dates',     desc: 'Same area, two time points',   slots: 2, icon: '📅' },
+  { id: 'opticalSar', label: 'Optical + SAR',     desc: 'Fused multi-sensor analysis',  slots: 2, icon: '🔬' },
 ]
 
 const MODE_LABEL: Record<UploadMode, string> = {
-  single: 'Single image',
-  twoDate: 'Compare two dates',
+  single: 'Single Image',
+  twoDate: 'Compare Dates',
   opticalSar: 'Optical + SAR',
 }
 
@@ -55,25 +55,40 @@ export default function UploadScreen({
 
   return (
     <div className="grid gap-6 lg:grid-cols-3">
+      {/* Left: Upload card */}
       <Card className="lg:col-span-2">
-        <h2 className="text-lg font-semibold text-ink-900">1. Upload satellite image</h2>
-        <p className="mt-1 text-sm text-ink-500">Choose an analysis type, then drop one or two images.</p>
+        {/* Section header */}
+        <div className="mb-5 flex items-center gap-3">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[rgba(59,130,246,0.18)] border border-[rgba(59,130,246,0.30)]">
+            <span className="text-sm">①</span>
+          </div>
+          <div>
+            <h2 className="text-base font-semibold text-white">Upload Satellite Image</h2>
+            <p className="text-xs text-[rgba(255,255,255,0.45)]">Choose an analysis mode, then drop your imagery.</p>
+          </div>
+        </div>
 
         {/* Mode picker */}
-        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+        <div className="grid gap-2.5 sm:grid-cols-3">
           {MODES.map((m) => (
             <button
               key={m.id}
               onClick={() => onSelectMode(m.id)}
               aria-pressed={mode === m.id}
-              className={`rounded-lg border-2 p-3 text-left transition duration-150 ease-out ${
+              className={`group relative rounded-xl border p-4 text-left transition-all duration-200 ease-out ${
                 mode === m.id
-                  ? 'border-primary bg-primary-50'
-                  : 'border-edge bg-surface-50 hover:border-primary/40 active:scale-[0.99]'
+                  ? 'border-[rgba(59,130,246,0.50)] bg-[rgba(59,130,246,0.12)] shadow-[0_0_20px_-6px_rgba(59,130,246,0.50)]'
+                  : 'border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.03)] hover:border-[rgba(255,255,255,0.15)] hover:bg-[rgba(255,255,255,0.05)]'
               }`}
             >
-              <div className="text-sm font-semibold text-ink-900">{m.label}</div>
-              <div className="mt-0.5 text-xs text-ink-500">{m.desc}</div>
+              {mode === m.id && (
+                <div className="absolute right-3 top-3 h-1.5 w-1.5 rounded-full bg-[#3b82f6] shadow-[0_0_6px_rgba(59,130,246,0.9)]" />
+              )}
+              <div className="text-xl mb-2">{m.icon}</div>
+              <div className={`text-sm font-semibold ${mode === m.id ? 'text-[#3b82f6]' : 'text-[rgba(255,255,255,0.80)]'}`}>
+                {m.label}
+              </div>
+              <div className="mt-0.5 text-xs text-[rgba(255,255,255,0.40)]">{m.desc}</div>
             </button>
           ))}
         </div>
@@ -84,28 +99,36 @@ export default function UploadScreen({
             const img = images[i]
             const label =
               mode === 'opticalSar'
-                ? i === 0 ? 'Optical' : 'SAR'
-                : i === 0 ? 'Image (earlier date)' : 'Image (later date)'
+                ? i === 0 ? 'Optical Band' : 'SAR Band'
+                : i === 0 ? 'Image (Earlier Date)' : 'Image (Later Date)'
             return (
               <div key={`${mode}-${i}`}>
-                <div className="mb-1 text-xs font-medium text-ink-500">{label}</div>
+                <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-widest text-[rgba(255,255,255,0.35)]">
+                  {label}
+                </div>
                 {img ? (
-                  <div className="flex items-center justify-between rounded-lg border border-edge bg-surface p-3">
+                  <div className="flex items-center justify-between rounded-xl border border-[rgba(255,255,255,0.10)] bg-[rgba(255,255,255,0.04)] p-3.5">
                     <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary-50 text-primary">
-                        <span className="text-xs font-bold">{img.kind === 'sar' ? 'SAR' : 'OPT'}</span>
+                      <div className={`flex h-10 w-10 items-center justify-center rounded-lg text-xs font-bold ${
+                        img.kind === 'sar'
+                          ? 'bg-[rgba(34,211,238,0.15)] text-[#22d3ee] border border-[rgba(34,211,238,0.25)]'
+                          : 'bg-[rgba(59,130,246,0.15)] text-[#3b82f6] border border-[rgba(59,130,246,0.25)]'
+                      }`}>
+                        {img.kind === 'sar' ? 'SAR' : 'OPT'}
                       </div>
                       <div>
-                        <div className="max-w-[200px] truncate text-sm font-medium text-ink-800">{img.name}</div>
-                        <div className="text-xs text-ink-500">
-                          {img.kind === 'sar' ? 'SAR' : 'Optical'}
+                        <div className="max-w-[180px] truncate text-sm font-medium text-[rgba(255,255,255,0.85)]">
+                          {img.name}
+                        </div>
+                        <div className="text-xs text-[rgba(255,255,255,0.40)]">
+                          {img.kind === 'sar' ? 'SAR · Synthetic aperture' : 'Optical · Multispectral'}
                           {img.date ? ` · ${img.date}` : ''}
                         </div>
                       </div>
                     </div>
                     <button
                       onClick={() => onRemoveImage(img.id)}
-                      className="text-ink-500 transition hover:text-danger"
+                      className="flex h-7 w-7 items-center justify-center rounded-full text-[rgba(255,255,255,0.30)] transition-all hover:bg-[rgba(248,113,113,0.15)] hover:text-[#f87171]"
                       aria-label="Remove image"
                     >
                       ✕
@@ -116,13 +139,17 @@ export default function UploadScreen({
                     onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
                     onDragLeave={() => setDragging(false)}
                     onDrop={(e) => { e.preventDefault(); setDragging(false); handleFiles(e.dataTransfer.files) }}
-                    className={`flex h-28 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-3 text-center transition duration-150 ease-out ${
-                      dragging ? 'border-primary bg-primary-50' : 'border-edge bg-surface hover:border-primary/50'
+                    className={`flex h-32 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed p-3 text-center transition-all duration-200 ease-out ${
+                      dragging
+                        ? 'border-[#3b82f6] bg-[rgba(59,130,246,0.10)] shadow-[0_0_20px_-4px_rgba(59,130,246,0.40)]'
+                        : 'border-[rgba(255,255,255,0.12)] bg-[rgba(255,255,255,0.02)] hover:border-[rgba(59,130,246,0.40)] hover:bg-[rgba(59,130,246,0.06)]'
                     }`}
                   >
-                    <span className="text-2xl text-primary" aria-hidden="true">⬆</span>
-                    <span className="mt-1 text-sm font-medium text-ink-700">Drop image here</span>
-                    <span className="text-xs text-ink-500">or click to browse · GeoTIFF/TIFF, PNG, JPEG</span>
+                    <div className={`text-2xl transition-transform duration-200 ${dragging ? 'scale-125' : ''}`}>
+                      ⬆
+                    </div>
+                    <span className="mt-2 text-sm font-medium text-[rgba(255,255,255,0.65)]">Drop image here</span>
+                    <span className="mt-0.5 text-xs text-[rgba(255,255,255,0.35)]">or click to browse · GeoTIFF, PNG, JPEG</span>
                     <input
                       type="file"
                       accept=".tif,.tiff,.png,.jpg,.jpeg"
@@ -137,30 +164,42 @@ export default function UploadScreen({
         </div>
 
         <div className="mt-5 flex items-center justify-between">
-          <p className="text-xs text-ink-500">{`Files: ${images.length}/${required}`}</p>
+          <p className="text-xs text-[rgba(255,255,255,0.35)]">
+            <span className={`font-semibold ${images.length >= required ? 'text-[#10b981]' : 'text-[rgba(255,255,255,0.50)]'}`}>
+              {images.length}
+            </span>
+            <span>/{required} files ready</span>
+          </p>
           <Button onClick={onContinue} disabled={images.length < required}>
             Continue →
           </Button>
         </div>
       </Card>
 
-      {/* Right: sample scenarios */}
+      {/* Right: demo scenarios */}
       <div className="space-y-3">
-        <h2 className="text-sm font-semibold text-ink-600">Or run a demo</h2>
+        <div className="mb-4">
+          <h2 className="text-sm font-semibold text-[rgba(255,255,255,0.55)] uppercase tracking-widest">
+            Or try a demo
+          </h2>
+          <p className="mt-1 text-xs text-[rgba(255,255,255,0.30)]">Pre-generated scenarios with results</p>
+        </div>
         {DEMO_SCENARIOS.map((s) => (
           <button
             key={s.id}
             onClick={() => onRunScenario(s)}
-            className="w-full rounded-xl bg-surface-50 p-4 text-left shadow-card ring-1 ring-edge transition duration-150 ease-out hover:ring-primary/50 active:scale-[0.99]"
+            className="group w-full rounded-xl border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.03)] p-4 text-left transition-all duration-200 ease-out hover:border-[rgba(139,92,246,0.35)] hover:bg-[rgba(139,92,246,0.07)] hover:shadow-[0_0_20px_-8px_rgba(139,92,246,0.40)] active:scale-[0.99]"
           >
-            <div className="text-sm font-semibold text-ink-900">{s.title}</div>
-            <div className="mt-0.5 text-xs text-ink-500">{s.subtitle}</div>
-            <div className="mt-2 inline-flex items-center gap-1 rounded-full bg-primary-50 px-2.5 py-1 text-[11px] font-medium text-primary">
+            <div className="text-sm font-semibold text-[rgba(255,255,255,0.85)] group-hover:text-white transition-colors">
+              {s.title}
+            </div>
+            <div className="mt-0.5 text-xs text-[rgba(255,255,255,0.40)]">{s.subtitle}</div>
+            <div className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-[rgba(139,92,246,0.30)] bg-[rgba(139,92,246,0.12)] px-2.5 py-1 text-[11px] font-semibold text-[#8b5cf6]">
+              <span className="h-1 w-1 rounded-full bg-[#8b5cf6]" />
               {MODE_LABEL[s.mode]}
             </div>
           </button>
         ))}
-        <p className="text-xs text-ink-500">Demo scenarios play through the full flow with pre-generated results.</p>
       </div>
     </div>
   )

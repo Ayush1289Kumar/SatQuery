@@ -212,9 +212,9 @@ export const DEMO_SCENARIOS: DemoScenario[] = [
 ]
 
 export const HIGHLIGHT_COLORS: Record<Highlight['type'], string> = {
-  water: '#0f6bff',
-  built: '#dc2626',
-  flood: '#f59e0b',
+  water: '#0e7490',
+  built: '#991b1b',
+  flood: '#c2410c',
   vegetation: '#16a34a',
   land: '#78350f',
 }
