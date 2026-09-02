@@ -1,24 +1,24 @@
 @import "tailwindcss";
-@import "@fontsource-variable/plus-jakarta-sans";
-@import "@fontsource-variable/fraunces";
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/playfair-display";
 
 /* ============================================================
-   SatQuery AI — design tokens (Midnight theme)
-   Dark obsidian + electric blue/violet/cyan palette
+   SatQuery AI — design tokens (Forest Canopy theme)
+   Earthy greens, browns, and sage palette
    ============================================================ */
 @theme {
   /* Brand + accent colors */
-  --color-primary: #3b82f6;
-  --color-primary-dark: #2563eb;
-  --color-primary-50: rgba(59, 130, 246, 0.12);
-  --color-primary-glow: rgba(59, 130, 246, 0.35);
-  --color-violet: #8b5cf6;
-  --color-violet-50: rgba(139, 92, 246, 0.12);
-  --color-cyan: #22d3ee;
-  --color-cyan-50: rgba(34, 211, 238, 0.12);
+  --color-primary: #10b981;
+  --color-primary-dark: #059669;
+  --color-primary-50: rgba(16, 185, 129, 0.12);
+  --color-primary-glow: rgba(16, 185, 129, 0.35);
+  --color-violet: #65a30d;
+  --color-violet-50: rgba(101, 163, 13, 0.12);
+  --color-cyan: #86efac;
+  --color-cyan-50: rgba(134, 239, 172, 0.12);
   --color-green: #10b981;
-  --color-amber: #f59e0b;
-  --color-red: #f87171;
+  --color-amber: #d97706;
+  --color-red: #ef4444;
   --color-warning: #f59e0b;
   --color-danger: #ef4444;
   --color-success: #10b981;
@@ -32,22 +32,22 @@
   --color-ink-400: rgba(255, 255, 255, 0.30);
 
   /* Surfaces */
-  --color-surface: #000000;
-  --color-surface-50: #080b1c;
+  --color-surface: #0a0f0d;
+  --color-surface-50: #0f1612;
   --color-surface-100: rgba(255, 255, 255, 0.04);
   --color-surface-200: rgba(255, 255, 255, 0.07);
   --color-edge: rgba(255, 255, 255, 0.10);
   --color-edge-strong: rgba(255, 255, 255, 0.18);
 
   /* Map highlight colors */
-  --color-water: #22d3ee;
+  --color-water: #38bdf8;
   --color-vegetation: #10b981;
-  --color-land: #f59e0b;
+  --color-land: #d97706;
 
   /* Typography */
-  --font-sans: "Plus Jakarta Sans Variable", ui-sans-serif, system-ui, -apple-system,
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system,
     "Segoe UI", Roboto, sans-serif;
-  --font-display: "Fraunces Variable", Georgia, ui-serif, serif;
+  --font-display: "Playfair Display Variable", Georgia, ui-serif, serif;
   --font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 
   /* Radius */
@@ -56,8 +56,8 @@
 
   /* Elevation (glow-based in dark theme) */
   --shadow-card: 0 0 0 1px rgba(255,255,255,0.08), 0 4px 24px rgba(0,0,0,0.6);
-  --shadow-glow-blue: 0 0 40px -8px rgba(59, 130, 246, 0.50);
-  --shadow-glow-violet: 0 0 40px -8px rgba(139, 92, 246, 0.45);
+  --shadow-glow-blue: 0 0 40px -8px rgba(16, 185, 129, 0.50);
+  --shadow-glow-violet: 0 0 40px -8px rgba(101, 163, 13, 0.45);
 }
 
 html,
@@ -67,7 +67,7 @@ body,
 }
 
 body {
-  background: #000000;
+  background: #0a0f0d;
   color: rgba(255, 255, 255, 0.85);
   font-family: var(--font-sans);
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
@@ -147,15 +147,15 @@ h3 {
 }
 
 .glass-btn-primary {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: #ffffff;
-  border-color: rgba(59, 130, 246, 0.5);
-  box-shadow: 0 0 28px -4px rgba(59, 130, 246, 0.55), inset 0 1px 0 rgba(255,255,255,0.20);
+  border-color: rgba(16, 185, 129, 0.5);
+  box-shadow: 0 0 28px -4px rgba(16, 185, 129, 0.55), inset 0 1px 0 rgba(255,255,255,0.20);
 }
 
 .glass-btn-primary:hover:not(:disabled) {
   transform: translateY(-1px) scale(1.02);
-  box-shadow: 0 0 40px -4px rgba(59, 130, 246, 0.70), inset 0 1px 0 rgba(255,255,255,0.25);
+  box-shadow: 0 0 40px -4px rgba(16, 185, 129, 0.70), inset 0 1px 0 rgba(255,255,255,0.25);
 }
 
 .glass-btn-primary:active:not(:disabled) {
@@ -204,9 +204,9 @@ h3 {
   pointer-events: none;
   z-index: 0;
   background:
-    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(59, 130, 246, 0.13) 0%, transparent 70%),
-    radial-gradient(ellipse 60% 40% at 100% 50%, rgba(139, 92, 246, 0.07) 0%, transparent 70%),
-    radial-gradient(ellipse 60% 40% at 0% 50%, rgba(34, 211, 238, 0.06) 0%, transparent 70%);
+    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(16, 185, 129, 0.13) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 100% 50%, rgba(101, 163, 13, 0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 0% 50%, rgba(134, 239, 172, 0.06) 0%, transparent 70%);
 }
 
 /* ============================================================
@@ -226,13 +226,13 @@ h3 {
 .leaflet-container {
   width: 100%;
   height: 100%;
-  background: #080b1c;
+  background: #0f1612;
   font-family: var(--font-sans);
 }
 
 .leaflet-popup-content-wrapper {
   border-radius: var(--radius-card);
-  background: rgba(8, 11, 28, 0.92);
+  background: rgba(15, 22, 18, 0.92);
   border: 1px solid rgba(255,255,255,0.12);
   color: rgba(255,255,255,0.85);
   backdrop-filter: blur(12px);
@@ -244,7 +244,7 @@ h3 {
 }
 
 .leaflet-popup-tip {
-  background: rgba(8, 11, 28, 0.92);
+  background: rgba(15, 22, 18, 0.92);
 }
 
 /* ============================================================
@@ -279,8 +279,8 @@ h3 {
 
 /* Pulsing neon ring animation */
 @keyframes neon-pulse {
-  0%, 100% { box-shadow: 0 0 12px 2px rgba(59, 130, 246, 0.5); }
-  50% { box-shadow: 0 0 28px 6px rgba(59, 130, 246, 0.8), 0 0 60px 12px rgba(139, 92, 246, 0.3); }
+  0%, 100% { box-shadow: 0 0 12px 2px rgba(16, 185, 129, 0.5); }
+  50% { box-shadow: 0 0 28px 6px rgba(16, 185, 129, 0.8), 0 0 60px 12px rgba(101, 163, 13, 0.3); }
 }
 
 @keyframes spin-neon {

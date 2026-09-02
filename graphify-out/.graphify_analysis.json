@@ -1,0 +1,328 @@
+{
+  "communities": {
+    "0": [
+      "src_components_mapview",
+      "src_components_mapview_mapview",
+      "src_components_mapview_mapviewprops",
+      "src_components_resultsscreen",
+      "src_components_resultsscreen_layercolor",
+      "src_components_resultsscreen_resultsscreen",
+      "src_components_resultsscreen_resultsscreenprops",
+      "src_data_mock",
+      "src_data_mock_builtnewring",
+      "src_data_mock_demo_location",
+      "src_data_mock_floodextendring",
+      "src_data_mock_floodnewring",
+      "src_data_mock_highlight_colors",
+      "src_data_mock_highlight_legend",
+      "src_data_mock_hil",
+      "src_data_mock_onedatescenario",
+      "src_data_mock_opticalsarscenario",
+      "src_data_mock_placeholder_images",
+      "src_data_mock_twodatescenario",
+      "src_data_mock_vegetationring",
+      "src_data_mock_waterring",
+      "src_lib_report",
+      "src_lib_report_downloadreport",
+      "src_types",
+      "src_types_analysisresult",
+      "src_types_highlight",
+      "src_types_highlighttype",
+      "src_types_maplayer",
+      "src_types_suggestedquestion"
+    ],
+    "1": [
+      "ref_dom",
+      "ref_dom_iterable",
+      "ref_es2022",
+      "ref_src",
+      "tsconfig_app",
+      "tsconfig_app_compileroptions",
+      "tsconfig_app_compileroptions_allowimportingtsextensions",
+      "tsconfig_app_compileroptions_esmoduleinterop",
+      "tsconfig_app_compileroptions_jsx",
+      "tsconfig_app_compileroptions_lib",
+      "tsconfig_app_compileroptions_module",
+      "tsconfig_app_compileroptions_moduledetection",
+      "tsconfig_app_compileroptions_moduleresolution",
+      "tsconfig_app_compileroptions_noemit",
+      "tsconfig_app_compileroptions_nofallthroughcasesinswitch",
+      "tsconfig_app_compileroptions_nounusedlocals",
+      "tsconfig_app_compileroptions_nounusedparameters",
+      "tsconfig_app_compileroptions_skiplibcheck",
+      "tsconfig_app_compileroptions_strict",
+      "tsconfig_app_compileroptions_target",
+      "tsconfig_app_compileroptions_tsbuildinfofile",
+      "tsconfig_app_compileroptions_usedefineforclassfields",
+      "tsconfig_app_compileroptions_verbatimmodulesyntax",
+      "tsconfig_app_include"
+    ],
+    "2": [
+      "src_components_askscreen",
+      "src_components_askscreen_askscreenprops",
+      "src_components_ui",
+      "src_components_ui_badge",
+      "src_components_ui_badgeprops",
+      "src_components_ui_button",
+      "src_components_ui_buttonprops",
+      "src_components_ui_card",
+      "src_components_ui_cardprops",
+      "src_components_ui_stepbadgeprops",
+      "src_components_uploadscreen",
+      "src_components_uploadscreen_mode_label",
+      "src_components_uploadscreen_modes",
+      "src_components_uploadscreen_uploadscreen",
+      "src_components_uploadscreen_uploadscreenprops",
+      "src_data_mock_demo_scenarios",
+      "src_data_mock_demoscenario",
+      "src_data_mock_suggested_questions",
+      "src_types_uploadedimage",
+      "src_types_uploadmode"
+    ],
+    "3": [
+      "fontsource_variable_fraunces",
+      "fontsource_variable_plus_jakarta_sans",
+      "fontsource_variable_public_sans",
+      "leaflet",
+      "lenis",
+      "package_dependencies",
+      "package_dependencies_fontsource_variable_fraunces",
+      "package_dependencies_fontsource_variable_plus_jakarta_sans",
+      "package_dependencies_fontsource_variable_public_sans",
+      "package_dependencies_leaflet",
+      "package_dependencies_lenis",
+      "package_dependencies_react",
+      "package_dependencies_react_dom",
+      "package_dependencies_three",
+      "package_dependencies_types_three",
+      "react",
+      "react_dom",
+      "three",
+      "types_three"
+    ],
+    "4": [
+      "ref_es2023",
+      "ref_vite_config_ts",
+      "tsconfig_node",
+      "tsconfig_node_compileroptions",
+      "tsconfig_node_compileroptions_allowimportingtsextensions",
+      "tsconfig_node_compileroptions_lib",
+      "tsconfig_node_compileroptions_module",
+      "tsconfig_node_compileroptions_moduledetection",
+      "tsconfig_node_compileroptions_moduleresolution",
+      "tsconfig_node_compileroptions_noemit",
+      "tsconfig_node_compileroptions_nofallthroughcasesinswitch",
+      "tsconfig_node_compileroptions_nounusedlocals",
+      "tsconfig_node_compileroptions_nounusedparameters",
+      "tsconfig_node_compileroptions_skiplibcheck",
+      "tsconfig_node_compileroptions_strict",
+      "tsconfig_node_compileroptions_target",
+      "tsconfig_node_compileroptions_tsbuildinfofile",
+      "tsconfig_node_compileroptions_verbatimmodulesyntax",
+      "tsconfig_node_include"
+    ],
+    "5": [
+      "src_app",
+      "src_app_app",
+      "src_app_defaultresultfor",
+      "src_app_footer",
+      "src_app_header",
+      "src_app_herosection",
+      "src_app_saticon",
+      "src_app_step",
+      "src_components_analyzingscreen",
+      "src_components_analyzingscreen_analyzingscreen",
+      "src_components_analyzingscreen_analyzingscreenprops",
+      "src_components_analyzingscreen_steps",
+      "src_components_askscreen_askscreen",
+      "src_components_reveal",
+      "src_components_reveal_reveal",
+      "src_components_reveal_revealprops",
+      "src_components_reveal_visibilitydelay",
+      "src_components_ui_stepbadge",
+      "src_main"
+    ],
+    "6": [
+      "package_devdependencies",
+      "package_devdependencies_tailwindcss",
+      "package_devdependencies_tailwindcss_vite",
+      "package_devdependencies_types_leaflet",
+      "package_devdependencies_types_react",
+      "package_devdependencies_types_react_dom",
+      "package_devdependencies_typescript",
+      "package_devdependencies_vite",
+      "package_devdependencies_vitejs_plugin_react",
+      "tailwindcss",
+      "tailwindcss_vite",
+      "types_leaflet",
+      "types_react",
+      "types_react_dom",
+      "typescript",
+      "vite",
+      "vitejs_plugin_react"
+    ],
+    "7": [
+      "package",
+      "package_name",
+      "package_private",
+      "package_scripts",
+      "package_scripts_build",
+      "package_scripts_dev",
+      "package_scripts_preview",
+      "package_type",
+      "package_version"
+    ],
+    "8": [
+      "src_components_globehero",
+      "src_components_globehero_globehero",
+      "src_components_globehero_makeglowtex",
+      "src_components_globehero_makeorbitline",
+      "src_components_globehero_metricdef",
+      "src_components_globehero_metrics",
+      "src_components_globehero_orbpos",
+      "src_components_globehero_ringdef",
+      "src_components_globehero_rings"
+    ],
+    "9": [
+      "src_components_ambientcanvas",
+      "src_components_ambientcanvas_ambientcanvas",
+      "src_hooks_useprefersreducedmotion",
+      "src_hooks_useprefersreducedmotion_useprefersreducedmotion"
+    ],
+    "10": [
+      "tsconfig",
+      "tsconfig_files",
+      "tsconfig_references"
+    ],
+    "11": [
+      "vite_config"
+    ]
+  },
+  "cohesion": {
+    "0": 0.1206896551724138,
+    "1": 0.08333333333333333,
+    "2": 0.1631578947368421,
+    "3": 0.10526315789473684,
+    "4": 0.10526315789473684,
+    "5": 0.13450292397660818,
+    "6": 0.11764705882352941,
+    "7": 0.2222222222222222,
+    "8": 0.3333333333333333,
+    "9": 0.8333333333333334,
+    "10": 0.6666666666666666,
+    "11": 1.0
+  },
+  "gods": [
+    {
+      "id": "tsconfig_app_compileroptions",
+      "label": "compilerOptions",
+      "degree": 18
+    },
+    {
+      "id": "tsconfig_node_compileroptions",
+      "label": "compilerOptions",
+      "degree": 15
+    },
+    {
+      "id": "src_types_uploadedimage",
+      "label": "UploadedImage",
+      "degree": 11
+    },
+    {
+      "id": "src_types_analysisresult",
+      "label": "AnalysisResult",
+      "degree": 7
+    },
+    {
+      "id": "src_data_mock_demoscenario",
+      "label": "DemoScenario",
+      "degree": 6
+    },
+    {
+      "id": "src_types_uploadmode",
+      "label": "UploadMode",
+      "degree": 6
+    },
+    {
+      "id": "src_components_globehero_globehero",
+      "label": "GlobeHero()",
+      "degree": 5
+    },
+    {
+      "id": "package_scripts",
+      "label": "scripts",
+      "degree": 4
+    },
+    {
+      "id": "src_components_resultsscreen_resultsscreen",
+      "label": "ResultsScreen()",
+      "degree": 4
+    },
+    {
+      "id": "src_components_uploadscreen_uploadscreenprops",
+      "label": "UploadScreenProps",
+      "degree": 4
+    }
+  ],
+  "surprises": [
+    {
+      "source": "ResultsScreenProps",
+      "target": "UploadedImage",
+      "source_files": [
+        "src/components/ResultsScreen.tsx",
+        "src/types.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "DemoScenario",
+      "target": "AnalysisResult",
+      "source_files": [
+        "src/data/mock.ts",
+        "src/types.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "bridges separate communities"
+    },
+    {
+      "source": "AmbientCanvas()",
+      "target": "usePrefersReducedMotion()",
+      "source_files": [
+        "src/components/AmbientCanvas.tsx",
+        "src/hooks/usePrefersReducedMotion.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "cross-file semantic connection"
+    },
+    {
+      "source": "AskScreenProps",
+      "target": "UploadedImage",
+      "source_files": [
+        "src/components/AskScreen.tsx",
+        "src/types.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "cross-file semantic connection"
+    },
+    {
+      "source": "AskScreenProps",
+      "target": "UploadMode",
+      "source_files": [
+        "src/components/AskScreen.tsx",
+        "src/types.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "cross-file semantic connection"
+    }
+  ],
+  "tokens": {
+    "input": 0,
+    "output": 0
+  }
+}

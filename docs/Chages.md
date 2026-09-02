@@ -2,13 +2,14 @@
 
 This file records changes to the project. Newest entries appear at the top.
 
-## [Unreleased] - 2026-08-31
+## [Unreleased] - 2026-09-02
 
-### Added
-- Project scaffolding: initial `docs/` directory.
-- Added `docs/prd.md` - Product Requirements Document describing product goal, users, requirements, user flow, security, and tech stack.
-- Added `docs/design.md` - high-level visual identity, screens, and interaction design.
-- Added `docs/architecture.md` - three-tier architecture, components, data model, API outline, and security/operations notes.
+### Changed
+- **Redesign**: Completely overhauled the UI to an Obsidian dark theme with glassmorphism (`backdrop-blur-xl`, semi-transparent borders).
+- **Hero Section**: Added an interactive 3D `GlobeHero` component using `three.js` to visualize satellite metrics (Coverage, Resolution, Confidence, Processing Time).
+- **Typography**: Migrated from `Public Sans` to `Plus Jakarta Sans` for body text, keeping `Fraunces` for display headings.
+- **Map Integration**: Updated Leaflet maps to use CartoDB Dark Matter tiles to match the new dark aesthetic.
+- **Docs**: Updated `DESIGN.md`, `architecture.md`, and `prd.md` to reflect the new visual identity.
 
 ## [MVP - Frontend Prototype] - 2026-08-31
 

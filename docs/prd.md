@@ -101,7 +101,7 @@ Build a web app where users upload satellite image(s), ask a question in simple 
 
 ## 7. Tech Stack
 
-- **Frontend:** React, TypeScript, Tailwind CSS.
+- **Frontend:** React, TypeScript, Tailwind CSS, Three.js (Globe), CartoDB Dark Matter.
 - **Map:** MapLibre GL JS or Leaflet.
 - **Backend:** Python FastAPI.
 - **AI:** PyTorch, Hugging Face, OpenCV.

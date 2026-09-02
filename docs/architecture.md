@@ -28,7 +28,8 @@ A three-tier web application:
 
 ### 2.1 Frontend (React SPA)
 - **Pages:** Upload, Ask, Results.
-- **Map component:** MapLibre GL JS (or Leaflet) for overlays and before/after slider.
+- **Globe Component:** `GlobeHero` using Three.js for real-time visualization of metrics and active processing states.
+- **Map component:** MapLibre GL JS / Leaflet (CartoDB Dark Matter tiles) for overlays and before/after slider.
 - **State:** lightweight client state for the current analysis session; auth token kept in memory (with refresh).
 - **HTTP:** typed API client (auto-generated from OpenAPI schema).
 

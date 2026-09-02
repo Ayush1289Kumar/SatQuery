@@ -1,0 +1,122 @@
+{
+  "package.json": {
+    "mtime": 1788358174.8338394,
+    "seen": 1788360170.2511396,
+    "ast_hash": "4685e951e48947af79700a290d3674a6",
+    "semantic_hash": "4685e951e48947af79700a290d3674a6"
+  },
+  "src/App.tsx": {
+    "mtime": 1788359197.8883078,
+    "seen": 1788360170.2511604,
+    "ast_hash": "ddbb4a4d17c6c2cfe6d25773d218801f",
+    "semantic_hash": "ddbb4a4d17c6c2cfe6d25773d218801f"
+  },
+  "src/components/AmbientCanvas.tsx": {
+    "mtime": 1788264974.9430594,
+    "seen": 1788360170.2511704,
+    "ast_hash": "0db105f918b01b7b997950d4027ea3d5",
+    "semantic_hash": "0db105f918b01b7b997950d4027ea3d5"
+  },
+  "src/components/AnalyzingScreen.tsx": {
+    "mtime": 1788358784.0206995,
+    "seen": 1788360170.251176,
+    "ast_hash": "c3a08ec6d59a4f3a65c872dbe6039bdc",
+    "semantic_hash": "c3a08ec6d59a4f3a65c872dbe6039bdc"
+  },
+  "src/components/AskScreen.tsx": {
+    "mtime": 1788358761.5180297,
+    "seen": 1788360170.2511816,
+    "ast_hash": "49dd133d1017256c01416b54848d1935",
+    "semantic_hash": "49dd133d1017256c01416b54848d1935"
+  },
+  "src/components/GlobeHero.tsx": {
+    "mtime": 1788359053.4388719,
+    "seen": 1788360170.2511861,
+    "ast_hash": "1e7f85c321a78cce3a54ea64d01cde26",
+    "semantic_hash": "1e7f85c321a78cce3a54ea64d01cde26"
+  },
+  "src/components/MapView.tsx": {
+    "mtime": 1788358837.8673224,
+    "seen": 1788360170.2511911,
+    "ast_hash": "14c1d5d416faae6d777d9405c89b30c7",
+    "semantic_hash": "14c1d5d416faae6d777d9405c89b30c7"
+  },
+  "src/components/ResultsScreen.tsx": {
+    "mtime": 1788358820.9546473,
+    "seen": 1788360170.251195,
+    "ast_hash": "155aeaa90d2933616a379935fafcb94b",
+    "semantic_hash": "155aeaa90d2933616a379935fafcb94b"
+  },
+  "src/components/Reveal.tsx": {
+    "mtime": 1788178486.4750166,
+    "seen": 1788360170.251199,
+    "ast_hash": "2f7ef33943da0efd20ee4f2089e181f9",
+    "semantic_hash": "2f7ef33943da0efd20ee4f2089e181f9"
+  },
+  "src/components/UploadScreen.tsx": {
+    "mtime": 1788358737.0692196,
+    "seen": 1788360170.251203,
+    "ast_hash": "fa60757130a0b20b5182c99e8d59a140",
+    "semantic_hash": "fa60757130a0b20b5182c99e8d59a140"
+  },
+  "src/components/ui.tsx": {
+    "mtime": 1788358645.974455,
+    "seen": 1788360170.2512069,
+    "ast_hash": "45b3a887c77705aa30a990fcf735b3e8",
+    "semantic_hash": "45b3a887c77705aa30a990fcf735b3e8"
+  },
+  "src/data/mock.ts": {
+    "mtime": 1788264979.4681988,
+    "seen": 1788360170.2512121,
+    "ast_hash": "8e92065306c85c8d7a72ddcbd0cfe718",
+    "semantic_hash": "8e92065306c85c8d7a72ddcbd0cfe718"
+  },
+  "src/hooks/usePrefersReducedMotion.ts": {
+    "mtime": 1788178465.7906508,
+    "seen": 1788360170.2512157,
+    "ast_hash": "40d06781a3e38f38c924dab208be7549",
+    "semantic_hash": "40d06781a3e38f38c924dab208be7549"
+  },
+  "src/lib/report.ts": {
+    "mtime": 1788176004.5608318,
+    "seen": 1788360170.2512193,
+    "ast_hash": "0eecd2ba24f9ca760d2470d5fc7b21e8",
+    "semantic_hash": "0eecd2ba24f9ca760d2470d5fc7b21e8"
+  },
+  "src/main.tsx": {
+    "mtime": 1788178616.6691842,
+    "seen": 1788360170.251223,
+    "ast_hash": "9a96f5156d893c00fb7fd550499095d9",
+    "semantic_hash": "9a96f5156d893c00fb7fd550499095d9"
+  },
+  "src/types.ts": {
+    "mtime": 1788175773.2351055,
+    "seen": 1788360170.251227,
+    "ast_hash": "34a65c99c0674476050b4c8c4e6de4e1",
+    "semantic_hash": "34a65c99c0674476050b4c8c4e6de4e1"
+  },
+  "tsconfig.app.json": {
+    "mtime": 1788175569.3576858,
+    "seen": 1788360170.2512305,
+    "ast_hash": "f66410cf6694e60e744f96809ed3953e",
+    "semantic_hash": "f66410cf6694e60e744f96809ed3953e"
+  },
+  "tsconfig.json": {
+    "mtime": 1788175551.5199084,
+    "seen": 1788360170.2512345,
+    "ast_hash": "6d86e40a6871925c579971a5640af9ba",
+    "semantic_hash": "6d86e40a6871925c579971a5640af9ba"
+  },
+  "tsconfig.node.json": {
+    "mtime": 1788175574.1387157,
+    "seen": 1788360170.2512386,
+    "ast_hash": "a215cc424341569c889c048596fd810a",
+    "semantic_hash": "a215cc424341569c889c048596fd810a"
+  },
+  "vite.config.ts": {
+    "mtime": 1788175577.952797,
+    "seen": 1788360170.2512424,
+    "ast_hash": "b109864be80005af10e6b44c7f94bcde",
+    "semantic_hash": "b109864be80005af10e6b44c7f94bcde"
+  }
+}
