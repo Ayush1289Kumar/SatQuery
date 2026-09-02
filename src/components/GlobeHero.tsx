@@ -357,7 +357,7 @@ export function GlobeHero({ className = "", theme = "neon-flora" }: { className?
         orbPos(RINGS[m.ringIdx].radius, RINGS[m.ringIdx].inclination, angles[i])
       );
 
-      const cometAngles = RINGS.map((r, i) => elapsed * (0.8 + i * 0.4));
+      const cometAngles = RINGS.map((_, i) => elapsed * (0.8 + i * 0.4));
       const cometsAttr = cometsGeo.attributes.position as THREE.BufferAttribute;
       RINGS.forEach((r, i) => {
         const p = orbPos(r.radius, r.inclination, cometAngles[i]);

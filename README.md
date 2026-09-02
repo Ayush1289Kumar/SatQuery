@@ -4,9 +4,9 @@ Upload a satellite image, ask a question in plain English, and get a clear answe
 
 ## 🔗 Live
 
-**Live Link:** [https://vercel.com/ayushkumarpro1289-5851s-projects/sat_query/settings/domains](https://vercel.com/ayushkumarpro1289-5851s-projects/sat_query/settings/domains)
+**Live Link:** [https://satquery-iota.vercel.app/](https://satquery-iota.vercel.app/)
 
-> Deployed on Vercel. (Tip: replace the link above with the actual production domain, e.g. `https://sat-query.vercel.app`, for a friendlier URL.)
+> Deployed on Vercel.
 
 ## ✨ Features
 
