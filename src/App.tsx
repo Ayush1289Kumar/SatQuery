@@ -71,7 +71,7 @@ export default function App() {
       {/* Skip link */}
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-[#3b82f6] focus:px-5 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-[#10b981] focus:px-5 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
       >
         Skip to content
       </a>
@@ -139,7 +139,7 @@ function Header() {
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-3.5">
         <div className="flex items-center gap-3">
           {/* Logo mark */}
-          <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[#3b82f6] to-[#8b5cf6] shadow-[0_0_20px_-4px_rgba(59,130,246,0.7)]">
+          <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[#10b981] to-[#65a30d] shadow-[0_0_20px_-4px_rgba(16,185,129,0.7)]">
             <SatIcon />
             <div className="absolute inset-0 rounded-xl ring-1 ring-white/20" />
           </div>
@@ -149,7 +149,7 @@ function Header() {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <span className="hidden rounded-full border border-[rgba(59,130,246,0.35)] bg-[rgba(59,130,246,0.12)] px-3 py-1 text-xs font-semibold text-[#3b82f6] sm:inline-flex">
+          <span className="hidden rounded-full border border-[rgba(16,185,129,0.35)] bg-[rgba(16,185,129,0.12)] px-3 py-1 text-xs font-semibold text-[#10b981] sm:inline-flex">
             MVP Prototype
           </span>
           <div className="h-2 w-2 animate-pulse rounded-full bg-[#10b981] shadow-[0_0_8px_rgba(16,185,129,0.7)]" title="Online" />
@@ -167,7 +167,7 @@ function HeroSection() {
       {/* Subtle gradient backdrop */}
       <div
         aria-hidden
-        className="absolute inset-0 bg-gradient-to-br from-[rgba(139,92,246,0.10)] via-transparent to-[rgba(59,130,246,0.08)]"
+        className="absolute inset-0 bg-gradient-to-br from-[rgba(101,163,13,0.10)] via-transparent to-[rgba(16,185,129,0.08)]"
       />
       {/* Grid pattern overlay */}
       <div
@@ -187,13 +187,13 @@ function HeroSection() {
       <div className="relative flex flex-col lg:grid lg:grid-cols-[1fr_1.3fr] lg:items-center">
         {/* Left: copy */}
         <div className="px-8 py-10 sm:px-10 sm:py-12 lg:py-14">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[rgba(139,92,246,0.35)] bg-[rgba(139,92,246,0.10)] px-3 py-1 text-xs font-semibold uppercase tracking-widest text-[#8b5cf6]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#8b5cf6] animate-pulse" />
+          <div className="inline-flex items-center gap-2 rounded-full border border-[rgba(101,163,13,0.35)] bg-[rgba(101,163,13,0.10)] px-3 py-1 text-xs font-semibold uppercase tracking-widest text-[#65a30d]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#65a30d] animate-pulse" />
             Satellite Image Q&A
           </div>
           <h1 className="mt-4 max-w-xl text-3xl font-semibold leading-tight sm:text-4xl lg:text-[2.6rem]">
             Ask satellite imagery{' '}
-            <em className="not-italic text-transparent bg-clip-text bg-gradient-to-r from-[#3b82f6] to-[#8b5cf6]">
+            <em className="not-italic text-transparent bg-clip-text bg-gradient-to-r from-[#10b981] to-[#65a30d]">
               in plain English
             </em>{' '}
             — see the evidence on the map.
@@ -207,9 +207,9 @@ function HeroSection() {
           {/* Stat pills */}
           <div className="mt-8 flex flex-wrap gap-3">
             {[
-              { icon: '🛰', label: 'Multi-spectral', color: 'rgba(59,130,246,0.15)', border: 'rgba(59,130,246,0.30)', text: '#3b82f6' },
-              { icon: '🔬', label: 'Sub-meter res.', color: 'rgba(139,92,246,0.15)', border: 'rgba(139,92,246,0.30)', text: '#8b5cf6' },
-              { icon: '⚡', label: '<10s latency', color: 'rgba(34,211,238,0.15)', border: 'rgba(34,211,238,0.30)', text: '#22d3ee' },
+              { icon: '🛰', label: 'Multi-spectral', color: 'rgba(16,185,129,0.15)', border: 'rgba(16,185,129,0.30)', text: '#10b981' },
+              { icon: '🔬', label: 'Sub-meter res.', color: 'rgba(101,163,13,0.15)', border: 'rgba(101,163,13,0.30)', text: '#65a30d' },
+              { icon: '⚡', label: '<10s latency', color: 'rgba(134,239,172,0.15)', border: 'rgba(134,239,172,0.30)', text: '#86efac' },
             ].map((s) => (
               <span
                 key={s.label}

@@ -23,18 +23,18 @@ interface MetricDef {
 }
 
 const RINGS: RingDef[] = [
-  { radius: 2.20, inclination:  0.38, color: "#8b5cf6" },
-  { radius: 2.55, inclination: -0.22, color: "#22d3ee" },
-  { radius: 2.00, inclination:  0.72, color: "#3d8bff" },
+  { radius: 2.20, inclination:  0.38, color: "#65a30d" },
+  { radius: 2.55, inclination: -0.22, color: "#86efac" },
+  { radius: 2.00, inclination:  0.72, color: "#10b981" },
 ];
 
 // SatQuery-specific metrics replacing meeting analytics
 const METRICS: MetricDef[] = [
   { ringIdx: 0, phase: 0,             speed: 0.22, icon: "🛰", label: "Coverage",   value: "94",   unit: " km²",    color: "#10b981" },
-  { ringIdx: 0, phase: Math.PI,       speed: 0.22, icon: "🔬", label: "Resolution", value: "0.3",  unit: " m/px",   color: "#3d8bff" },
-  { ringIdx: 1, phase: 0.80,          speed: 0.18, icon: "✓",  label: "Confidence", value: "87",   unit: "%",       color: "#8b5cf6" },
+  { ringIdx: 0, phase: Math.PI,       speed: 0.22, icon: "🔬", label: "Resolution", value: "0.3",  unit: " m/px",   color: "#10b981" },
+  { ringIdx: 1, phase: 0.80,          speed: 0.18, icon: "✓",  label: "Confidence", value: "87",   unit: "%",       color: "#65a30d" },
   { ringIdx: 1, phase: Math.PI + 0.8, speed: 0.18, icon: "⚡", label: "Processing", value: "9.2",  unit: "s",       color: "#f5b94b" },
-  { ringIdx: 2, phase: 1.50,          speed: 0.28, icon: "◎",  label: "Models",     value: "3",    unit: " active", color: "#22d3ee" },
+  { ringIdx: 2, phase: 1.50,          speed: 0.28, icon: "◎",  label: "Models",     value: "3",    unit: " active", color: "#86efac" },
 ];
 
 /* ═══════════════════════════════════════════════════════════
@@ -124,7 +124,7 @@ export function GlobeHero({ className = "" }: { className?: string }) {
 
     /* ── Ambient background haze ── */
     const haze = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: tex, color: new THREE.Color("#8b5cf6"),
+      map: tex, color: new THREE.Color("#65a30d"),
       blending: THREE.AdditiveBlending, transparent: true, opacity: 0.065,
     }));
     haze.scale.setScalar(10);
@@ -132,14 +132,14 @@ export function GlobeHero({ className = "" }: { className?: string }) {
 
     /* ── Globe core — layered glows ── */
     const coreGlow = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: tex, color: new THREE.Color("#8b5cf6"),
+      map: tex, color: new THREE.Color("#65a30d"),
       blending: THREE.AdditiveBlending, transparent: true, opacity: 0.58,
     }));
     coreGlow.scale.setScalar(2.5);
     root.add(coreGlow);
 
     const coreAccent = new THREE.Sprite(new THREE.SpriteMaterial({
-      map: tex, color: new THREE.Color("#22d3ee"),
+      map: tex, color: new THREE.Color("#86efac"),
       blending: THREE.AdditiveBlending, transparent: true, opacity: 0.20,
     }));
     coreAccent.scale.setScalar(1.1);
@@ -149,7 +149,7 @@ export function GlobeHero({ className = "" }: { className?: string }) {
     const sphereGeo = new THREE.SphereGeometry(1.5, 22, 15);
     const edgesGeo  = new THREE.EdgesGeometry(sphereGeo);
     const wireMat   = new THREE.LineBasicMaterial({
-      color: 0x8b5cf6, transparent: true, opacity: 0.10, blending: THREE.AdditiveBlending,
+      color: 0x65a30d, transparent: true, opacity: 0.10, blending: THREE.AdditiveBlending,
     });
     root.add(new THREE.LineSegments(edgesGeo, wireMat));
 
@@ -164,7 +164,7 @@ export function GlobeHero({ className = "" }: { className?: string }) {
     }
     scanGroup.add(new THREE.Line(
       new THREE.BufferGeometry().setFromPoints(fullRingPts),
-      new THREE.LineBasicMaterial({ color: 0x22d3ee, transparent: true, opacity: 0.22, blending: THREE.AdditiveBlending }),
+      new THREE.LineBasicMaterial({ color: 0x86efac, transparent: true, opacity: 0.22, blending: THREE.AdditiveBlending }),
     ));
 
     const arcPts: THREE.Vector3[] = [];
@@ -172,13 +172,13 @@ export function GlobeHero({ className = "" }: { className?: string }) {
       arcPts.push(new THREE.Vector3(1.52 * Math.cos((i / 32) * Math.PI * 0.5), 0, 1.52 * Math.sin((i / 32) * Math.PI * 0.5)));
     }
     const arcMat = new THREE.LineBasicMaterial({
-      color: 0x22d3ee, transparent: true, opacity: 0.85, blending: THREE.AdditiveBlending,
+      color: 0x86efac, transparent: true, opacity: 0.85, blending: THREE.AdditiveBlending,
     });
     scanGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(arcPts), arcMat));
 
     const headGeo = new THREE.BufferGeometry();
     headGeo.setAttribute("position", new THREE.Float32BufferAttribute([1.52, 0, 0], 3));
-    headGeo.setAttribute("color",    new THREE.Float32BufferAttribute([0.13, 0.83, 0.93], 3));
+    headGeo.setAttribute("color",    new THREE.Float32BufferAttribute([0.52, 0.94, 0.67], 3));
     const headDot = new THREE.Points(headGeo, new THREE.PointsMaterial({
       size: 0.34, vertexColors: true, transparent: true, opacity: 1.0,
       map: tex, blending: THREE.AdditiveBlending, depthWrite: false,
@@ -208,7 +208,7 @@ export function GlobeHero({ className = "" }: { className?: string }) {
     const connGeo = new THREE.BufferGeometry();
     connGeo.setAttribute("position", new THREE.BufferAttribute(connBuf, 3));
     const connMat = new THREE.LineBasicMaterial({
-      color: 0x8b5cf6, transparent: true, opacity: 0.22, blending: THREE.AdditiveBlending,
+      color: 0x65a30d, transparent: true, opacity: 0.22, blending: THREE.AdditiveBlending,
     });
     root.add(new THREE.LineSegments(connGeo, connMat));
 

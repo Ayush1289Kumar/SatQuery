@@ -22,19 +22,19 @@ export default function AnalyzingScreen({ question, activeStep, workflowLabel }:
           className="mx-auto flex h-20 w-20 items-center justify-center"
         >
           {/* Outer glow ring */}
-          <div className="absolute h-20 w-20 rounded-full border-2 border-[rgba(59,130,246,0.20)] shadow-[0_0_30px_rgba(59,130,246,0.30)]" />
+          <div className="absolute h-20 w-20 rounded-full border-2 border-[rgba(16,185,129,0.20)] shadow-[0_0_30px_rgba(16,185,129,0.30)]" />
           {/* Spinning ring */}
           <div
             className="h-16 w-16 rounded-full border-4 border-transparent"
             style={{
-              borderTopColor: '#3b82f6',
-              borderRightColor: 'rgba(139,92,246,0.50)',
+              borderTopColor: '#10b981',
+              borderRightColor: 'rgba(101,163,13,0.50)',
               animation: 'spin-neon 0.9s linear infinite',
-              boxShadow: '0 0 20px rgba(59,130,246,0.60)',
+              boxShadow: '0 0 20px rgba(16,185,129,0.60)',
             }}
           />
           {/* Inner static ring */}
-          <div className="absolute h-8 w-8 rounded-full border border-[rgba(255,255,255,0.08)] bg-[rgba(59,130,246,0.10)]" />
+          <div className="absolute h-8 w-8 rounded-full border border-[rgba(255,255,255,0.08)] bg-[rgba(16,185,129,0.10)]" />
           <span className="sr-only">Analyzing: {STEPS[activeStep]} step running</span>
         </div>
 
@@ -56,8 +56,8 @@ export default function AnalyzingScreen({ question, activeStep, workflowLabel }:
             className="h-full rounded-full transition-[width] duration-500 ease-out"
             style={{
               width: `${progress}%`,
-              background: 'linear-gradient(90deg, #3b82f6 0%, #8b5cf6 50%, #22d3ee 100%)',
-              boxShadow: '0 0 12px rgba(59,130,246,0.60)',
+              background: 'linear-gradient(90deg, #10b981 0%, #65a30d 50%, #86efac 100%)',
+              boxShadow: '0 0 12px rgba(16,185,129,0.60)',
             }}
           />
         </div>
@@ -74,8 +74,8 @@ export default function AnalyzingScreen({ question, activeStep, workflowLabel }:
 
         {/* Router label */}
         {activeStep === 1 && workflowLabel && (
-          <div className="mx-auto mt-6 inline-flex max-w-md items-center gap-2.5 rounded-xl border border-[rgba(59,130,246,0.25)] bg-[rgba(59,130,246,0.10)] px-5 py-2.5 text-sm">
-            <span className="font-semibold text-[#3b82f6]">Router:</span>
+          <div className="mx-auto mt-6 inline-flex max-w-md items-center gap-2.5 rounded-xl border border-[rgba(16,185,129,0.25)] bg-[rgba(16,185,129,0.10)] px-5 py-2.5 text-sm">
+            <span className="font-semibold text-[#10b981]">Router:</span>
             <span className="truncate text-[rgba(255,255,255,0.65)]">{workflowLabel}</span>
           </div>
         )}

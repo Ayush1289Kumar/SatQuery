@@ -14,10 +14,10 @@ interface CardProps {
 
 export function Card({ children, className = '', glow = 'none' }: CardProps) {
   const glowClass =
-    glow === 'blue'   ? 'shadow-[0_0_40px_-8px_rgba(59,130,246,0.35)]' :
-    glow === 'violet' ? 'shadow-[0_0_40px_-8px_rgba(139,92,246,0.35)]' :
-    glow === 'cyan'   ? 'shadow-[0_0_40px_-8px_rgba(34,211,238,0.30)]' :
-    'shadow-[0_4px_24px_rgba(0,0,0,0.50)]'
+    glow === 'blue'   ? 'shadow-[var(--shadow-glow-blue)]' :
+    glow === 'violet' ? 'shadow-[var(--shadow-glow-violet)]' :
+    glow === 'cyan'   ? 'shadow-[var(--shadow-glow-blue)]' :
+    'shadow-[var(--shadow-card)]'
 
   return (
     <div className={`glass-card p-5 ${glowClass} ${className}`}>
@@ -84,8 +84,8 @@ export function StepBadge({ label, active, complete }: StepBadgeProps) {
 
   if (active) {
     return (
-      <span className={`${base} bg-[rgba(59,130,246,0.18)] text-[#3b82f6] border border-[rgba(59,130,246,0.40)] shadow-[0_0_16px_-4px_rgba(59,130,246,0.60)]`}>
-        <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#3b82f6] animate-pulse" />
+      <span className={`${base} bg-[var(--color-primary-50)] text-[var(--color-primary)] border border-[var(--color-primary-glow)] shadow-[0_0_16px_-4px_var(--color-primary-glow)]`}>
+        <span className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--color-primary)] animate-pulse" />
         {label}
       </span>
     )
@@ -108,12 +108,12 @@ interface BadgeProps {
 
 export function Badge({ children, color = 'blue', className = '' }: BadgeProps) {
   const colorClass =
-    color === 'blue'   ? 'bg-[rgba(59,130,246,0.15)] text-[#3b82f6] border-[rgba(59,130,246,0.30)]' :
-    color === 'violet' ? 'bg-[rgba(139,92,246,0.15)] text-[#8b5cf6] border-[rgba(139,92,246,0.30)]' :
-    color === 'cyan'   ? 'bg-[rgba(34,211,238,0.15)] text-[#22d3ee] border-[rgba(34,211,238,0.30)]' :
-    color === 'green'  ? 'bg-[rgba(16,185,129,0.15)] text-[#10b981] border-[rgba(16,185,129,0.30)]' :
-    color === 'amber'  ? 'bg-[rgba(245,158,11,0.15)] text-[#f59e0b] border-[rgba(245,158,11,0.30)]' :
-    color === 'red'    ? 'bg-[rgba(248,113,113,0.15)] text-[#f87171] border-[rgba(248,113,113,0.30)]' :
+    color === 'blue'   ? 'bg-[var(--color-primary-50)] text-[var(--color-primary)] border-[var(--color-primary-glow)]' :
+    color === 'violet' ? 'bg-[var(--color-violet-50)] text-[var(--color-violet)] border-[var(--color-violet-50)]' :
+    color === 'cyan'   ? 'bg-[var(--color-cyan-50)] text-[var(--color-cyan)] border-[var(--color-cyan-50)]' :
+    color === 'green'  ? 'bg-[var(--color-primary-50)] text-[var(--color-primary)] border-[var(--color-primary-glow)]' :
+    color === 'amber'  ? 'bg-[rgba(245,158,11,0.15)] text-[var(--color-amber)] border-[rgba(245,158,11,0.30)]' :
+    color === 'red'    ? 'bg-[rgba(248,113,113,0.15)] text-[var(--color-danger)] border-[rgba(248,113,113,0.30)]' :
                          'bg-[rgba(255,255,255,0.07)] text-[rgba(255,255,255,0.55)] border-[rgba(255,255,255,0.12)]'
 
   return (
