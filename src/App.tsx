@@ -11,6 +11,7 @@ import Reveal from './components/Reveal'
 type Step = 'upload' | 'ask' | 'analyzing' | 'results'
 
 export default function App() {
+  const [theme, setTheme] = useState('neon-flora')
   const [step, setStep] = useState<Step>('upload')
   const [mode, setMode] = useState<UploadMode>('twoDate')
   const [images, setImages] = useState<UploadedImage[]>([])
@@ -18,6 +19,10 @@ export default function App() {
   const [result, setResult] = useState<AnalysisResult | null>(null)
   const [activeStep, setActiveStep] = useState(0)
   const timersRef = useRef<number[]>([])
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+  }, [theme])
 
   useEffect(() => () => timersRef.current.forEach((t) => window.clearTimeout(t)), [])
 
@@ -64,24 +69,24 @@ export default function App() {
   }
 
   return (
-    <div className="relative flex min-h-full flex-col bg-[#000000]">
+    <div className="relative flex min-h-full flex-col bg-[var(--color-surface)]">
       {/* Viewport glow frame */}
       <div className="glow-frame" aria-hidden />
 
       {/* Skip link */}
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-[#10b981] focus:px-5 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-[var(--color-primary)] focus:px-5 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
       >
         Skip to content
       </a>
 
-      <Header />
+      <Header theme={theme} onThemeChange={setTheme} />
 
       <main id="main" className="relative z-10 mx-auto w-full max-w-6xl flex-1 px-4 pb-16 pt-6">
         {step === 'upload' && (
           <Reveal>
-            <HeroSection />
+            <HeroSection theme={theme} />
             <div className="mt-8">
               <UploadScreen
                 mode={mode}
@@ -133,13 +138,13 @@ function defaultResultFor(_q: string): AnalysisResult {
   }
 }
 
-function Header() {
+function Header({ theme, onThemeChange }: { theme: string, onThemeChange: (t: string) => void }) {
   return (
-    <header className="sticky top-0 z-30 border-b border-[rgba(255,255,255,0.08)] bg-[rgba(0,0,0,0.70)] backdrop-blur-xl">
+    <header className="sticky top-0 z-30 border-b border-[rgba(255,255,255,0.08)] bg-[var(--color-surface-50)] backdrop-blur-xl">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-3.5">
         <div className="flex items-center gap-3">
           {/* Logo mark */}
-          <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[#10b981] to-[#65a30d] shadow-[0_0_20px_-4px_rgba(16,185,129,0.7)]">
+          <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-violet)] shadow-[0_0_20px_-4px_var(--color-primary-glow)]">
             <SatIcon />
             <div className="absolute inset-0 rounded-xl ring-1 ring-white/20" />
           </div>
@@ -149,10 +154,11 @@ function Header() {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <span className="hidden rounded-full border border-[rgba(16,185,129,0.35)] bg-[rgba(16,185,129,0.12)] px-3 py-1 text-xs font-semibold text-[#10b981] sm:inline-flex">
+          <ThemeSwitcher theme={theme} onThemeChange={onThemeChange} />
+          <span className="hidden rounded-full border border-[var(--color-primary-glow)] bg-[var(--color-primary-50)] px-3 py-1 text-xs font-semibold text-[var(--color-primary)] sm:inline-flex">
             MVP Prototype
           </span>
-          <div className="h-2 w-2 animate-pulse rounded-full bg-[#10b981] shadow-[0_0_8px_rgba(16,185,129,0.7)]" title="Online" />
+          <div className="h-2 w-2 animate-pulse rounded-full bg-[var(--color-primary)] shadow-[0_0_8px_var(--color-primary-glow)]" title="Online" />
         </div>
       </div>
     </header>
@@ -161,7 +167,7 @@ function Header() {
 
 /** Hero section: globe fills a wide full-row strip below the copy on mobile,
  *  and sits beside it on desktop — always contained within overflow-hidden. */
-function HeroSection() {
+function HeroSection({ theme }: { theme: string }) {
   return (
     <section className="relative overflow-hidden rounded-2xl border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.02)]">
       {/* Subtle gradient backdrop */}
@@ -187,13 +193,13 @@ function HeroSection() {
       <div className="relative flex flex-col lg:grid lg:grid-cols-[1fr_1.3fr] lg:items-center">
         {/* Left: copy */}
         <div className="px-8 py-10 sm:px-10 sm:py-12 lg:py-14">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[rgba(101,163,13,0.35)] bg-[rgba(101,163,13,0.10)] px-3 py-1 text-xs font-semibold uppercase tracking-widest text-[#65a30d]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#65a30d] animate-pulse" />
+          <div className="inline-flex items-center gap-2 rounded-full border border-[var(--color-violet-50)] bg-[var(--color-violet-50)] px-3 py-1 text-xs font-semibold uppercase tracking-widest text-[var(--color-violet)]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-violet)] animate-pulse" />
             Satellite Image Q&A
           </div>
           <h1 className="mt-4 max-w-xl text-3xl font-semibold leading-tight sm:text-4xl lg:text-[2.6rem]">
             Ask satellite imagery{' '}
-            <em className="not-italic text-transparent bg-clip-text bg-gradient-to-r from-[#10b981] to-[#65a30d]">
+            <em className="not-italic text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-violet)]">
               in plain English
             </em>{' '}
             — see the evidence on the map.
@@ -207,9 +213,9 @@ function HeroSection() {
           {/* Stat pills */}
           <div className="mt-8 flex flex-wrap gap-3">
             {[
-              { icon: '🛰', label: 'Multi-spectral', color: 'rgba(16,185,129,0.15)', border: 'rgba(16,185,129,0.30)', text: '#10b981' },
-              { icon: '🔬', label: 'Sub-meter res.', color: 'rgba(101,163,13,0.15)', border: 'rgba(101,163,13,0.30)', text: '#65a30d' },
-              { icon: '⚡', label: '<10s latency', color: 'rgba(134,239,172,0.15)', border: 'rgba(134,239,172,0.30)', text: '#86efac' },
+              { icon: '🛰', label: 'Multi-spectral', color: 'var(--color-primary-50)', border: 'var(--color-primary-glow)', text: 'var(--color-primary)' },
+              { icon: '🔬', label: 'Sub-meter res.', color: 'var(--color-violet-50)', border: 'var(--color-violet-50)', text: 'var(--color-violet)' },
+              { icon: '⚡', label: '<10s latency', color: 'var(--color-cyan-50)', border: 'var(--color-cyan-50)', text: 'var(--color-cyan)' },
             ].map((s) => (
               <span
                 key={s.label}
@@ -225,7 +231,7 @@ function HeroSection() {
 
         {/* Right: globe — 560px on mobile/tablet, 680px on desktop, always inside card */}
         <div className="relative h-[560px] lg:h-[680px]">
-          <GlobeHero className="h-full w-full" />
+          <GlobeHero className="h-full w-full" theme={theme} />
         </div>
       </div>
     </section>
@@ -252,4 +258,54 @@ function SatIcon() {
       <circle cx="12" cy="12" r="3" />
     </svg>
   )
+}
+
+function ThemeSwitcher({ theme, onThemeChange }: { theme: string, onThemeChange: (t: string) => void }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const themes = [
+    { id: 'neon-flora', name: 'Neon Flora' },
+    { id: 'forest-canopy', name: 'Forest Canopy' },
+    { id: 'olive-sage', name: 'Olive & Sage' },
+    { id: 'mint-pine', name: 'Mint & Pine' },
+    { id: 'jungle-night', name: 'Jungle Night' }
+  ];
+  const activeName = themes.find(t => t.id === theme)?.name || 'Theme';
+
+  return (
+    <div className="relative">
+      <button 
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center gap-1.5 rounded-full border border-[var(--color-primary-glow)] bg-[var(--color-primary-50)] px-3 py-1 text-xs font-semibold text-[var(--color-primary)] outline-none hover:bg-[var(--color-primary-glow)] transition-colors"
+      >
+        {activeName}
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>
+          <path d="m6 9 6 6 6-6"/>
+        </svg>
+      </button>
+      
+      {isOpen && (
+        <>
+          <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
+          <div className="absolute right-0 top-full mt-2 w-36 z-50 rounded-xl border border-[rgba(255,255,255,0.08)] bg-[var(--color-surface-50)] p-1.5 shadow-2xl backdrop-blur-xl">
+            {themes.map(t => (
+              <button
+                key={t.id}
+                onClick={() => {
+                  onThemeChange(t.id);
+                  setIsOpen(false);
+                }}
+                className={`w-full text-left px-3 py-2 text-xs rounded-lg transition-colors ${
+                  theme === t.id 
+                    ? 'bg-[var(--color-primary-50)] text-[var(--color-primary)] font-semibold' 
+                    : 'text-[rgba(255,255,255,0.7)] hover:bg-[rgba(255,255,255,0.05)] hover:text-white'
+                }`}
+              >
+                {t.name}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
 }

@@ -76,7 +76,7 @@ export function StepBadge({ label, active, complete }: StepBadgeProps) {
 
   if (complete) {
     return (
-      <span className={`${base} bg-[rgba(16,185,129,0.15)] text-[#10b981] border border-[rgba(16,185,129,0.30)]`}>
+      <span className={`${base} bg-[rgba(var(--primary-rgb),0.15)] text-[var(--color-primary)] border border-[rgba(var(--primary-rgb),0.30)]`}>
         <span className="text-[10px]">✓</span> {label}
       </span>
     )

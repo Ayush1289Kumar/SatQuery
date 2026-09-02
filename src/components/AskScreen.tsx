@@ -23,7 +23,7 @@ export default function AskScreen({
       <Card glow="violet">
         {/* Header */}
         <div className="mb-6 flex items-center gap-3">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[rgba(101,163,13,0.18)] border border-[rgba(101,163,13,0.30)]">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[rgba(var(--violet-rgb),0.18)] border border-[rgba(var(--violet-rgb),0.30)]">
             <span className="text-sm">②</span>
           </div>
           <div>
@@ -43,13 +43,13 @@ export default function AskScreen({
             >
               <span className={`rounded-full px-1.5 py-0.5 text-[10px] font-bold ${
                 img.kind === 'sar'
-                  ? 'bg-[rgba(134,239,172,0.18)] text-[#86efac]'
-                  : 'bg-[rgba(16,185,129,0.18)] text-[#10b981]'
+                  ? 'bg-[rgba(var(--cyan-rgb),0.18)] text-[var(--color-cyan)]'
+                  : 'bg-[rgba(var(--primary-rgb),0.18)] text-[var(--color-primary)]'
               }`}>
                 {i + 1}
               </span>
               <span className="max-w-[160px] truncate">{img.name}</span>
-              <span className={`text-[10px] ${img.kind === 'sar' ? 'text-[#86efac]/60' : 'text-[#10b981]/60'}`}>
+              <span className={`text-[10px] ${img.kind === 'sar' ? 'text-[var(--color-cyan)]/60' : 'text-[var(--color-primary)]/60'}`}>
                 {img.kind === 'sar' ? 'SAR' : 'optical'}
               </span>
             </div>
@@ -64,7 +64,7 @@ export default function AskScreen({
             rows={4}
             placeholder='e.g. "Which areas are newly flooded since last month?"'
             aria-label="Your question about the uploaded image"
-            className="w-full resize-none rounded-xl border border-[rgba(255,255,255,0.10)] bg-[rgba(255,255,255,0.04)] p-4 text-sm text-[rgba(255,255,255,0.85)] placeholder:text-[rgba(255,255,255,0.25)] transition-all duration-200 focus:border-[rgba(101,163,13,0.50)] focus:bg-[rgba(101,163,13,0.05)] focus:outline-none focus:shadow-[0_0_20px_-6px_rgba(101,163,13,0.45)]"
+            className="w-full resize-none rounded-xl border border-[rgba(255,255,255,0.10)] bg-[rgba(255,255,255,0.04)] p-4 text-sm text-[rgba(255,255,255,0.85)] placeholder:text-[rgba(255,255,255,0.25)] transition-all duration-200 focus:border-[rgba(var(--violet-rgb),0.50)] focus:bg-[rgba(var(--violet-rgb),0.05)] focus:outline-none focus:shadow-[0_0_20px_-6px_rgba(var(--violet-rgb),0.45)]"
           />
           {question.trim() && (
             <div className="absolute bottom-3 right-3">
@@ -85,7 +85,7 @@ export default function AskScreen({
               <button
                 key={q.id}
                 onClick={() => onQuestionChange(q.text)}
-                className="rounded-full border border-[rgba(101,163,13,0.25)] bg-[rgba(101,163,13,0.08)] px-3.5 py-1.5 text-xs font-medium text-[#65a30d] transition-all duration-150 ease-out hover:border-[rgba(101,163,13,0.45)] hover:bg-[rgba(101,163,13,0.15)] hover:shadow-[0_0_12px_-4px_rgba(101,163,13,0.50)] active:scale-[0.97]"
+                className="rounded-full border border-[rgba(var(--violet-rgb),0.25)] bg-[rgba(var(--violet-rgb),0.08)] px-3.5 py-1.5 text-xs font-medium text-[var(--color-violet)] transition-all duration-150 ease-out hover:border-[rgba(var(--violet-rgb),0.45)] hover:bg-[rgba(var(--violet-rgb),0.15)] hover:shadow-[0_0_12px_-4px_rgba(var(--violet-rgb),0.50)] active:scale-[0.97]"
               >
                 {q.label}
               </button>

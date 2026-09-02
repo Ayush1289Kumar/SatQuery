@@ -55,7 +55,7 @@ export default function ResultsScreen({ images, question, result, onRestart }: R
                     const v = e.target.value
                     setView(v === 'all' ? 'all' : Number(v))
                   }}
-                  className="rounded-lg border border-[rgba(255,255,255,0.10)] bg-[rgba(255,255,255,0.06)] px-2.5 py-1.5 text-xs text-[rgba(255,255,255,0.65)] focus:outline-none focus:border-[rgba(16,185,129,0.40)] focus:bg-[rgba(16,185,129,0.08)]"
+                  className="rounded-lg border border-[rgba(255,255,255,0.10)] bg-[rgba(255,255,255,0.06)] px-2.5 py-1.5 text-xs text-[rgba(255,255,255,0.65)] focus:outline-none focus:border-[rgba(var(--primary-rgb),0.40)] focus:bg-[rgba(var(--primary-rgb),0.08)]"
                   aria-label="Compare layer"
                 >
                   <option value="all" className="bg-[#080b1c]">Compare (all)</option>
@@ -135,14 +135,14 @@ export default function ResultsScreen({ images, question, result, onRestart }: R
             <div className="mt-3 flex flex-col gap-2">
               {result.modelNames.map((m) => (
                 <div key={m} className="flex items-center gap-2">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#10b981] shadow-[0_0_6px_rgba(16,185,129,0.8)]" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-primary)] shadow-[0_0_6px_rgba(var(--primary-rgb),0.8)]" />
                   <span className="font-mono text-xs text-[rgba(255,255,255,0.50)]">{m}</span>
                 </div>
               ))}
             </div>
             <div className="mt-3 flex items-center gap-2 rounded-lg border border-[rgba(255,255,255,0.06)] bg-[rgba(255,255,255,0.03)] px-3 py-2">
               <span className="text-[11px] text-[rgba(255,255,255,0.35)]">Processing time</span>
-              <span className="ml-auto font-mono text-xs text-[#86efac]">{result.usageTimeSec.toFixed(1)}s</span>
+              <span className="ml-auto font-mono text-xs text-[var(--color-cyan)]">{result.usageTimeSec.toFixed(1)}s</span>
             </div>
           </div>
         </details>
@@ -154,7 +154,7 @@ export default function ResultsScreen({ images, question, result, onRestart }: R
               key={img.id}
               className="inline-flex items-center gap-1.5 rounded-full border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.04)] px-3 py-1 text-xs text-[rgba(255,255,255,0.45)]"
             >
-              <span className={`h-1.5 w-1.5 rounded-full ${img.kind === 'sar' ? 'bg-[#86efac]' : 'bg-[#10b981]'}`} />
+              <span className={`h-1.5 w-1.5 rounded-full ${img.kind === 'sar' ? 'bg-[var(--color-cyan)]' : 'bg-[var(--color-primary)]'}`} />
               {img.name.split('.')[0]}
             </span>
           ))}

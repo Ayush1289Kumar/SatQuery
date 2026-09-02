@@ -59,7 +59,7 @@ export default function UploadScreen({
       <Card className="lg:col-span-2">
         {/* Section header */}
         <div className="mb-5 flex items-center gap-3">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[rgba(16,185,129,0.18)] border border-[rgba(16,185,129,0.30)]">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[rgba(var(--primary-rgb),0.18)] border border-[rgba(var(--primary-rgb),0.30)]">
             <span className="text-sm">①</span>
           </div>
           <div>
@@ -77,15 +77,15 @@ export default function UploadScreen({
               aria-pressed={mode === m.id}
               className={`group relative rounded-xl border p-4 text-left transition-all duration-200 ease-out ${
                 mode === m.id
-                  ? 'border-[rgba(16,185,129,0.50)] bg-[rgba(16,185,129,0.12)] shadow-[0_0_20px_-6px_rgba(16,185,129,0.50)]'
+                  ? 'border-[rgba(var(--primary-rgb),0.50)] bg-[rgba(var(--primary-rgb),0.12)] shadow-[0_0_20px_-6px_rgba(var(--primary-rgb),0.50)]'
                   : 'border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.03)] hover:border-[rgba(255,255,255,0.15)] hover:bg-[rgba(255,255,255,0.05)]'
               }`}
             >
               {mode === m.id && (
-                <div className="absolute right-3 top-3 h-1.5 w-1.5 rounded-full bg-[#10b981] shadow-[0_0_6px_rgba(16,185,129,0.9)]" />
+                <div className="absolute right-3 top-3 h-1.5 w-1.5 rounded-full bg-[var(--color-primary)] shadow-[0_0_6px_rgba(var(--primary-rgb),0.9)]" />
               )}
               <div className="text-xl mb-2">{m.icon}</div>
-              <div className={`text-sm font-semibold ${mode === m.id ? 'text-[#10b981]' : 'text-[rgba(255,255,255,0.80)]'}`}>
+              <div className={`text-sm font-semibold ${mode === m.id ? 'text-[var(--color-primary)]' : 'text-[rgba(255,255,255,0.80)]'}`}>
                 {m.label}
               </div>
               <div className="mt-0.5 text-xs text-[rgba(255,255,255,0.40)]">{m.desc}</div>
@@ -111,8 +111,8 @@ export default function UploadScreen({
                     <div className="flex items-center gap-3">
                       <div className={`flex h-10 w-10 items-center justify-center rounded-lg text-xs font-bold ${
                         img.kind === 'sar'
-                          ? 'bg-[rgba(134,239,172,0.15)] text-[#86efac] border border-[rgba(134,239,172,0.25)]'
-                          : 'bg-[rgba(16,185,129,0.15)] text-[#10b981] border border-[rgba(16,185,129,0.25)]'
+                          ? 'bg-[rgba(var(--cyan-rgb),0.15)] text-[var(--color-cyan)] border border-[rgba(var(--cyan-rgb),0.25)]'
+                          : 'bg-[rgba(var(--primary-rgb),0.15)] text-[var(--color-primary)] border border-[rgba(var(--primary-rgb),0.25)]'
                       }`}>
                         {img.kind === 'sar' ? 'SAR' : 'OPT'}
                       </div>
@@ -141,8 +141,8 @@ export default function UploadScreen({
                     onDrop={(e) => { e.preventDefault(); setDragging(false); handleFiles(e.dataTransfer.files) }}
                     className={`flex h-32 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed p-3 text-center transition-all duration-200 ease-out ${
                       dragging
-                        ? 'border-[#10b981] bg-[rgba(16,185,129,0.10)] shadow-[0_0_20px_-4px_rgba(16,185,129,0.40)]'
-                        : 'border-[rgba(255,255,255,0.12)] bg-[rgba(255,255,255,0.02)] hover:border-[rgba(16,185,129,0.40)] hover:bg-[rgba(16,185,129,0.06)]'
+                        ? 'border-[var(--color-primary)] bg-[rgba(var(--primary-rgb),0.10)] shadow-[0_0_20px_-4px_rgba(var(--primary-rgb),0.40)]'
+                        : 'border-[rgba(255,255,255,0.12)] bg-[rgba(255,255,255,0.02)] hover:border-[rgba(var(--primary-rgb),0.40)] hover:bg-[rgba(var(--primary-rgb),0.06)]'
                     }`}
                   >
                     <div className={`text-2xl transition-transform duration-200 ${dragging ? 'scale-125' : ''}`}>
@@ -165,7 +165,7 @@ export default function UploadScreen({
 
         <div className="mt-5 flex items-center justify-between">
           <p className="text-xs text-[rgba(255,255,255,0.35)]">
-            <span className={`font-semibold ${images.length >= required ? 'text-[#10b981]' : 'text-[rgba(255,255,255,0.50)]'}`}>
+            <span className={`font-semibold ${images.length >= required ? 'text-[var(--color-primary)]' : 'text-[rgba(255,255,255,0.50)]'}`}>
               {images.length}
             </span>
             <span>/{required} files ready</span>
@@ -188,14 +188,14 @@ export default function UploadScreen({
           <button
             key={s.id}
             onClick={() => onRunScenario(s)}
-            className="group w-full rounded-xl border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.03)] p-4 text-left transition-all duration-200 ease-out hover:border-[rgba(101,163,13,0.35)] hover:bg-[rgba(101,163,13,0.07)] hover:shadow-[0_0_20px_-8px_rgba(101,163,13,0.40)] active:scale-[0.99]"
+            className="group w-full rounded-xl border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.03)] p-4 text-left transition-all duration-200 ease-out hover:border-[rgba(var(--violet-rgb),0.35)] hover:bg-[rgba(var(--violet-rgb),0.07)] hover:shadow-[0_0_20px_-8px_rgba(var(--violet-rgb),0.40)] active:scale-[0.99]"
           >
             <div className="text-sm font-semibold text-[rgba(255,255,255,0.85)] group-hover:text-white transition-colors">
               {s.title}
             </div>
             <div className="mt-0.5 text-xs text-[rgba(255,255,255,0.40)]">{s.subtitle}</div>
-            <div className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-[rgba(101,163,13,0.30)] bg-[rgba(101,163,13,0.12)] px-2.5 py-1 text-[11px] font-semibold text-[#65a30d]">
-              <span className="h-1 w-1 rounded-full bg-[#65a30d]" />
+            <div className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-[rgba(var(--violet-rgb),0.30)] bg-[rgba(var(--violet-rgb),0.12)] px-2.5 py-1 text-[11px] font-semibold text-[var(--color-violet)]">
+              <span className="h-1 w-1 rounded-full bg-[var(--color-violet)]" />
               {MODE_LABEL[s.mode]}
             </div>
           </button>

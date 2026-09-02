@@ -8,15 +8,15 @@
    ============================================================ */
 @theme {
   /* Brand + accent colors */
-  --color-primary: #10b981;
-  --color-primary-dark: #059669;
-  --color-primary-50: rgba(16, 185, 129, 0.12);
-  --color-primary-glow: rgba(16, 185, 129, 0.35);
-  --color-violet: #65a30d;
-  --color-violet-50: rgba(101, 163, 13, 0.12);
-  --color-cyan: #86efac;
-  --color-cyan-50: rgba(134, 239, 172, 0.12);
-  --color-green: #10b981;
+  --color-primary: var(--primary);
+  --color-primary-dark: var(--primary-dark);
+  --color-primary-50: var(--primary-50);
+  --color-primary-glow: var(--primary-glow);
+  --color-violet: var(--violet);
+  --color-violet-50: var(--violet-50);
+  --color-cyan: var(--cyan);
+  --color-cyan-50: var(--cyan-50);
+  --color-green: var(--primary);
   --color-amber: #d97706;
   --color-red: #ef4444;
   --color-warning: #f59e0b;
@@ -32,8 +32,8 @@
   --color-ink-400: rgba(255, 255, 255, 0.30);
 
   /* Surfaces */
-  --color-surface: #0a0f0d;
-  --color-surface-50: #0f1612;
+  --color-surface: var(--surface);
+  --color-surface-50: var(--surface-50);
   --color-surface-100: rgba(255, 255, 255, 0.04);
   --color-surface-200: rgba(255, 255, 255, 0.07);
   --color-edge: rgba(255, 255, 255, 0.10);
@@ -56,8 +56,88 @@
 
   /* Elevation (glow-based in dark theme) */
   --shadow-card: 0 0 0 1px rgba(255,255,255,0.08), 0 4px 24px rgba(0,0,0,0.6);
-  --shadow-glow-blue: 0 0 40px -8px rgba(16, 185, 129, 0.50);
-  --shadow-glow-violet: 0 0 40px -8px rgba(101, 163, 13, 0.45);
+  --shadow-glow-blue: 0 0 40px -8px var(--primary-glow);
+  --shadow-glow-violet: 0 0 40px -8px var(--violet-50);
+}
+
+:root, [data-theme="neon-flora"] {
+  --primary: #a3e635;
+  --primary-dark: #84cc16;
+  --primary-50: rgba(163, 230, 53, 0.15);
+  --primary-glow: rgba(163, 230, 53, 0.40);
+  --primary-rgb: 163, 230, 53;
+  --violet: #14b8a6;
+  --violet-50: rgba(20, 184, 166, 0.15);
+  --violet-rgb: 20, 184, 166;
+  --cyan: #fde047;
+  --cyan-50: rgba(253, 224, 71, 0.15);
+  --cyan-rgb: 253, 224, 71;
+  --surface: #000000;
+  --surface-50: #080808;
+}
+
+[data-theme="forest-canopy"] {
+  --primary: #10b981;
+  --primary-dark: #059669;
+  --primary-50: rgba(16, 185, 129, 0.12);
+  --primary-glow: rgba(16, 185, 129, 0.35);
+  --primary-rgb: 16, 185, 129;
+  --violet: #65a30d;
+  --violet-50: rgba(101, 163, 13, 0.12);
+  --violet-rgb: 101, 163, 13;
+  --cyan: #86efac;
+  --cyan-50: rgba(134, 239, 172, 0.12);
+  --cyan-rgb: 134, 239, 172;
+  --surface: #0a0f0d;
+  --surface-50: #0f1612;
+}
+
+[data-theme="olive-sage"] {
+  --primary: #4d7c0f;
+  --primary-dark: #3f6212;
+  --primary-50: rgba(77, 124, 15, 0.12);
+  --primary-glow: rgba(77, 124, 15, 0.35);
+  --primary-rgb: 77, 124, 15;
+  --violet: #86efac;
+  --violet-50: rgba(134, 239, 172, 0.12);
+  --violet-rgb: 134, 239, 172;
+  --cyan: #d9f99d;
+  --cyan-50: rgba(217, 249, 157, 0.12);
+  --cyan-rgb: 217, 249, 157;
+  --surface: #1c1917;
+  --surface-50: #292524;
+}
+
+[data-theme="mint-pine"] {
+  --primary: #0f766e;
+  --primary-dark: #115e59;
+  --primary-50: rgba(15, 118, 110, 0.12);
+  --primary-glow: rgba(15, 118, 110, 0.35);
+  --primary-rgb: 15, 118, 110;
+  --violet: #6ee7b7;
+  --violet-50: rgba(110, 231, 183, 0.12);
+  --violet-rgb: 110, 231, 183;
+  --cyan: #99f6e4;
+  --cyan-50: rgba(153, 246, 228, 0.12);
+  --cyan-rgb: 153, 246, 228;
+  --surface: #111827;
+  --surface-50: #1f2937;
+}
+
+[data-theme="jungle-night"] {
+  --primary: #14b8a6;
+  --primary-dark: #0f766e;
+  --primary-50: rgba(20, 184, 166, 0.15);
+  --primary-glow: rgba(20, 184, 166, 0.40);
+  --primary-rgb: 20, 184, 166;
+  --violet: #22c55e;
+  --violet-50: rgba(34, 197, 94, 0.15);
+  --violet-rgb: 34, 197, 94;
+  --cyan: #84cc16;
+  --cyan-50: rgba(132, 204, 22, 0.15);
+  --cyan-rgb: 132, 204, 22;
+  --surface: #022c22;
+  --surface-50: #064e3b;
 }
 
 html,
@@ -67,7 +147,7 @@ body,
 }
 
 body {
-  background: #0a0f0d;
+  background: var(--surface);
   color: rgba(255, 255, 255, 0.85);
   font-family: var(--font-sans);
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
@@ -147,15 +227,15 @@ h3 {
 }
 
 .glass-btn-primary {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
   color: #ffffff;
-  border-color: rgba(16, 185, 129, 0.5);
-  box-shadow: 0 0 28px -4px rgba(16, 185, 129, 0.55), inset 0 1px 0 rgba(255,255,255,0.20);
+  border-color: rgba(var(--primary-rgb), 0.5);
+  box-shadow: 0 0 28px -4px rgba(var(--primary-rgb), 0.55), inset 0 1px 0 rgba(255,255,255,0.20);
 }
 
 .glass-btn-primary:hover:not(:disabled) {
   transform: translateY(-1px) scale(1.02);
-  box-shadow: 0 0 40px -4px rgba(16, 185, 129, 0.70), inset 0 1px 0 rgba(255,255,255,0.25);
+  box-shadow: 0 0 40px -4px rgba(var(--primary-rgb), 0.70), inset 0 1px 0 rgba(255,255,255,0.25);
 }
 
 .glass-btn-primary:active:not(:disabled) {
@@ -204,9 +284,9 @@ h3 {
   pointer-events: none;
   z-index: 0;
   background:
-    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(16, 185, 129, 0.13) 0%, transparent 70%),
-    radial-gradient(ellipse 60% 40% at 100% 50%, rgba(101, 163, 13, 0.07) 0%, transparent 70%),
-    radial-gradient(ellipse 60% 40% at 0% 50%, rgba(134, 239, 172, 0.06) 0%, transparent 70%);
+    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(var(--primary-rgb), 0.13) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 100% 50%, rgba(var(--violet-rgb), 0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 0% 50%, rgba(var(--cyan-rgb), 0.06) 0%, transparent 70%);
 }
 
 /* ============================================================
@@ -226,13 +306,13 @@ h3 {
 .leaflet-container {
   width: 100%;
   height: 100%;
-  background: #0f1612;
+  background: var(--surface-50);
   font-family: var(--font-sans);
 }
 
 .leaflet-popup-content-wrapper {
   border-radius: var(--radius-card);
-  background: rgba(15, 22, 18, 0.92);
+  background: var(--surface);
   border: 1px solid rgba(255,255,255,0.12);
   color: rgba(255,255,255,0.85);
   backdrop-filter: blur(12px);
@@ -244,7 +324,7 @@ h3 {
 }
 
 .leaflet-popup-tip {
-  background: rgba(15, 22, 18, 0.92);
+  background: var(--surface);
 }
 
 /* ============================================================
@@ -279,8 +359,8 @@ h3 {
 
 /* Pulsing neon ring animation */
 @keyframes neon-pulse {
-  0%, 100% { box-shadow: 0 0 12px 2px rgba(16, 185, 129, 0.5); }
-  50% { box-shadow: 0 0 28px 6px rgba(16, 185, 129, 0.8), 0 0 60px 12px rgba(101, 163, 13, 0.3); }
+  0%, 100% { box-shadow: 0 0 12px 2px rgba(var(--primary-rgb), 0.5); }
+  50% { box-shadow: 0 0 28px 6px rgba(var(--primary-rgb), 0.8), 0 0 60px 12px rgba(var(--violet-rgb), 0.3); }
 }
 
 @keyframes spin-neon {
