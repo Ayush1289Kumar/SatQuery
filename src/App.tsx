@@ -12,6 +12,7 @@ import StateCityPanel from './components/StateCityPanel'
 import AIQuerySuggestions from './components/AIQuerySuggestions'
 import CategoryPage from './components/CategoryPage'
 import { INDIA_STATES } from './data/indiaMockData'
+import { Satellite, Microscope } from 'lucide-react'
 
 type Step = 'upload' | 'ask' | 'analyzing' | 'results'
 
@@ -280,15 +281,15 @@ function HeroSection() {
 
           <div className="mt-6 flex flex-wrap gap-2">
             {[
-              { icon: '🛰', label: 'Multi-spectral', color: 'var(--color-primary-50)', border: 'var(--color-primary-glow)', text: 'var(--color-primary)' },
-              { icon: '🔬', label: 'Sub-meter res.', color: 'var(--color-violet-50)', border: 'var(--color-violet-50)', text: 'var(--color-violet)' },
+              { icon: Satellite, label: 'Multi-spectral', color: 'var(--color-primary-50)', border: 'var(--color-primary-glow)', text: 'var(--color-primary)' },
+              { icon: Microscope, label: 'Sub-meter res.', color: 'var(--color-violet-50)', border: 'var(--color-violet-50)', text: 'var(--color-violet)' },
             ].map((s) => (
               <span
                 key={s.label}
-                className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold"
+                className="inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs font-semibold"
                 style={{ background: s.color, borderColor: s.border, color: s.text }}
               >
-                <span>{s.icon}</span>
+                <s.icon className="w-3.5 h-3.5" />
                 {s.label}
               </span>
             ))}

@@ -1,4 +1,5 @@
 import type { Category } from './CategoryPanel'
+import { BarChart3 } from 'lucide-react'
 
 interface CategoryPageProps {
   category: Category;
@@ -49,8 +50,8 @@ export default function CategoryPage({ category }: CategoryPageProps) {
             Viewing specialized metrics and AI analysis tools for {titleMap[category]}.
           </p>
         </div>
-        <div className="h-16 w-16 rounded-full bg-[var(--color-primary-50)] border border-[var(--color-primary)] flex items-center justify-center shadow-[0_0_30px_var(--color-primary-glow)]">
-          <span className="text-2xl text-[var(--color-primary)]">📊</span>
+        <div className="h-14 w-14 rounded-md bg-[var(--color-primary-50)] border border-[var(--color-primary)] flex items-center justify-center shadow-[0_4px_20px_var(--color-primary-glow)]">
+          <BarChart3 className="w-6 h-6 text-[var(--color-primary)]" />
         </div>
       </div>
 
