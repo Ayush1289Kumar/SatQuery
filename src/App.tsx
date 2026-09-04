@@ -5,13 +5,19 @@ import UploadScreen from './components/UploadScreen'
 import AskScreen from './components/AskScreen'
 import AnalyzingScreen from './components/AnalyzingScreen'
 import ResultsScreen from './components/ResultsScreen'
-import GlobeHero from './components/GlobeHero'
 import Reveal from './components/Reveal'
+import CategoryPanel, { type Category } from './components/CategoryPanel'
+import IndiaMapHero from './components/IndiaMapHero'
+import StateCityPanel from './components/StateCityPanel'
+import AIQuerySuggestions from './components/AIQuerySuggestions'
+import CategoryPage from './components/CategoryPage'
+import { INDIA_STATES } from './data/indiaMockData'
 
 type Step = 'upload' | 'ask' | 'analyzing' | 'results'
 
 export default function App() {
   const [theme, setTheme] = useState('neon-flora')
+  const [activeCategory, setActiveCategory] = useState<Category>('home')
   const [step, setStep] = useState<Step>('upload')
   const [mode, setMode] = useState<UploadMode>('twoDate')
   const [images, setImages] = useState<UploadedImage[]>([])
@@ -86,17 +92,33 @@ export default function App() {
       <main id="main" className="relative z-10 mx-auto w-full max-w-6xl flex-1 px-4 pb-16 pt-6">
         {step === 'upload' && (
           <Reveal>
-            <HeroSection theme={theme} />
-            <div className="mt-8">
-              <UploadScreen
-                mode={mode}
-                images={images}
-                onSelectMode={setMode}
-                onAddImages={(imgs) => setImages(imgs)}
-                onRemoveImage={(id) => setImages((prev) => prev.filter((i) => i.id !== id))}
-                onContinue={goAsk}
-                onRunScenario={runScenario}
-              />
+            <CategoryPanel activeCategory={activeCategory} onCategoryChange={setActiveCategory} />
+            {activeCategory === 'home' ? (
+              <HeroSection />
+            ) : (
+              <CategoryPage category={activeCategory} />
+            )}
+            <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div className="lg:col-span-2">
+                <UploadScreen
+                  mode={mode}
+                  images={images}
+                  onSelectMode={setMode}
+                  onAddImages={(imgs) => setImages(imgs)}
+                  onRemoveImage={(id) => setImages((prev) => prev.filter((i) => i.id !== id))}
+                  onContinue={goAsk}
+                  onRunScenario={runScenario}
+                />
+              </div>
+              <div className="lg:col-span-1">
+                <AIQuerySuggestions 
+                  activeCategory={activeCategory} 
+                  onSuggestionClick={(q) => { 
+                    setQuestion(q); 
+                    setStep('ask'); 
+                  }} 
+                />
+              </div>
             </div>
           </Reveal>
         )}
@@ -165,101 +187,6 @@ function Header({ theme, onThemeChange }: { theme: string, onThemeChange: (t: st
   )
 }
 
-/** Hero section: globe fills a wide full-row strip below the copy on mobile,
- *  and sits beside it on desktop — always contained within overflow-hidden. */
-function HeroSection({ theme }: { theme: string }) {
-  return (
-    <section className="relative overflow-hidden rounded-2xl border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.02)]">
-      {/* Subtle gradient backdrop */}
-      <div
-        aria-hidden
-        className="absolute inset-0 bg-gradient-to-br from-[rgba(101,163,13,0.10)] via-transparent to-[rgba(16,185,129,0.08)]"
-      />
-      {/* Grid pattern overlay */}
-      <div
-        aria-hidden
-        className="absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage: 'linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)',
-          backgroundSize: '48px 48px',
-        }}
-      />
-
-      {/*
-        Layout:
-        - mobile / tablet (<lg):  copy stacked on top, then globe taking up 560px below
-        - desktop (≥lg):  two-column side-by-side, globe column is wider (1.3fr)
-      */}
-      <div className="relative flex flex-col lg:grid lg:grid-cols-[1fr_1.3fr] lg:items-center">
-        {/* Left: copy */}
-        <div className="px-8 py-10 sm:px-10 sm:py-12 lg:py-14">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[var(--color-violet-50)] bg-[var(--color-violet-50)] px-3 py-1 text-xs font-semibold uppercase tracking-widest text-[var(--color-violet)]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-violet)] animate-pulse" />
-            Satellite Image Q&A
-          </div>
-          <h1 className="mt-4 max-w-xl text-3xl font-semibold leading-tight sm:text-4xl lg:text-[2.6rem]">
-            Ask satellite imagery{' '}
-            <em className="not-italic text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-violet)]">
-              in plain English
-            </em>{' '}
-            — see the evidence on the map.
-          </h1>
-          <p className="mt-4 max-w-lg text-sm leading-relaxed text-[rgba(255,255,255,0.55)]">
-            Upload one image, a dated pair, or an optical + SAR combo. We route your
-            question to the right model and show you highlighted map proof alongside
-            a clear answer.
-          </p>
-
-          {/* Stat pills */}
-          <div className="mt-8 flex flex-wrap gap-3">
-            {[
-              { icon: '🛰', label: 'Multi-spectral', color: 'var(--color-primary-50)', border: 'var(--color-primary-glow)', text: 'var(--color-primary)' },
-              { icon: '🔬', label: 'Sub-meter res.', color: 'var(--color-violet-50)', border: 'var(--color-violet-50)', text: 'var(--color-violet)' },
-              { icon: '⚡', label: '<10s latency', color: 'var(--color-cyan-50)', border: 'var(--color-cyan-50)', text: 'var(--color-cyan)' },
-            ].map((s) => (
-              <span
-                key={s.label}
-                className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold"
-                style={{ background: s.color, borderColor: s.border, color: s.text }}
-              >
-                <span>{s.icon}</span>
-                {s.label}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        {/* Right: globe — 560px on mobile/tablet, 680px on desktop, always inside card */}
-        <div className="relative h-[560px] lg:h-[680px]">
-          <GlobeHero className="h-full w-full" theme={theme} />
-        </div>
-      </div>
-    </section>
-  )
-}
-
-function Footer() {
-  return (
-    <footer className="relative z-10 border-t border-[rgba(255,255,255,0.07)] bg-[rgba(0,0,0,0.50)] px-4 py-5">
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between">
-        <span className="text-xs text-[rgba(255,255,255,0.30)]">
-          SatQuery AI — demo prototype. Results are simulated and not for operational use.
-        </span>
-        <span className="text-xs text-[rgba(255,255,255,0.20)]">© 2024</span>
-      </div>
-    </footer>
-  )
-}
-
-function SatIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true" className="text-white">
-      <path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z" />
-      <circle cx="12" cy="12" r="3" />
-    </svg>
-  )
-}
-
 function ThemeSwitcher({ theme, onThemeChange }: { theme: string, onThemeChange: (t: string) => void }) {
   const [isOpen, setIsOpen] = useState(false);
   const themes = [
@@ -308,4 +235,108 @@ function ThemeSwitcher({ theme, onThemeChange }: { theme: string, onThemeChange:
       )}
     </div>
   );
+}
+
+function HeroSection() {
+  const [selectedStateId, setSelectedStateId] = useState<string | null>(null);
+  const [selectedCityId, setSelectedCityId] = useState<string | null>(null);
+
+  const activeCity = INDIA_STATES.flatMap(s => s.cities).find(c => c.id === selectedCityId) || null;
+
+  return (
+    <section className="relative overflow-hidden rounded-2xl border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.02)]">
+      {/* Subtle gradient backdrop */}
+      <div
+        aria-hidden
+        className="absolute inset-0 bg-gradient-to-br from-[rgba(var(--primary-rgb),0.10)] via-transparent to-[rgba(var(--violet-rgb),0.08)]"
+      />
+      {/* Grid pattern overlay */}
+      <div
+        aria-hidden
+        className="absolute inset-0 opacity-[0.03]"
+        style={{
+          backgroundImage: 'linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)',
+          backgroundSize: '48px 48px',
+        }}
+      />
+
+      <div className="relative flex flex-col lg:grid lg:grid-cols-[1fr_1fr_1fr] lg:items-stretch min-h-[500px]">
+        {/* Left: copy */}
+        <div className="px-6 py-8 sm:px-8 sm:py-10 flex flex-col justify-center">
+          <div className="inline-flex self-start items-center gap-2 rounded-full border border-[var(--color-violet-50)] bg-[var(--color-violet-50)] px-3 py-1 text-xs font-semibold uppercase tracking-widest text-[var(--color-violet)]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-violet)] animate-pulse" />
+            India Analytics
+          </div>
+          <h1 className="mt-4 text-2xl font-semibold leading-tight sm:text-3xl lg:text-[2.2rem]">
+            Ask satellite imagery{' '}
+            <em className="not-italic text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-violet)]">
+              in plain English
+            </em>{' '}
+            — see the evidence on the map.
+          </h1>
+          <p className="mt-4 text-sm leading-relaxed text-[rgba(255,255,255,0.55)]">
+            Upload images or run a query. We route your question to the right AI model and show you highlighted map proof alongside a clear answer for regions across India.
+          </p>
+
+          <div className="mt-6 flex flex-wrap gap-2">
+            {[
+              { icon: '🛰', label: 'Multi-spectral', color: 'var(--color-primary-50)', border: 'var(--color-primary-glow)', text: 'var(--color-primary)' },
+              { icon: '🔬', label: 'Sub-meter res.', color: 'var(--color-violet-50)', border: 'var(--color-violet-50)', text: 'var(--color-violet)' },
+            ].map((s) => (
+              <span
+                key={s.label}
+                className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold"
+                style={{ background: s.color, borderColor: s.border, color: s.text }}
+              >
+                <span>{s.icon}</span>
+                {s.label}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Middle: Map */}
+        <div className="relative p-2 sm:p-4 border-y lg:border-y-0 lg:border-x border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.02)] min-h-[300px]">
+          <IndiaMapHero 
+            selectedCityId={selectedCityId} 
+            onCitySelect={setSelectedCityId}
+            selectedStateId={selectedStateId}
+          />
+        </div>
+
+        {/* Right: State/City Panel */}
+        <div className="relative bg-[rgba(255,255,255,0.01)] min-h-[300px]">
+          <StateCityPanel
+            selectedStateId={selectedStateId}
+            onStateSelect={setSelectedStateId}
+            selectedCityId={selectedCityId}
+            onCitySelect={setSelectedCityId}
+            activeCity={activeCity}
+          />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function Footer() {
+  return (
+    <footer className="relative z-10 border-t border-[rgba(255,255,255,0.07)] bg-[rgba(0,0,0,0.50)] px-4 py-5">
+      <div className="mx-auto flex w-full max-w-6xl items-center justify-between">
+        <span className="text-xs text-[rgba(255,255,255,0.30)]">
+          SatQuery AI — demo prototype. Results are simulated and not for operational use.
+        </span>
+        <span className="text-xs text-[rgba(255,255,255,0.20)]">© 2024</span>
+      </div>
+    </footer>
+  )
+}
+
+function SatIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true" className="text-white">
+      <path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  )
 }
