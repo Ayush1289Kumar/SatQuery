@@ -195,7 +195,9 @@ function ThemeSwitcher({ theme, onThemeChange }: { theme: string, onThemeChange:
     { id: 'forest-canopy', name: 'Forest Canopy' },
     { id: 'olive-sage', name: 'Olive & Sage' },
     { id: 'mint-pine', name: 'Mint & Pine' },
-    { id: 'jungle-night', name: 'Jungle Night' }
+    { id: 'jungle-night', name: 'Jungle Night' },
+    { id: 'aqua-teal', name: 'Aqua Teal' },
+    { id: 'moss-forestry', name: 'Moss Forestry' }
   ];
   const activeName = themes.find(t => t.id === theme)?.name || 'Theme';
 
