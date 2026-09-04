@@ -6,6 +6,11 @@ interface AIQuerySuggestionsProps {
 }
 
 const SUGGESTIONS: Record<Category, string[]> = {
+  home: [
+    "Analyze overall vegetation changes in India over the past year.",
+    "Highlight major infrastructure developments across states.",
+    "Show national water resource levels and anomaly zones."
+  ],
   agriculture: [
     "Analyze crop yield patterns in Punjab over the last 3 years.",
     "Show me vegetation index changes in Maharashtra during monsoon.",

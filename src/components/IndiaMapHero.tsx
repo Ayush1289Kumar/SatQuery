@@ -4,7 +4,6 @@ import { INDIA_STATES, type CityData } from '../data/indiaMockData';
 const geoUrl = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
 
 interface IndiaMapHeroProps {
-  theme: string;
   className?: string;
   selectedCityId: string | null;
   onCitySelect: (cityId: string | null) => void;
