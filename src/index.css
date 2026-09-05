@@ -1,6 +1,8 @@
+
 @import "tailwindcss";
 @import "@fontsource-variable/inter";
 @import "@fontsource-variable/playfair-display";
+@import "@fontsource-variable/fraunces";
 
 /* ============================================================
    SatQuery AI — design tokens (Forest Canopy theme)
@@ -47,7 +49,7 @@
   /* Typography */
   --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system,
     "Segoe UI", Roboto, sans-serif;
-  --font-display: "Playfair Display Variable", Georgia, ui-serif, serif;
+  --font-display: "Fraunces Variable", "Playfair Display Variable", Georgia, ui-serif, serif;
   --font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 
   /* Radius */

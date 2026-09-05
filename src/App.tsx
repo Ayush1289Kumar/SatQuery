@@ -7,19 +7,38 @@ import AnalyzingScreen from './components/AnalyzingScreen'
 import ResultsScreen from './components/ResultsScreen'
 import Reveal from './components/Reveal'
 import CategoryPanel, { type Category } from './components/CategoryPanel'
-import IndiaMapHero from './components/IndiaMapHero'
+import RegionMap from './components/RegionMap'
 import StateCityPanel from './components/StateCityPanel'
+import AmbientCanvas from './components/AmbientCanvas'
 import AIQuerySuggestions from './components/AIQuerySuggestions'
 import CategoryPage from './components/CategoryPage'
+import LandingMap from './components/LandingMap'
 import { INDIA_STATES } from './data/indiaMockData'
 import { Satellite, Microscope } from 'lucide-react'
 
-type Step = 'upload' | 'ask' | 'analyzing' | 'results'
+type Step = 'landing' | 'upload' | 'ask' | 'analyzing' | 'results'
+
+// Each category gets its own palette pulled from the existing theme set:
+// earthy tones for land-facing categories, dusty misty blue for water/flood.
+const CATEGORY_THEME: Record<Category, string> = {
+  home: 'moss-forestry',
+  agriculture: 'olive-sage',
+  forest: 'forest-canopy',
+  disaster: 'aqua-teal',
+  water: 'aqua-teal',
+  urban: 'mint-pine',
+  infrastructure: 'jungle-night',
+}
 
 export default function App() {
-  const [theme, setTheme] = useState('neon-flora')
+  const [theme, setTheme] = useState('moss-forestry')
   const [activeCategory, setActiveCategory] = useState<Category>('home')
-  const [step, setStep] = useState<Step>('upload')
+
+  const selectCategory = (cat: Category) => {
+    setActiveCategory(cat)
+    setTheme(CATEGORY_THEME[cat])
+  }
+  const [step, setStep] = useState<Step>('landing')
   const [mode, setMode] = useState<UploadMode>('twoDate')
   const [images, setImages] = useState<UploadedImage[]>([])
   const [question, setQuestion] = useState('')
@@ -88,12 +107,14 @@ export default function App() {
         Skip to content
       </a>
 
-      <Header theme={theme} onThemeChange={setTheme} />
+      {step !== 'landing' && <Header theme={theme} onThemeChange={setTheme} />}
 
-      <main id="main" className="relative z-10 mx-auto w-full max-w-6xl flex-1 px-4 pb-16 pt-6">
+      {step === 'landing' && <LandingMap onGetStarted={() => setStep('upload')} />}
+
+      <main id="main" className={step === 'landing' ? 'hidden' : "relative z-10 mx-auto w-full max-w-6xl flex-1 px-4 pb-16 pt-6"}>
         {step === 'upload' && (
           <Reveal>
-            <CategoryPanel activeCategory={activeCategory} onCategoryChange={setActiveCategory} />
+            <CategoryPanel activeCategory={activeCategory} onCategoryChange={selectCategory} />
             {activeCategory === 'home' ? (
               <HeroSection />
             ) : (
@@ -145,7 +166,7 @@ export default function App() {
         )}
       </main>
 
-      <Footer />
+      {step !== 'landing' && <Footer />}
     </div>
   )
 }
@@ -248,6 +269,9 @@ function HeroSection() {
 
   return (
     <section className="relative overflow-hidden rounded-2xl border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.02)]">
+      {/* Animated aurora backdrop — drifting earthy blobs, already built, just wired in here */}
+      <AmbientCanvas />
+
       {/* Subtle gradient backdrop */}
       <div
         aria-hidden
@@ -263,25 +287,31 @@ function HeroSection() {
         }}
       />
 
-      <div className="relative flex flex-col lg:grid lg:grid-cols-[1fr_1fr_1fr] lg:items-stretch min-h-[500px]">
-        {/* Left: copy */}
-        <div className="px-6 py-8 sm:px-8 sm:py-10 flex flex-col justify-center">
+      <div className="relative flex flex-col gap-8 px-6 py-8 sm:px-8 sm:py-10">
+        {/* Top: intro copy, full width */}
+        <Reveal className="reveal-stagger flex max-w-3xl flex-col gap-4" as="div">
           <div className="inline-flex self-start items-center gap-2 rounded-full border border-[var(--color-violet-50)] bg-[var(--color-violet-50)] px-3 py-1 text-xs font-semibold uppercase tracking-widest text-[var(--color-violet)]">
             <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-violet)] animate-pulse" />
             India Analytics
           </div>
-          <h1 className="mt-4 text-2xl font-semibold leading-tight sm:text-3xl lg:text-[2.2rem]">
+          <h1 className="font-display text-2xl font-semibold leading-tight sm:text-3xl lg:text-[2.2rem]">
             Ask satellite imagery{' '}
-            <em className="not-italic text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-violet)]">
+            <em
+              className="not-italic bg-clip-text text-transparent"
+              style={{
+                backgroundImage: 'linear-gradient(90deg, var(--color-primary), var(--color-violet), var(--color-primary))',
+                backgroundSize: '200% auto',
+                animation: 'gradient-shift 6s ease infinite',
+              }}
+            >
               in plain English
             </em>{' '}
             — see the evidence on the map.
           </h1>
-          <p className="mt-4 text-sm leading-relaxed text-[rgba(255,255,255,0.55)]">
+          <p className="text-sm leading-relaxed text-[rgba(255,255,255,0.55)]">
             Upload images or run a query. We route your question to the right AI model and show you highlighted map proof alongside a clear answer for regions across India.
           </p>
-
-          <div className="mt-6 flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2">
             {[
               { icon: Satellite, label: 'Multi-spectral', color: 'var(--color-primary-50)', border: 'var(--color-primary-glow)', text: 'var(--color-primary)' },
               { icon: Microscope, label: 'Sub-meter res.', color: 'var(--color-violet-50)', border: 'var(--color-violet-50)', text: 'var(--color-violet)' },
@@ -296,32 +326,31 @@ function HeroSection() {
               </span>
             ))}
           </div>
-        </div>
+        </Reveal>
 
-        {/* Middle: Map */}
-        <div className="relative p-2 sm:p-4 border-y lg:border-y-0 lg:border-x border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.02)] min-h-[300px]">
-          <IndiaMapHero 
-            selectedCityId={selectedCityId} 
-            onCitySelect={setSelectedCityId}
-            selectedStateId={selectedStateId}
-          />
-        </div>
+        {/* Bottom: map (left, larger) + region panel (right) */}
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1.4fr_1fr] lg:items-stretch">
+          <Reveal
+            delay={80}
+            className="animate-float relative min-h-[360px] overflow-hidden rounded-xl border border-[rgba(255,255,255,0.08)] lg:min-h-[440px]"
+          >
+            <RegionMap activeCity={activeCity} />
+          </Reveal>
 
-        {/* Right: State/City Panel */}
-        <div className="relative bg-[rgba(255,255,255,0.01)] min-h-[300px]">
-          <StateCityPanel
-            selectedStateId={selectedStateId}
-            onStateSelect={setSelectedStateId}
-            selectedCityId={selectedCityId}
-            onCitySelect={setSelectedCityId}
-            activeCity={activeCity}
-          />
+          <Reveal delay={160} className="relative min-h-[360px] lg:min-h-[440px]">
+            <StateCityPanel
+              selectedStateId={selectedStateId}
+              onStateSelect={setSelectedStateId}
+              selectedCityId={selectedCityId}
+              onCitySelect={setSelectedCityId}
+              activeCity={activeCity}
+            />
+          </Reveal>
         </div>
       </div>
     </section>
   )
 }
-
 function Footer() {
   return (
     <footer className="relative z-10 border-t border-[rgba(255,255,255,0.07)] bg-[rgba(0,0,0,0.50)] px-4 py-5">
@@ -343,3 +372,5 @@ function SatIcon() {
     </svg>
   )
 }
+
+

@@ -3,8 +3,8 @@ import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
 
 /**
  * Decorative animated aurora backdrop drawn on a plain 2D canvas.
- * Intentionally subtle (low-alpha radial blobs) so it stays calm on a light,
- * high-contrast surface. Paused (single static frame) under reduced motion.
+ * Intentionally subtle (low-alpha radial blobs) so it stays calm behind
+ * real content. Paused (single static frame) under reduced motion.
  * Accessible as decorative only — `aria-hidden`, never focusable.
  */
 export default function AmbientCanvas() {
@@ -53,7 +53,6 @@ export default function AmbientCanvas() {
     }
 
     if (reduced) {
-      // Single static frame, no animation loop.
       resize()
       draw(0)
       return
@@ -68,9 +67,7 @@ export default function AmbientCanvas() {
     }
     raf = requestAnimationFrame(loop)
 
-    const onResize = () => {
-      resize()
-    }
+    const onResize = () => resize()
     window.addEventListener('resize', onResize)
 
     return () => {
