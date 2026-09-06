@@ -12,8 +12,8 @@ Upload a satellite image, ask a question in plain English, and get a clear answe
 
 - **Ask in plain English** — no GIS expertise required; just upload an image and type your question.
 - **Map-based evidence** — answers are paired with an interactive map (Leaflet) so you can verify claims visually.
-- **Interactive 3D visuals** — Three.js-powered globe/scene elements for an immersive experience.
-- **Smooth, calm UI** — dark theme, smooth scrolling with Lenis, and responsive Tailwind CSS layout.
+- **Immersive 3D visuals** — Three.js-powered real-time terrain featuring a Materialization Hologram shader, LIDAR point-cloud particles, and cinematic fly-bys using `@react-three/drei` CameraControls.
+- **Premium UI & Smooth Scrolling** — Dark theme with "Vengeance UI" animated background grids, and buttery-smooth page scrolling physics powered by Lenis.
 
 ## 🧱 Tech Stack
 

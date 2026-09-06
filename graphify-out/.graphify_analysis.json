@@ -1,6 +1,116 @@
 {
   "communities": {
     "0": [
+      "src_app",
+      "src_app_app",
+      "src_app_category_theme",
+      "src_app_defaultresultfor",
+      "src_app_footer",
+      "src_app_header",
+      "src_app_herosection",
+      "src_app_step",
+      "src_components_askscreen",
+      "src_components_askscreen_askscreen",
+      "src_components_askscreen_askscreenprops",
+      "src_components_smoothscroll",
+      "src_components_smoothscroll_smoothscroll",
+      "src_components_smoothscroll_smoothscroll_raf",
+      "src_components_uploadscreen",
+      "src_components_uploadscreen_mode_label",
+      "src_components_uploadscreen_modes",
+      "src_components_uploadscreen_scenario_icon",
+      "src_components_uploadscreen_uploadscreen",
+      "src_components_uploadscreen_uploadscreenprops",
+      "src_data_mock",
+      "src_data_mock_builtnewring",
+      "src_data_mock_demo_location",
+      "src_data_mock_demo_scenarios",
+      "src_data_mock_demoscenario",
+      "src_data_mock_floodextendring",
+      "src_data_mock_floodnewring",
+      "src_data_mock_highlight_legend",
+      "src_data_mock_hil",
+      "src_data_mock_onedatescenario",
+      "src_data_mock_opticalsarscenario",
+      "src_data_mock_placeholder_images",
+      "src_data_mock_suggested_questions",
+      "src_data_mock_twodatescenario",
+      "src_data_mock_vegetationring",
+      "src_data_mock_waterring",
+      "src_lib_report",
+      "src_main",
+      "src_types",
+      "src_types_analysisresult",
+      "src_types_highlighttype",
+      "src_types_suggestedquestion",
+      "src_types_uploadedimage",
+      "src_types_uploadmode"
+    ],
+    "1": [
+      "fontsource_variable_fraunces",
+      "fontsource_variable_inter",
+      "fontsource_variable_playfair_display",
+      "leaflet",
+      "lenis",
+      "lucide_react",
+      "package_dependencies",
+      "package_dependencies_fontsource_variable_fraunces",
+      "package_dependencies_fontsource_variable_inter",
+      "package_dependencies_fontsource_variable_playfair_display",
+      "package_dependencies_leaflet",
+      "package_dependencies_lenis",
+      "package_dependencies_lucide_react",
+      "package_dependencies_react",
+      "package_dependencies_react_dom",
+      "package_dependencies_react_three_drei",
+      "package_dependencies_react_three_fiber",
+      "package_dependencies_simplex_noise",
+      "package_dependencies_studio_freight_lenis",
+      "package_dependencies_three",
+      "package_dependencies_types_three",
+      "react",
+      "react_dom",
+      "react_three_drei",
+      "react_three_fiber",
+      "simplex_noise",
+      "studio_freight_lenis",
+      "three",
+      "types_three"
+    ],
+    "2": [
+      "package",
+      "package_devdependencies",
+      "package_devdependencies_tailwindcss",
+      "package_devdependencies_tailwindcss_vite",
+      "package_devdependencies_types_leaflet",
+      "package_devdependencies_types_react",
+      "package_devdependencies_types_react_dom",
+      "package_devdependencies_typescript",
+      "package_devdependencies_vite",
+      "package_devdependencies_vitejs_plugin_react",
+      "package_name",
+      "package_private",
+      "package_scripts",
+      "package_scripts_build",
+      "package_scripts_dev",
+      "package_scripts_preview",
+      "package_type",
+      "package_version",
+      "tailwindcss",
+      "tailwindcss_vite",
+      "types_leaflet",
+      "types_react",
+      "types_react_dom",
+      "typescript",
+      "vite",
+      "vitejs_plugin_react"
+    ],
+    "3": [
+      "src_components_analyzingscreen",
+      "src_components_analyzingscreen_analyzingscreen",
+      "src_components_analyzingscreen_analyzingscreenprops",
+      "src_components_analyzingscreen_steps",
+      "src_components_analyzingscreen_waterstepbadge",
       "src_components_mapview",
       "src_components_mapview_mapview",
       "src_components_mapview_mapviewprops",
@@ -8,30 +118,22 @@
       "src_components_resultsscreen_layercolor",
       "src_components_resultsscreen_resultsscreen",
       "src_components_resultsscreen_resultsscreenprops",
-      "src_data_mock",
-      "src_data_mock_builtnewring",
-      "src_data_mock_demo_location",
-      "src_data_mock_floodextendring",
-      "src_data_mock_floodnewring",
+      "src_components_resultsscreen_water_legend_colors",
+      "src_components_ui",
+      "src_components_ui_badge",
+      "src_components_ui_badgeprops",
+      "src_components_ui_button",
+      "src_components_ui_buttonprops",
+      "src_components_ui_card",
+      "src_components_ui_cardprops",
+      "src_components_ui_stepbadge",
+      "src_components_ui_stepbadgeprops",
       "src_data_mock_highlight_colors",
-      "src_data_mock_highlight_legend",
-      "src_data_mock_hil",
-      "src_data_mock_onedatescenario",
-      "src_data_mock_opticalsarscenario",
-      "src_data_mock_placeholder_images",
-      "src_data_mock_twodatescenario",
-      "src_data_mock_vegetationring",
-      "src_data_mock_waterring",
-      "src_lib_report",
       "src_lib_report_downloadreport",
-      "src_types",
-      "src_types_analysisresult",
       "src_types_highlight",
-      "src_types_highlighttype",
-      "src_types_maplayer",
-      "src_types_suggestedquestion"
+      "src_types_maplayer"
     ],
-    "1": [
+    "4": [
       "ref_dom",
       "ref_dom_iterable",
       "ref_es2022",
@@ -57,50 +159,53 @@
       "tsconfig_app_compileroptions_verbatimmodulesyntax",
       "tsconfig_app_include"
     ],
-    "2": [
-      "src_components_askscreen",
-      "src_components_askscreen_askscreenprops",
-      "src_components_ui",
-      "src_components_ui_badge",
-      "src_components_ui_badgeprops",
-      "src_components_ui_button",
-      "src_components_ui_buttonprops",
-      "src_components_ui_card",
-      "src_components_ui_cardprops",
-      "src_components_ui_stepbadgeprops",
-      "src_components_uploadscreen",
-      "src_components_uploadscreen_mode_label",
-      "src_components_uploadscreen_modes",
-      "src_components_uploadscreen_uploadscreen",
-      "src_components_uploadscreen_uploadscreenprops",
-      "src_data_mock_demo_scenarios",
-      "src_data_mock_demoscenario",
-      "src_data_mock_suggested_questions",
-      "src_types_uploadedimage",
-      "src_types_uploadmode"
+    "5": [
+      "src_components_ambientcanvas",
+      "src_components_ambientcanvas_ambientcanvas",
+      "src_components_landinghero",
+      "src_components_landinghero_landinghero",
+      "src_components_landinghero_landingheroprops",
+      "src_components_logo",
+      "src_components_logo_buildbaseleaf",
+      "src_components_logo_buildglowtexture",
+      "src_components_logo_buildgridpositions",
+      "src_components_logo_buildoutline",
+      "src_components_logo_buildprotectiveleaf",
+      "src_components_logo_buildstar",
+      "src_components_logo_buildvein",
+      "src_components_logo_geoscene",
+      "src_components_logo_geosceneprops",
+      "src_components_logo_logo",
+      "src_components_logo_smoothstep",
+      "src_components_logo_wordmark",
+      "src_components_three_earthobservationscene_earthobservationscene",
+      "src_hooks_useprefersreducedmotion",
+      "src_hooks_useprefersreducedmotion_useprefersreducedmotion"
     ],
-    "3": [
-      "fontsource_variable_fraunces",
-      "fontsource_variable_plus_jakarta_sans",
-      "fontsource_variable_public_sans",
-      "leaflet",
-      "lenis",
-      "package_dependencies",
-      "package_dependencies_fontsource_variable_fraunces",
-      "package_dependencies_fontsource_variable_plus_jakarta_sans",
-      "package_dependencies_fontsource_variable_public_sans",
-      "package_dependencies_leaflet",
-      "package_dependencies_lenis",
-      "package_dependencies_react",
-      "package_dependencies_react_dom",
-      "package_dependencies_three",
-      "package_dependencies_types_three",
-      "react",
-      "react_dom",
-      "three",
-      "types_three"
+    "6": [
+      "src_components_regionmap",
+      "src_components_regionmap_approximatecityboundary",
+      "src_components_regionmap_boundarycache",
+      "src_components_regionmap_fetchcityboundary",
+      "src_components_regionmap_hashseed",
+      "src_components_regionmap_india_center",
+      "src_components_regionmap_mulberry32",
+      "src_components_regionmap_regionmap",
+      "src_components_regionmap_regionmapprops",
+      "src_components_statecitypanel",
+      "src_components_statecitypanel_statecitypanel",
+      "src_components_statecitypanel_statecitypanelprops",
+      "src_data_indiamockdata",
+      "src_data_indiamockdata_city",
+      "src_data_indiamockdata_citydata",
+      "src_data_indiamockdata_historicaldata",
+      "src_data_indiamockdata_india_states",
+      "src_data_indiamockdata_rawcity",
+      "src_data_indiamockdata_state",
+      "src_data_indiamockdata_statedata",
+      "src_data_indiamockdata_trend"
     ],
-    "4": [
+    "7": [
       "ref_es2023",
       "ref_vite_config_ts",
       "tsconfig_node",
@@ -121,96 +226,66 @@
       "tsconfig_node_compileroptions_verbatimmodulesyntax",
       "tsconfig_node_include"
     ],
-    "5": [
-      "src_app",
-      "src_app_app",
-      "src_app_defaultresultfor",
-      "src_app_footer",
-      "src_app_header",
-      "src_app_herosection",
-      "src_app_saticon",
-      "src_app_step",
-      "src_components_analyzingscreen",
-      "src_components_analyzingscreen_analyzingscreen",
-      "src_components_analyzingscreen_analyzingscreenprops",
-      "src_components_analyzingscreen_steps",
-      "src_components_askscreen_askscreen",
+    "8": [
+      "src_components_aiquerysuggestions",
+      "src_components_aiquerysuggestions_aiquerysuggestions",
+      "src_components_aiquerysuggestions_aiquerysuggestionsprops",
+      "src_components_aiquerysuggestions_suggestions",
+      "src_components_categorypage",
+      "src_components_categorypage_categorypage",
+      "src_components_categorypage_categorypageprops",
+      "src_components_categorypanel",
+      "src_components_categorypanel_categories",
+      "src_components_categorypanel_category",
+      "src_components_categorypanel_categorypanel",
+      "src_components_categorypanel_categorypanelprops",
       "src_components_reveal",
       "src_components_reveal_reveal",
       "src_components_reveal_revealprops",
-      "src_components_reveal_visibilitydelay",
-      "src_components_ui_stepbadge",
-      "src_main"
-    ],
-    "6": [
-      "package_devdependencies",
-      "package_devdependencies_tailwindcss",
-      "package_devdependencies_tailwindcss_vite",
-      "package_devdependencies_types_leaflet",
-      "package_devdependencies_types_react",
-      "package_devdependencies_types_react_dom",
-      "package_devdependencies_typescript",
-      "package_devdependencies_vite",
-      "package_devdependencies_vitejs_plugin_react",
-      "tailwindcss",
-      "tailwindcss_vite",
-      "types_leaflet",
-      "types_react",
-      "types_react_dom",
-      "typescript",
-      "vite",
-      "vitejs_plugin_react"
-    ],
-    "7": [
-      "package",
-      "package_name",
-      "package_private",
-      "package_scripts",
-      "package_scripts_build",
-      "package_scripts_dev",
-      "package_scripts_preview",
-      "package_type",
-      "package_version"
-    ],
-    "8": [
-      "src_components_globehero",
-      "src_components_globehero_globehero",
-      "src_components_globehero_makeglowtex",
-      "src_components_globehero_makeorbitline",
-      "src_components_globehero_metricdef",
-      "src_components_globehero_metrics",
-      "src_components_globehero_orbpos",
-      "src_components_globehero_ringdef",
-      "src_components_globehero_rings"
+      "src_components_reveal_visibilitydelay"
     ],
     "9": [
-      "src_components_ambientcanvas",
-      "src_components_ambientcanvas_ambientcanvas",
-      "src_hooks_useprefersreducedmotion",
-      "src_hooks_useprefersreducedmotion_useprefersreducedmotion"
+      "src_components_three_analysismarkers",
+      "src_components_three_analysismarkers_analysismarkers",
+      "src_components_three_analysismarkers_marker",
+      "src_components_three_analysismarkers_markerprops",
+      "src_components_three_earthobservationscene",
+      "src_components_three_earthobservationscene_scenesetup",
+      "src_components_three_terraintile",
+      "src_components_three_terraintile_dataparticles",
+      "src_components_three_terraintile_terraintile"
     ],
     "10": [
+      "replace_vars",
+      "replace_vars_dir",
+      "replace_vars_fs",
+      "replace_vars_path",
+      "replace_vars_processdir",
+      "replace_vars_replacements"
+    ],
+    "11": [
       "tsconfig",
       "tsconfig_files",
       "tsconfig_references"
     ],
-    "11": [
+    "12": [
       "vite_config"
     ]
   },
   "cohesion": {
-    "0": 0.1206896551724138,
-    "1": 0.08333333333333333,
-    "2": 0.1631578947368421,
-    "3": 0.10526315789473684,
-    "4": 0.10526315789473684,
-    "5": 0.13450292397660818,
-    "6": 0.11764705882352941,
-    "7": 0.2222222222222222,
-    "8": 0.3333333333333333,
-    "9": 0.8333333333333334,
-    "10": 0.6666666666666666,
-    "11": 1.0
+    "0": 0.07505285412262157,
+    "1": 0.06896551724137931,
+    "2": 0.07692307692307693,
+    "3": 0.10461538461538461,
+    "4": 0.08333333333333333,
+    "5": 0.15714285714285714,
+    "6": 0.14761904761904762,
+    "7": 0.10526315789473684,
+    "8": 0.16666666666666666,
+    "9": 0.2777777777777778,
+    "10": 0.3333333333333333,
+    "11": 0.6666666666666666,
+    "12": 1.0
   },
   "gods": [
     {
@@ -224,57 +299,90 @@
       "degree": 15
     },
     {
+      "id": "src_components_logo_geoscene",
+      "label": "GeoScene()",
+      "degree": 9
+    },
+    {
       "id": "src_types_uploadedimage",
       "label": "UploadedImage",
-      "degree": 11
+      "degree": 8
     },
     {
       "id": "src_types_analysisresult",
       "label": "AnalysisResult",
-      "degree": 7
+      "degree": 6
+    },
+    {
+      "id": "src_components_categorypanel_category",
+      "label": "Category",
+      "degree": 6
     },
     {
       "id": "src_data_mock_demoscenario",
       "label": "DemoScenario",
-      "degree": 6
-    },
-    {
-      "id": "src_types_uploadmode",
-      "label": "UploadMode",
-      "degree": 6
-    },
-    {
-      "id": "src_components_globehero_globehero",
-      "label": "GlobeHero()",
       "degree": 5
     },
     {
-      "id": "package_scripts",
-      "label": "scripts",
-      "degree": 4
+      "id": "src_data_indiamockdata_citydata",
+      "label": "CityData",
+      "degree": 5
     },
     {
-      "id": "src_components_resultsscreen_resultsscreen",
-      "label": "ResultsScreen()",
-      "degree": 4
+      "id": "src_hooks_useprefersreducedmotion_useprefersreducedmotion",
+      "label": "usePrefersReducedMotion()",
+      "degree": 5
     },
     {
-      "id": "src_components_uploadscreen_uploadscreenprops",
-      "label": "UploadScreenProps",
-      "degree": 4
+      "id": "src_components_regionmap_regionmap",
+      "label": "RegionMap()",
+      "degree": 5
     }
   ],
   "surprises": [
     {
-      "source": "ResultsScreenProps",
-      "target": "UploadedImage",
+      "source": "RegionMapProps",
+      "target": "CityData",
       "source_files": [
-        "src/components/ResultsScreen.tsx",
-        "src/types.ts"
+        "src/components/RegionMap.tsx",
+        "src/data/indiaMockData.ts"
       ],
       "confidence": "EXTRACTED",
       "relation": "references",
-      "why": "bridges separate communities"
+      "why": "peripheral node `RegionMapProps` unexpectedly reaches hub `CityData`"
+    },
+    {
+      "source": "StateCityPanelProps",
+      "target": "CityData",
+      "source_files": [
+        "src/components/StateCityPanel.tsx",
+        "src/data/indiaMockData.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "peripheral node `StateCityPanelProps` unexpectedly reaches hub `CityData`"
+    },
+    {
+      "source": "AIQuerySuggestionsProps",
+      "target": "Category",
+      "source_files": [
+        "src/components/AIQuerySuggestions.tsx",
+        "src/components/CategoryPanel.tsx"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "peripheral node `AIQuerySuggestionsProps` unexpectedly reaches hub `Category`"
+    },
+    {
+      "source": "CategoryPageProps",
+      "target": "Category",
+      "source_files": [
+        "src/components/CategoryPage.tsx",
+        "src/components/CategoryPanel.tsx"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "references",
+      "why": "peripheral node `CategoryPageProps` unexpectedly reaches hub `Category`"
     },
     {
       "source": "DemoScenario",
@@ -285,44 +393,44 @@
       ],
       "confidence": "EXTRACTED",
       "relation": "references",
-      "why": "bridges separate communities"
-    },
-    {
-      "source": "AmbientCanvas()",
-      "target": "usePrefersReducedMotion()",
-      "source_files": [
-        "src/components/AmbientCanvas.tsx",
-        "src/hooks/usePrefersReducedMotion.ts"
-      ],
-      "confidence": "EXTRACTED",
-      "relation": "calls",
-      "why": "cross-file semantic connection"
-    },
-    {
-      "source": "AskScreenProps",
-      "target": "UploadedImage",
-      "source_files": [
-        "src/components/AskScreen.tsx",
-        "src/types.ts"
-      ],
-      "confidence": "EXTRACTED",
-      "relation": "references",
-      "why": "cross-file semantic connection"
-    },
-    {
-      "source": "AskScreenProps",
-      "target": "UploadMode",
-      "source_files": [
-        "src/components/AskScreen.tsx",
-        "src/types.ts"
-      ],
-      "confidence": "EXTRACTED",
-      "relation": "references",
       "why": "cross-file semantic connection"
     }
   ],
-  "tokens": {
-    "input": 0,
-    "output": 0
-  }
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `dependencies` connect `dependencies` to `devDependencies`?",
+      "why": "High betweenness centrality (0.037) - this node is a cross-community bridge."
+    },
+    {
+      "type": "isolated_nodes",
+      "question": "What connects `Step`, `AskScreenProps`, `UploadScreenProps` to the rest of the system?",
+      "why": "109 weakly-connected nodes found - possible documentation gaps or missing edges."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `App.tsx` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.07505285412262157 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `dependencies` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.06896551724137931 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `devDependencies` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.07692307692307693 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `ResultsScreen.tsx` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.10461538461538461 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `compilerOptions` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.08333333333333333 - nodes in this community are weakly interconnected."
+    }
+  ]
 }
