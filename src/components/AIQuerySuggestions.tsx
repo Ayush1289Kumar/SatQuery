@@ -1,4 +1,6 @@
 import type { Category } from './CategoryPanel';
+import { Sparkles, ArrowRight } from 'lucide-react';
+import Reveal from './Reveal';
 
 interface AIQuerySuggestionsProps {
   activeCategory: Category;
@@ -47,27 +49,28 @@ export default function AIQuerySuggestions({ activeCategory, onSuggestionClick }
   const suggestions = SUGGESTIONS[activeCategory] || [];
 
   return (
-    <div className="w-full glass-card p-5 mt-4 reveal is-visible">
-      <div className="flex items-center gap-2 mb-3">
-        <span className="text-[var(--color-primary)]">✨</span>
-        <h4 className="text-sm font-semibold uppercase tracking-wider text-[rgba(255,255,255,0.7)]">
+    <Reveal className="region-panel relative mt-4 w-full overflow-hidden rounded-2xl border border-[var(--rp-border)] p-5">
+      <div className="mb-4 flex items-center gap-2">
+        <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-[var(--rp-border)] bg-white/40">
+          <Sparkles className="h-3.5 w-3.5 text-[var(--rp-accent-strong)] animate-pulse" strokeWidth={2.25} />
+        </div>
+        <h4 className="text-sm font-semibold uppercase tracking-wider text-[var(--rp-ink)]">
           AI Query Suggestions
         </h4>
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2.5">
         {suggestions.map((query, idx) => (
-          <button
-            key={idx}
-            onClick={() => onSuggestionClick(query)}
-            className="text-left px-4 py-2.5 rounded-lg border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.02)] hover:bg-[rgba(255,255,255,0.06)] hover:border-[var(--color-primary-50)] transition-all duration-200 text-sm text-[rgba(255,255,255,0.85)] hover:text-white group flex items-center justify-between"
-          >
-            <span>{query}</span>
-            <span className="opacity-0 group-hover:opacity-100 text-[var(--color-primary)] transition-opacity">
-              →
-            </span>
-          </button>
+          <Reveal key={idx} delay={idx * 80}>
+            <button
+              onClick={() => onSuggestionClick(query)}
+              className="group flex w-full items-center justify-between gap-3 rounded-lg border border-[var(--rp-border)] bg-white/40 px-4 py-3 text-left text-sm text-[var(--rp-ink-soft)] shadow-sm transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-[var(--rp-accent)] hover:bg-[var(--rp-card-bg)] hover:text-[var(--rp-ink)] hover:shadow-md"
+            >
+              <span>{query}</span>
+              <ArrowRight className="h-4 w-4 shrink-0 text-[var(--rp-accent-strong)] opacity-0 transition-all duration-200 group-hover:translate-x-0.5 group-hover:opacity-100" />
+            </button>
+          </Reveal>
         ))}
       </div>
-    </div>
+    </Reveal>
   );
 }

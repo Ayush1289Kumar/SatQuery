@@ -33,13 +33,15 @@ export default function LandingMap({ onGetStarted }: LandingMapProps) {
 
     L.control.zoom({ position: 'bottomright' }).addTo(map)
 
-    // Physical/terrain basemap (free, no API key) — reads as a real
-    // topographic map rather than a generic street map.
-    L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-      maxZoom: 10,
-      attribution: '&copy; OpenStreetMap contributors, SRTM | &copy; OpenTopoMap (CC-BY-SA)',
-      subdomains: 'abc',
-    }).addTo(map)
+    // True satellite imagery basemap (free, no API key) — raw land cover
+    // and terrain pixels only, no roads, borders or place labels.
+    L.tileLayer(
+      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+      {
+        maxZoom: 10,
+        attribution: 'Imagery &copy; Esri, Maxar, Earthstar Geographics',
+      },
+    ).addTo(map)
 
     mapRef.current = map
     return () => {
@@ -55,7 +57,7 @@ export default function LandingMap({ onGetStarted }: LandingMapProps) {
       <div
         ref={containerRef}
         className="absolute inset-0"
-        style={{ filter: 'sepia(0.45) saturate(1.4) hue-rotate(-8deg) brightness(0.6) contrast(1.05)' }}
+        style={{ filter: 'saturate(1.15) brightness(0.8) contrast(1.08)' }}
         aria-hidden
       />
 

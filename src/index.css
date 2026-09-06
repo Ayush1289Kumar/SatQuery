@@ -1,4 +1,3 @@
-
 @import "tailwindcss";
 @import "@fontsource-variable/inter";
 @import "@fontsource-variable/playfair-display";
@@ -170,8 +169,8 @@
   --cyan: #3c4a2a;
   --cyan-50: rgba(60, 74, 42, 0.15);
   --cyan-rgb: 60, 74, 42;
-  --surface: #22241d;
-  --surface-50: #2a2e24;
+  --surface: #182016;
+  --surface-50: #212b1c;
 }
 
 html,
@@ -430,4 +429,119 @@ h3 {
     opacity: 1;
     transform: none;
   }
+}
+
+/* ============================================================
+   Pastel earthy hero + region panel (Wildwoods-Forestry-inspired)
+   Scoped to the hub's "India Analytics" hero block — a light,
+   cream/pastel-green island inside the otherwise dark app shell.
+   ============================================================ */
+.hero-earthy {
+  --he-bg: #ded8c1;
+  --he-border: #c7bc9c;
+  --he-ink: #2a2e1f;
+  --he-ink-soft: #575e44;
+  --he-accent-50: #d5dcbd;
+  --he-accent-border: #adb787;
+  --he-accent-strong: #45562a;
+
+  position: relative;
+  background: linear-gradient(165deg, #e3ddc6 0%, var(--he-bg) 45%, #d2c9a9 100%);
+  color: var(--he-ink);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 30px 60px -28px rgba(69, 86, 42, 0.4),
+    0 16px 32px -20px rgba(8, 11, 5, 0.5),
+    0 2px 6px rgba(8, 11, 5, 0.3);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+/* Faint paper-grain so flat pastel fills read as a textured surface,
+   not a solid vibrant block. */
+.hero-earthy::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.16 0 0 0 0 0.19 0 0 0 0 0.12 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Buttons/links that opt into this card get a real hover lift. */
+button.hero-earthy:hover,
+a.hero-earthy:hover {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    0 36px 64px -26px rgba(69, 86, 42, 0.45),
+    0 18px 30px -16px rgba(8, 11, 5, 0.5);
+}
+
+/* Soft lift on the small chips/pills inside the cream hero */
+.hero-earthy .rounded-full,
+.hero-earthy .rounded-md {
+  box-shadow: 0 1px 2px rgba(35, 42, 20, 0.10), 0 4px 10px -4px rgba(35, 42, 20, 0.20);
+}
+
+.region-panel {
+  --rp-bg: #ccd5b3;
+  --rp-card-bg: #c0cb9f;
+  --rp-card-bg-hover: #b3bf8d;
+  --rp-input-bg: #e9eeda;
+  --rp-border: #a7b489;
+  --rp-ink: #282c1c;
+  --rp-ink-soft: #4c5337;
+  --rp-ink-faint: #707856;
+  --rp-accent: #64764a;
+  --rp-accent-strong: #3a481d;
+
+  position: relative;
+  background: linear-gradient(160deg, #d4dcbb 0%, var(--rp-bg) 55%, #becaa0 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 30px 56px -26px rgba(58, 72, 29, 0.42),
+    0 14px 28px -18px rgba(8, 11, 5, 0.48);
+}
+
+.region-panel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.16 0 0 0 0 0.19 0 0 0 0 0.12 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Give the buttons/cards inside the region panel real elevation instead
+   of sitting flush against the panel background. */
+.region-panel button,
+.region-panel .rounded-lg,
+.region-panel input[type="text"] {
+  box-shadow: 0 1px 2px rgba(35, 42, 20, 0.10), 0 4px 10px -4px rgba(35, 42, 20, 0.22);
+}
+
+/* Native <datalist> suggestion popups render with browser chrome we can't
+   restyle, but keep the input itself on-brand. */
+.region-panel input[list] {
+  color-scheme: light;
+}
+
+/* ============================================================
+   Subtle foliage texture on the dark sage app background
+   ============================================================ */
+.app-shell {
+  background-color: var(--surface);
+  background-image:
+    radial-gradient(ellipse 90% 55% at 50% -10%, rgba(148, 161, 121, 0.16), transparent 60%),
+    radial-gradient(ellipse 70% 60% at 100% 100%, rgba(148, 161, 121, 0.12), transparent 60%),
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22420%22%20height%3D%22420%22%20viewBox%3D%220%200%20420%20420%22%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%237C8F63%22%20stroke-width%3D%221.2%22%20opacity%3D%220.22%22%3E%3Cpath%20d%3D%22M-20%20340%20C%2060%20300%20100%20360%20180%20320%20C%20260%20280%20300%20340%20380%20300%20C%20420%20280%20440%20300%20460%20290%22/%3E%3Cpath%20d%3D%22M-20%20300%20C%2060%20265%20105%20315%20185%20280%20C%20265%20245%20305%20295%20385%20260%20C%20420%20245%20440%20260%20460%20252%22/%3E%3Cpath%20d%3D%22M-20%20260%20C%2060%20232%20110%20270%20190%20240%20C%20270%20210%20310%20250%20390%20222%20C%20420%20212%20440%20222%20460%20216%22/%3E%3Cpath%20d%3D%22M-30%2060%20C%2040%20100%2090%2040%20160%2080%20C%20230%20120%20270%2060%20340%20100%20C%20380%20122%20410%20108%20440%20118%22/%3E%3Cpath%20d%3D%22M-30%20100%20C%2040%20138%2095%2082%20165%20120%20C%20235%20158%20275%20100%20345%20138%20C%20382%20158%20412%20146%20440%20156%22/%3E%3C/g%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22640%22%20height%3D%22640%22%20viewBox%3D%220%200%20640%20640%22%3E%3Cdefs%3E%3Cfilter%20id%3D%22soft%22%20x%3D%22-50%25%22%20y%3D%22-50%25%22%20width%3D%22200%25%22%20height%3D%22200%25%22%3E%3CfeGaussianBlur%20in%3D%22SourceGraphic%22%20stdDeviation%3D%226%22%20/%3E%3C/filter%3E%3C/defs%3E%3Cg%20filter%3D%22url%28%23soft%29%22%3E%3Cpath%20d%3D%22M40%20610%20C%2095%20525%2072%20445%20125%20372%20C%20168%20314%20150%20248%20198%20186%20C%20230%20144%20218%2096%20260%2050%22%20fill%3D%22none%22%20stroke%3D%22%23A8B98C%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%20opacity%3D%220.55%22/%3E%3Cg%20fill%3D%22%23A8B98C%22%20opacity%3D%220.5%22%3E%3Cellipse%20cx%3D%22108%22%20cy%3D%22540%22%20rx%3D%2215%22%20ry%3D%2248%22%20transform%3D%22rotate%2835%20108%20540%29%22/%3E%3Cellipse%20cx%3D%22150%22%20cy%3D%22500%22%20rx%3D%2217%22%20ry%3D%2254%22%20transform%3D%22rotate%28-40%20150%20500%29%22/%3E%3Cellipse%20cx%3D%22150%22%20cy%3D%22430%22%20rx%3D%2216%22%20ry%3D%2252%22%20transform%3D%22rotate%2840%20150%20430%29%22/%3E%3Cellipse%20cx%3D%22190%22%20cy%3D%22390%22%20rx%3D%2218%22%20ry%3D%2257%22%20transform%3D%22rotate%28-38%20190%20390%29%22/%3E%3Cellipse%20cx%3D%22178%22%20cy%3D%22310%22%20rx%3D%2215%22%20ry%3D%2248%22%20transform%3D%22rotate%2842%20178%20310%29%22/%3E%3Cellipse%20cx%3D%22215%22%20cy%3D%22270%22%20rx%3D%2216%22%20ry%3D%2250%22%20transform%3D%22rotate%28-36%20215%20270%29%22/%3E%3Cellipse%20cx%3D%22210%22%20cy%3D%22205%22%20rx%3D%2213%22%20ry%3D%2240%22%20transform%3D%22rotate%2840%20210%20205%29%22/%3E%3Cellipse%20cx%3D%22240%22%20cy%3D%22168%22%20rx%3D%2214%22%20ry%3D%2242%22%20transform%3D%22rotate%28-34%20240%20168%29%22/%3E%3Cellipse%20cx%3D%22232%22%20cy%3D%22120%22%20rx%3D%2211%22%20ry%3D%2232%22%20transform%3D%22rotate%2838%20232%20120%29%22/%3E%3Cellipse%20cx%3D%22255%22%20cy%3D%2290%22%20rx%3D%2211%22%20ry%3D%2230%22%20transform%3D%22rotate%28-30%20255%2090%29%22/%3E%3C/g%3E%3Cg%20fill%3D%22%23A8B98C%22%20opacity%3D%220.6%22%20transform%3D%22translate%2896%2C568%29%22%3E%3Ccircle%20r%3D%227%22/%3E%3Cpath%20d%3D%22M0%200%20C%20-7%20-20%20-7%20-34%200%20-46%20C%207%20-34%207%20-20%200%200Z%22/%3E%3Cpath%20d%3D%22M0%200%20C%20-7%20-20%20-7%20-34%200%20-46%20C%207%20-34%207%20-20%200%200Z%22%20transform%3D%22rotate%2872%29%22/%3E%3Cpath%20d%3D%22M0%200%20C%20-7%20-20%20-7%20-34%200%20-46%20C%207%20-34%207%20-20%200%200Z%22%20transform%3D%22rotate%28144%29%22/%3E%3Cpath%20d%3D%22M0%200%20C%20-7%20-20%20-7%20-34%200%20-46%20C%207%20-34%207%20-20%200%200Z%22%20transform%3D%22rotate%28216%29%22/%3E%3Cpath%20d%3D%22M0%200%20C%20-7%20-20%20-7%20-34%200%20-46%20C%207%20-34%207%20-20%200%200Z%22%20transform%3D%22rotate%28288%29%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22640%22%20height%3D%22640%22%20viewBox%3D%220%200%20640%20640%22%3E%3Cdefs%3E%3Cfilter%20id%3D%22soft%22%20x%3D%22-50%25%22%20y%3D%22-50%25%22%20width%3D%22200%25%22%20height%3D%22200%25%22%3E%3CfeGaussianBlur%20in%3D%22SourceGraphic%22%20stdDeviation%3D%226%22%20/%3E%3C/filter%3E%3C/defs%3E%3Cg%20filter%3D%22url%28%23soft%29%22%3E%3Cpath%20d%3D%22M40%20610%20C%2095%20525%2072%20445%20125%20372%20C%20168%20314%20150%20248%20198%20186%20C%20230%20144%20218%2096%20260%2050%22%20fill%3D%22none%22%20stroke%3D%22%23A8B98C%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%20opacity%3D%220.55%22/%3E%3Cg%20fill%3D%22%23A8B98C%22%20opacity%3D%220.5%22%3E%3Cellipse%20cx%3D%22108%22%20cy%3D%22540%22%20rx%3D%2215%22%20ry%3D%2248%22%20transform%3D%22rotate%2835%20108%20540%29%22/%3E%3Cellipse%20cx%3D%22150%22%20cy%3D%22500%22%20rx%3D%2217%22%20ry%3D%2254%22%20transform%3D%22rotate%28-40%20150%20500%29%22/%3E%3Cellipse%20cx%3D%22150%22%20cy%3D%22430%22%20rx%3D%2216%22%20ry%3D%2252%22%20transform%3D%22rotate%2840%20150%20430%29%22/%3E%3Cellipse%20cx%3D%22190%22%20cy%3D%22390%22%20rx%3D%2218%22%20ry%3D%2257%22%20transform%3D%22rotate%28-38%20190%20390%29%22/%3E%3Cellipse%20cx%3D%22178%22%20cy%3D%22310%22%20rx%3D%2215%22%20ry%3D%2248%22%20transform%3D%22rotate%2842%20178%20310%29%22/%3E%3Cellipse%20cx%3D%22215%22%20cy%3D%22270%22%20rx%3D%2216%22%20ry%3D%2250%22%20transform%3D%22rotate%28-36%20215%20270%29%22/%3E%3Cellipse%20cx%3D%22210%22%20cy%3D%22205%22%20rx%3D%2213%22%20ry%3D%2240%22%20transform%3D%22rotate%2840%20210%20205%29%22/%3E%3Cellipse%20cx%3D%22240%22%20cy%3D%22168%22%20rx%3D%2214%22%20ry%3D%2242%22%20transform%3D%22rotate%28-34%20240%20168%29%22/%3E%3Cellipse%20cx%3D%22232%22%20cy%3D%22120%22%20rx%3D%2211%22%20ry%3D%2232%22%20transform%3D%22rotate%2838%20232%20120%29%22/%3E%3Cellipse%20cx%3D%22255%22%20cy%3D%2290%22%20rx%3D%2211%22%20ry%3D%2230%22%20transform%3D%22rotate%28-30%20255%2090%29%22/%3E%3C/g%3E%3Cg%20fill%3D%22%23A8B98C%22%20opacity%3D%220.6%22%20transform%3D%22translate%2896%2C568%29%22%3E%3Ccircle%20r%3D%227%22/%3E%3Cpath%20d%3D%22M0%200%20C%20-7%20-20%20-7%20-34%200%20-46%20C%207%20-34%207%20-20%200%200Z%22/%3E%3Cpath%20d%3D%22M0%200%20C%20-7%20-20%20-7%20-34%200%20-46%20C%207%20-34%207%20-20%200%200Z%22%20transform%3D%22rotate%2872%29%22/%3E%3Cpath%20d%3D%22M0%200%20C%20-7%20-20%20-7%20-34%200%20-46%20C%207%20-34%207%20-20%200%200Z%22%20transform%3D%22rotate%28144%29%22/%3E%3Cpath%20d%3D%22M0%200%20C%20-7%20-20%20-7%20-34%200%20-46%20C%207%20-34%207%20-20%200%200Z%22%20transform%3D%22rotate%28216%29%22/%3E%3Cpath%20d%3D%22M0%200%20C%20-7%20-20%20-7%20-34%200%20-46%20C%207%20-34%207%20-20%200%200Z%22%20transform%3D%22rotate%28288%29%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: no-repeat, no-repeat, repeat, no-repeat, no-repeat;
+  background-position: center, center, center, left -50px bottom -30px, right -140px top -90px;
+  background-size: 100% 100%, 100% 100%, 420px 420px, 600px 600px, 420px 420px;
+  background-attachment: scroll, scroll, fixed, fixed, fixed;
 }
