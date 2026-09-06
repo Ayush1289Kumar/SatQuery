@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { AnalysisResult, UploadMode, UploadedImage } from './types'
 import type { DemoScenario } from './data/mock'
+import SmoothScroll from './components/SmoothScroll'
 import UploadScreen from './components/UploadScreen'
 import AskScreen from './components/AskScreen'
 import AnalyzingScreen from './components/AnalyzingScreen'
@@ -104,83 +105,89 @@ export default function App() {
   }
 
   return (
-    <div className="app-shell relative flex min-h-full flex-col bg-[var(--color-surface)]">
-      {/* Viewport glow frame */}
-      <div className="glow-frame" aria-hidden />
+    <SmoothScroll>
+      <div className="app-shell relative flex min-h-full flex-col bg-[var(--color-surface)]">
+        {/* Viewport glow frame */}
+        <div className="glow-frame" aria-hidden />
 
-      {/* Skip link */}
-      <a
-        href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-[var(--color-primary)] focus:px-5 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
-      >
-        Skip to content
-      </a>
+        {/* Skip link */}
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-[var(--color-primary)] focus:px-5 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
+        >
+          Skip to content
+        </a>
 
-      <LandingHero onGetStarted={() => {
-        document.getElementById('main')?.scrollIntoView({ behavior: 'smooth' })
-      }} />
+        <LandingHero onGetStarted={() => {
+          if ((window as any).lenis) {
+            (window as any).lenis.scrollTo('#main');
+          } else {
+            document.getElementById('main')?.scrollIntoView({ behavior: 'smooth' });
+          }
+        }} />
 
-      <Header />
+        <Header />
 
-      <main id="main" className="relative z-10 mx-auto w-full max-w-6xl flex-1 px-4 pb-16 pt-6">
-        {step === 'upload' && (
-          <Reveal>
-            <CategoryPanel activeCategory={activeCategory} onCategoryChange={selectCategory} />
-            {activeCategory === 'home' ? (
-              <HeroSection />
-            ) : (
-              <CategoryPage category={activeCategory} />
-            )}
-            <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
-              <div className="lg:col-span-2">
-                <UploadScreen
-                  mode={mode}
-                  images={images}
-                  onSelectMode={setMode}
-                  onAddImages={(imgs) => setImages(imgs)}
-                  onRemoveImage={(id) => setImages((prev) => prev.filter((i) => i.id !== id))}
-                  onContinue={goAsk}
-                  onRunScenario={runScenario}
-                />
+        <main id="main" className="relative z-10 mx-auto w-full max-w-6xl flex-1 px-4 pb-16 pt-6">
+          {step === 'upload' && (
+            <Reveal>
+              <CategoryPanel activeCategory={activeCategory} onCategoryChange={selectCategory} />
+              {activeCategory === 'home' ? (
+                <HeroSection />
+              ) : (
+                <CategoryPage category={activeCategory} />
+              )}
+              <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="lg:col-span-2">
+                  <UploadScreen
+                    mode={mode}
+                    images={images}
+                    onSelectMode={setMode}
+                    onAddImages={(imgs) => setImages(imgs)}
+                    onRemoveImage={(id) => setImages((prev) => prev.filter((i) => i.id !== id))}
+                    onContinue={goAsk}
+                    onRunScenario={runScenario}
+                  />
+                </div>
+                <div className="lg:col-span-1">
+                  <AIQuerySuggestions 
+                    activeCategory={activeCategory} 
+                    onSuggestionClick={(q) => { 
+                      setQuestion(q); 
+                      setStep('ask'); 
+                    }} 
+                  />
+                </div>
               </div>
-              <div className="lg:col-span-1">
-                <AIQuerySuggestions 
-                  activeCategory={activeCategory} 
-                  onSuggestionClick={(q) => { 
-                    setQuestion(q); 
-                    setStep('ask'); 
-                  }} 
-                />
-              </div>
-            </div>
-          </Reveal>
-        )}
-        {step === 'ask' && (
-          <AskScreen
-            mode={mode}
-            images={images}
-            question={question}
-            onQuestionChange={setQuestion}
-            onAnalyze={() => startAnalysis(() => defaultResultFor(question))}
-            onBack={() => setStep('upload')}
-          />
-        )}
-        {step === 'analyzing' && (
-          <AnalyzingScreen
-            question={question}
-            activeStep={activeStep}
-            workflowLabel="sat-query/router (demo)"
-            water={waterAnalysis}
-            variant={waterVariant}
-          />
-        )}
-        {step === 'results' && result && (
-          <ResultsScreen images={images} question={question} result={result} onRestart={reset} water={waterAnalysis} variant={waterVariant} />
-        )}
-      </main>
+            </Reveal>
+          )}
+          {step === 'ask' && (
+            <AskScreen
+              mode={mode}
+              images={images}
+              question={question}
+              onQuestionChange={setQuestion}
+              onAnalyze={() => startAnalysis(() => defaultResultFor(question))}
+              onBack={() => setStep('upload')}
+            />
+          )}
+          {step === 'analyzing' && (
+            <AnalyzingScreen
+              question={question}
+              activeStep={activeStep}
+              workflowLabel="sat-query/router (demo)"
+              water={waterAnalysis}
+              variant={waterVariant}
+            />
+          )}
+          {step === 'results' && result && (
+            <ResultsScreen images={images} question={question} result={result} onRestart={reset} water={waterAnalysis} variant={waterVariant} />
+          )}
+        </main>
 
-      {step !== 'landing' && <Footer />}
-    </div>
+        {step !== 'landing' && <Footer />}
+      </div>
+    </SmoothScroll>
   )
 }
 
