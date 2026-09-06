@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import L from 'leaflet'
-import { Satellite, ArrowDown } from 'lucide-react'
+import { ArrowDown } from 'lucide-react'
+import Logo from './Logo'
 
 interface LandingMapProps {
   onGetStarted: () => void
@@ -71,15 +72,9 @@ export default function LandingMap({ onGetStarted }: LandingMapProps) {
         }}
       />
 
-      {/* Brand lockup, top-left */}
-      <div className="pointer-events-none absolute left-6 top-6 z-10 flex items-center gap-3 sm:left-10 sm:top-8">
-        <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-violet)] shadow-[0_0_20px_-4px_var(--color-primary-glow)]">
-          <Satellite className="h-4.5 w-4.5 text-black/80" strokeWidth={2.25} />
-        </div>
-        <div>
-          <span className="font-display text-lg font-semibold tracking-tight text-white">SatQuery</span>
-          <span className="ml-1 font-display text-lg font-light text-white/45">AI</span>
-        </div>
+      {/* Brand lockup, top-left — same scale as the header branding */}
+      <div className="absolute left-6 top-6 z-10 flex items-center sm:left-10 sm:top-8">
+        <Logo />
       </div>
 
       {/* Headline, centered */}

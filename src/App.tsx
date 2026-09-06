@@ -13,6 +13,7 @@ import AmbientCanvas from './components/AmbientCanvas'
 import AIQuerySuggestions from './components/AIQuerySuggestions'
 import CategoryPage from './components/CategoryPage'
 import LandingMap from './components/LandingMap'
+import Logo from './components/Logo'
 import { INDIA_STATES } from './data/indiaMockData'
 import { Satellite, Microscope } from 'lucide-react'
 
@@ -44,6 +45,9 @@ export default function App() {
   const [question, setQuestion] = useState('')
   const [result, setResult] = useState<AnalysisResult | null>(null)
   const [activeStep, setActiveStep] = useState(0)
+  // Visual-only flag: the flood-extent demo runs inside an aquatic environment.
+  const [waterAnalysis, setWaterAnalysis] = useState(false)
+  const [waterVariant, setWaterVariant] = useState<'azure' | 'teal'>('azure')
   const timersRef = useRef<number[]>([])
 
   useEffect(() => {
@@ -77,6 +81,9 @@ export default function App() {
     setMode(scenario.mode)
     setImages(scenario.images)
     setQuestion(scenario.suggestedQuestion)
+    // Aquatic analysis environments: flood extent (deep ocean) + water body mapping (deep teal)
+    setWaterAnalysis(scenario.id === 'flood' || scenario.id === 'water')
+    setWaterVariant(scenario.id === 'water' ? 'teal' : 'azure')
     startAnalysis(() => scenario.result)
   }
 
@@ -91,11 +98,13 @@ export default function App() {
     setQuestion('')
     setResult(null)
     setActiveStep(0)
+    setWaterAnalysis(false)
+    setWaterVariant('azure')
     setStep('upload')
   }
 
   return (
-    <div className="relative flex min-h-full flex-col bg-[var(--color-surface)]">
+    <div className="app-shell relative flex min-h-full flex-col bg-[var(--color-surface)]">
       {/* Viewport glow frame */}
       <div className="glow-frame" aria-hidden />
 
@@ -159,10 +168,12 @@ export default function App() {
             question={question}
             activeStep={activeStep}
             workflowLabel="sat-query/router (demo)"
+            water={waterAnalysis}
+            variant={waterVariant}
           />
         )}
         {step === 'results' && result && (
-          <ResultsScreen images={images} question={question} result={result} onRestart={reset} />
+          <ResultsScreen images={images} question={question} result={result} onRestart={reset} water={waterAnalysis} variant={waterVariant} />
         )}
       </main>
 
@@ -186,17 +197,7 @@ function Header() {
   return (
     <header className="sticky top-0 z-30 border-b border-[rgba(255,255,255,0.08)] bg-[var(--color-surface-50)] backdrop-blur-xl">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-3.5">
-        <div className="flex items-center gap-3">
-          {/* Logo mark */}
-          <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-violet)] shadow-[0_0_20px_-4px_var(--color-primary-glow)]">
-            <SatIcon />
-            <div className="absolute inset-0 rounded-xl ring-1 ring-white/20" />
-          </div>
-          <div>
-            <span className="font-display text-lg font-semibold tracking-tight text-white">SatQuery</span>
-            <span className="ml-1 font-display text-lg font-light text-[rgba(255,255,255,0.45)]">AI</span>
-          </div>
-        </div>
+        <Logo />
         <div className="flex items-center gap-3">
           <span className="hidden rounded-full border border-[var(--color-primary-glow)] bg-[var(--color-primary-50)] px-3 py-1 text-xs font-semibold text-[var(--color-primary)] sm:inline-flex">
             MVP Prototype
@@ -281,7 +282,7 @@ function Footer() {
     <footer className="relative z-10 border-t border-[rgba(255,255,255,0.07)] bg-[rgba(0,0,0,0.50)] px-4 py-5">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between">
         <span className="text-xs text-[rgba(255,255,255,0.30)]">
-          SatQuery AI — demo prototype. Results are simulated and not for operational use.
+          GEO-NIUS — demo prototype. Results are simulated and not for operational use.
         </span>
         <span className="text-xs text-[rgba(255,255,255,0.20)]">© 2024</span>
       </div>
@@ -289,13 +290,6 @@ function Footer() {
   )
 }
 
-function SatIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true" className="text-white">
-      <path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z" />
-      <circle cx="12" cy="12" r="3" />
-    </svg>
-  )
-}
+
 
 
