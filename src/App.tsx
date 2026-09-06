@@ -12,7 +12,7 @@ import StateCityPanel from './components/StateCityPanel'
 import AmbientCanvas from './components/AmbientCanvas'
 import AIQuerySuggestions from './components/AIQuerySuggestions'
 import CategoryPage from './components/CategoryPage'
-import LandingMap from './components/LandingMap'
+import LandingHero from './components/LandingHero'
 import Logo from './components/Logo'
 import { INDIA_STATES } from './data/indiaMockData'
 import { Satellite, Microscope } from 'lucide-react'
@@ -39,7 +39,7 @@ export default function App() {
     setActiveCategory(cat)
     setTheme(CATEGORY_THEME[cat])
   }
-  const [step, setStep] = useState<Step>('landing')
+  const [step, setStep] = useState<Step>('upload')
   const [mode, setMode] = useState<UploadMode>('twoDate')
   const [images, setImages] = useState<UploadedImage[]>([])
   const [question, setQuestion] = useState('')
@@ -116,11 +116,13 @@ export default function App() {
         Skip to content
       </a>
 
-      {step !== 'landing' && <Header />}
+      <LandingHero onGetStarted={() => {
+        document.getElementById('main')?.scrollIntoView({ behavior: 'smooth' })
+      }} />
 
-      {step === 'landing' && <LandingMap onGetStarted={() => setStep('upload')} />}
+      <Header />
 
-      <main id="main" className={step === 'landing' ? 'hidden' : "relative z-10 mx-auto w-full max-w-6xl flex-1 px-4 pb-16 pt-6"}>
+      <main id="main" className="relative z-10 mx-auto w-full max-w-6xl flex-1 px-4 pb-16 pt-6">
         {step === 'upload' && (
           <Reveal>
             <CategoryPanel activeCategory={activeCategory} onCategoryChange={selectCategory} />
