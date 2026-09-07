@@ -94,19 +94,19 @@
 }
 
 [data-theme="olive-sage"] {
-  --primary: #4d7c0f;
-  --primary-dark: #3f6212;
-  --primary-50: rgba(77, 124, 15, 0.12);
-  --primary-glow: rgba(77, 124, 15, 0.35);
-  --primary-rgb: 77, 124, 15;
-  --violet: #86efac;
-  --violet-50: rgba(134, 239, 172, 0.12);
-  --violet-rgb: 134, 239, 172;
-  --cyan: #d9f99d;
-  --cyan-50: rgba(217, 249, 157, 0.12);
-  --cyan-rgb: 217, 249, 157;
-  --surface: #1c1917;
-  --surface-50: #292524;
+  --primary: #6f9258;
+  --primary-dark: #58713f;
+  --primary-50: rgba(111, 146, 88, 0.12);
+  --primary-glow: rgba(111, 146, 88, 0.30);
+  --primary-rgb: 111, 146, 88;
+  --violet: #b7c9a8;
+  --violet-50: rgba(183, 201, 168, 0.12);
+  --violet-rgb: 183, 201, 168;
+  --cyan: #d7dfc4;
+  --cyan-50: rgba(215, 223, 196, 0.12);
+  --cyan-rgb: 215, 223, 196;
+  --surface: #2c4036;
+  --surface-50: #3a5245;
 }
 
 [data-theme="mint-pine"] {
@@ -169,8 +169,8 @@
   --cyan: #3c4a2a;
   --cyan-50: rgba(60, 74, 42, 0.15);
   --cyan-rgb: 60, 74, 42;
-  --surface: #182016;
-  --surface-50: #212b1c;
+  --surface: #2c382e;
+  --surface-50: #3a463b;
 }
 
 html,
@@ -1277,4 +1277,577 @@ a.hero-earthy:hover {
 }
 @media (prefers-reduced-motion: reduce) {
   .wr-root, .wr-map-overlay { animation: none; }
+}
+/* ============================================================
+   Flood Extent — Deep Indigo flood intelligence theme
+   Scoped to .water--indigo (AnalyzingScreen, azure variant only).
+   The Water Body Mapping (.water--teal) theme is NOT affected.
+   ============================================================ */
+
+/* Deeper, more intense midnight-indigo identity tokens */
+.water-env.water--indigo {
+  --wa-bg1: #04060f;
+  --wa-bg2: #070d20;
+  --wa-bg3: #0b1533;
+  --wa-bg4: #101f4a;
+  --wa-glowA: 44 84 160;
+  --wa-glowB: 10 24 70;
+  --wa-glowC: 30 62 130;
+  --wa-spot: 88 130 200;
+  --wa-caustic: 140 176 224;
+  --wa-caustic2: 120 160 210;
+  --wa-blobA: 58 92 170;
+  --wa-blobB: 22 40 100;
+  --wa-blobC: 96 130 190;
+  --wa-mist: 110 140 190;
+  --wa-mist2: 150 180 220;
+  --wa-accent: 96 150 220;
+  --wa-accent2: 120 168 226;
+  --wa-hi: 176 208 240;
+  --wa-glow: 52 92 168;
+  --wa-edge: 200 220 244;
+  --wa-sub: 168 190 220;
+  --wa-mote: 168 200 240;
+}
+
+/* Slow-drifting hydrological contour lines (flood propagation feel) */
+.water-env.water--indigo .water-contours {
+  opacity: 0.42;
+  animation: floodContourDrift 70s linear infinite;
+}
+@keyframes floodContourDrift {
+  from { background-position: 0 0; }
+  to   { background-position: 640px 320px; }
+}
+
+/* Occasional deep-surface disturbance ripples (away from panel text) */
+.flood-ripple {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgb(var(--wa-accent), 0.28);
+  opacity: 0;
+  pointer-events: none;
+  animation: floodRipple 18s ease-out infinite;
+}
+.flood-ripple-1 { top: 12%; left: 8%; width: 34vw; height: 34vw; animation-delay: 2s; }
+.flood-ripple-2 { bottom: 6%; right: 6%; width: 26vw; height: 26vw; animation-delay: 11s; }
+@keyframes floodRipple {
+  0%       { transform: scale(0.4); opacity: 0; }
+  8%       { opacity: 0.16; }
+  55%,100% { transform: scale(1.5); opacity: 0; }
+}
+
+/* ── Light pastel-blue analysis panel ── */
+.water--indigo .water-card {
+  border: 1px solid rgba(168, 196, 226, 0.55);
+  background: linear-gradient(175deg, #c9d8ea 0%, #b2c5dc 45%, #9db1ca 100%);
+  backdrop-filter: blur(20px) saturate(1.05);
+  -webkit-backdrop-filter: blur(20px) saturate(1.05);
+  box-shadow:
+    0 30px 70px -24px rgba(2, 8, 24, 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+.water--indigo .water-card::before {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 16%),
+    radial-gradient(120% 90% at 50% -18%, rgba(190, 214, 240, 0.35) 0%, rgba(190, 214, 240, 0) 55%);
+}
+.water--indigo .water-card::after {
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.30) 0%, rgba(178, 204, 232, 0.10) 40%, rgba(120, 144, 180, 0.22) 100%);
+}
+
+/* Typography — deep navy ink on the pastel surface */
+.water--indigo .water-title {
+  color: #16283f;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+.water--indigo .water-subtitle { color: rgba(52, 78, 108, 0.78); }
+.water--indigo .water-subtitle .font-medium { color: #24405e; }
+.water--indigo .water-pct { color: rgba(52, 78, 108, 0.5); }
+.water--indigo .water-note { color: rgba(52, 78, 108, 0.45); }
+
+/* ── Loader: restrained, scientific ── */
+.water--indigo .water-ring-scan {
+  border-color: rgb(var(--wa-accent), 0.18);
+  background: conic-gradient(
+    from 0deg,
+    rgb(var(--wa-accent), 0) 0deg,
+    rgb(var(--wa-accent), 0) 270deg,
+    rgb(var(--wa-accent), 0.35) 340deg,
+    rgb(var(--wa-hi), 0.55) 356deg,
+    rgb(var(--wa-accent), 0) 360deg
+  );
+  filter: drop-shadow(0 0 3px rgb(var(--wa-accent), 0.25));
+}
+.water--indigo .water-card .absolute.h-20.w-20.rounded-full {
+  border-color: rgba(120, 158, 205, 0.30) !important;
+  background: radial-gradient(closest-side, rgba(96, 130, 180, 0.30) 0%, rgba(40, 64, 105, 0.22) 70%, rgba(150, 190, 230, 0.12) 100%) !important;
+  box-shadow: 0 0 10px -2px rgba(96, 140, 195, 0.25), inset 0 0 10px rgba(96, 140, 195, 0.10) !important;
+}
+.water--indigo .water-orbit-dot {
+  background: #cfe2f5 !important;
+  box-shadow: 0 0 5px rgb(var(--wa-hi), 0.5) !important;
+}
+.water--indigo .water-ring-pulse {
+  border-color: rgba(120, 160, 210, 0.30) !important;
+  box-shadow: 0 0 8px rgb(var(--wa-accent), 0.12) inset !important;
+}
+.water-env.water--indigo .water-mote {
+  box-shadow: 0 0 5px rgb(var(--wa-accent2), 0.25);
+}
+
+/* ── Progress: satellite scan across a flood zone ── */
+.water--indigo .water-track {
+  background: rgba(10, 22, 46, 0.75);
+  box-shadow: inset 0 1px 3px rgba(2, 8, 20, 0.8), 0 0 0 1px rgba(110, 150, 205, 0.14);
+}
+.water--indigo .water-fill-flow {
+  background: linear-gradient(90deg, #1e4e8f 0%, #2f6cb0 45%, #6f9fd0 78%, #b8d4ec 100%);
+  box-shadow: 0 0 6px rgba(110, 160, 215, 0.35);
+}
+.water--indigo .water-fill-flow::after {
+  background: radial-gradient(closest-side, rgba(224, 240, 254, 0.7), rgba(150, 190, 230, 0));
+}
+
+/* ── Pipeline badges: professional geospatial-intelligence styling ── */
+.water--indigo .flood-badge {
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.water--indigo .flood-badge.flood-done {
+  background: rgba(158, 186, 216, 0.35) !important;
+  border-color: rgba(196, 216, 238, 0.55) !important;
+  color: #2a4562 !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+}
+.water--indigo .flood-badge.flood-done span {
+  color: #2a5288 !important;
+}
+.water--indigo .flood-badge.flood-up {
+  background: rgba(96, 124, 160, 0.16) !important;
+  border-color: rgba(140, 168, 200, 0.30) !important;
+  color: rgba(90, 116, 148, 0.85) !important;
+  box-shadow: none !important;
+}
+.water--indigo .water-step-active {
+  background: linear-gradient(180deg, rgba(214, 232, 248, 0.85) 0%, rgba(168, 198, 228, 0.75) 100%) !important;
+  border-color: rgba(90, 130, 180, 0.55) !important;
+  color: #16304e !important;
+  box-shadow: 0 1px 4px rgba(20, 45, 80, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+  animation: floodStepPulse 2.6s ease-in-out infinite;
+}
+@keyframes floodStepPulse {
+  0%, 100% { box-shadow: 0 1px 4px rgba(20, 45, 80, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.55); }
+  50%      { box-shadow: 0 2px 8px rgba(20, 45, 80, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.7); }
+}
+.water--indigo .water-step-dot {
+  background: #2a5288 !important;
+  box-shadow: none !important;
+  animation: none;
+}
+
+/* ── Router badge: pastel inset ── */
+.water--indigo .flood-router {
+  border-color: rgba(140, 170, 205, 0.35) !important;
+  background: rgba(190, 212, 234, 0.35) !important;
+}
+.water--indigo .flood-router > span:first-child { color: #1e4470 !important; }
+.water--indigo .flood-router > span:last-child { color: rgba(46, 72, 102, 0.8) !important; }
+
+/* ── Guaranteed full-viewport indigo base for the Flood Extent workflow ──
+   Applied to the outermost .app-shell wrapper (overrides the olive
+   bg-[var(--color-surface)] immediately — no animation delay). */
+.app-shell.flood-mode {
+  background:
+    radial-gradient(ellipse 90% 55% at 50% -10%, rgba(52, 92, 168, 0.18), transparent 60%),
+    linear-gradient(165deg, #04060f 0%, #0a1228 30%, #101d44 60%, #16306b 100%) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flood-ripple,
+  .water-env.water--indigo .water-contours {
+    animation: none;
+  }
+}
+
+/* -- Indigo tokens on the content wrappers too (results + analyzing root) -- */
+.wr-root.water--indigo,
+.water--indigo.water-env {
+  --wa-bg1: #04060f;
+  --wa-bg2: #070d20;
+  --wa-bg3: #0b1533;
+  --wa-bg4: #101f4a;
+  --wa-accent: 96 150 220;
+  --wa-accent2: 120 168 226;
+  --wa-hi: 176 208 240;
+  --wa-edge: 200 220 244;
+  --wa-sub: 168 190 220;
+}
+
+/* ============================================================
+   Flood workflow � surface hierarchy, icons & micro-interactions
+   Scoped to .water--indigo / .wr-root.water--indigo only.
+   The approved Deep Indigo page background is NOT touched.
+   ============================================================ */
+
+/* -- Tonal panel-hierarchy tokens -- */
+.wr-root.water--indigo {
+  --fp-panel1: 66 82 136;
+  --fp-panel2: 48 62 110;
+  --fp-card1: 78 94 148;
+  --fp-card2: 60 74 124;
+  --fp-chip: 96 112 168;
+  --fp-border: 156 178 226;
+  --fp-accent: 124 168 230;
+  --fp-soft: 198 216 246;
+  --fp-ink: #ecf1fb;
+  --fp-ink2: rgba(208, 222, 246, 0.80);
+  --fp-ink3: rgba(186, 204, 234, 0.62);
+}
+
+/* -- LEVEL 1 � primary panels (map evidence, details) -- */
+.wr-root.water--indigo .water-panel {
+  background: linear-gradient(178deg, rgb(var(--fp-panel1) / 0.94) 0%, rgb(var(--fp-panel2) / 0.94) 100%);
+  border: 1px solid rgb(var(--fp-border), 0.32);
+  box-shadow:
+    0 26px 64px -30px rgba(2, 6, 24, 0.85),
+    inset 0 1px 0 rgb(var(--fp-soft), 0.14);
+}
+
+/* -- LEVEL 2 � nested cards (legend, result card, insets) -- */
+.wr-root.water--indigo .wr-legend,
+.wr-root.water--indigo .wr-result {
+  background: linear-gradient(178deg, rgb(var(--fp-card1) / 0.90) 0%, rgb(var(--fp-card2) / 0.92) 100%);
+  border-color: rgb(var(--fp-border), 0.26);
+}
+.wr-root.water--indigo .wr-inset {
+  background: rgba(36, 48, 92, 0.55);
+  border-color: rgb(var(--fp-border), 0.18);
+}
+.wr-root.water--indigo .wr-details-body { background: rgba(40, 52, 98, 0.45); }
+
+/* Readable ink on the lighter surfaces */
+.wr-root.water--indigo .wr-title { color: var(--fp-ink); }
+.wr-root.water--indigo .wr-body { color: var(--fp-ink2); }
+.wr-root.water--indigo .wr-label { color: var(--fp-ink3); }
+.wr-root.water--indigo .wr-date { color: var(--fp-ink3); }
+
+/* -- Analyzing panel: clear primary surface elevation -- */
+.water--indigo .water-card {
+  box-shadow:
+    0 34px 80px -30px rgba(1, 4, 16, 0.9),
+    0 0 0 1px rgb(var(--fp-border), 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+/* -- Refined icon/badge containers (restrained duotone) -- */
+.wr-root.water--indigo .wr-chip {
+  background: rgb(var(--fp-chip), 0.30);
+  border-color: rgb(var(--fp-border), 0.30);
+  color: var(--fp-ink2);
+  transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+}
+.wr-root.water--indigo .wr-chip:hover {
+  background: rgb(var(--fp-chip), 0.44);
+  border-color: rgb(var(--fp-border), 0.45);
+  transform: translateY(-2px);
+}
+.wr-root.water--indigo .wr-badge {
+  background: rgb(var(--fp-accent), 0.16);
+  border-color: rgb(var(--fp-accent), 0.35);
+  color: var(--fp-ink);
+  box-shadow: 0 0 8px -4px rgb(var(--fp-accent), 0.4);
+}
+
+/* -- Micro-interactions: restrained panel hover lift -- */
+.wr-root.water--indigo .water-panel,
+.wr-root.water--indigo .wr-result {
+  transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+}
+.wr-root.water--indigo .wr-result:hover,
+.wr-root.water--indigo .wr-map:hover {
+  transform: translateY(-3px);
+  border-color: rgb(var(--fp-border), 0.48);
+  box-shadow:
+    0 32px 72px -30px rgba(2, 6, 24, 0.9),
+    inset 0 1px 0 rgb(var(--fp-soft), 0.18);
+}
+
+/* -- Staggered entrance for result panels -- */
+.wr-root.water--indigo > * {
+  animation: floodStaggerIn 0.45s cubic-bezier(0.22, 0.8, 0.36, 1) both;
+}
+.wr-root.water--indigo > *:nth-child(1) { animation-delay: 0.05s; }
+.wr-root.water--indigo > *:nth-child(2) { animation-delay: 0.16s; }
+.wr-root.water--indigo > *:nth-child(3) { animation-delay: 0.27s; }
+@keyframes floodStaggerIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* -- Category buttons: subtle lift interaction -- */
+.category-btn:hover { transform: translateY(-2px); }
+.category-btn { transition-property: transform, box-shadow, border-color, background; transition-duration: 0.25s; }
+
+/* -- Reduced motion -- */
+@media (prefers-reduced-motion: reduce) {
+  .wr-root.water--indigo > *,
+  .wr-root.water--indigo .water-panel,
+  .wr-root.water--indigo .wr-result,
+  .category-btn { animation: none !important; transition: none !important; }
+}
+
+/* -- Water Body Mapping (analysis) � Deep Aqua water-intelligence theme --
+   Scoped to .water--teal (AnalyzingScreen). Flood Extent (.water--indigo),
+   teal results (.wr-root.water--teal) and other workflows are NOT altered. */
+
+/* Guaranteed full-viewport deep-aqua base for the WBM flow.
+   Overrides the olive bg-[var(--color-surface)] immediately. */
+.app-shell.water-mode {
+  background:
+    radial-gradient(ellipse 92% 55% at 50% -6%, rgba(58, 168, 204, 0.20) 0%, transparent 58%),
+    radial-gradient(120% 90% at 12% 116%, rgba(8, 48, 72, 0.55) 0%, transparent 60%),
+    linear-gradient(168deg, #03202c 0%, #093240 30%, #0d4650 60%, #125b62 100%) !important;
+}
+
+/* Light pastel-aqua analyzing panel (DARK bg + LIGHT elevated surface).
+   Same hierarchy as the main page / Flood analysis, in aqua tones. */
+.water--teal .water-card {
+  border: 1px solid rgba(148, 198, 224, 0.5);
+  background: linear-gradient(175deg, #e4f2f5 0%, #d3e3ed 45%, #bcd2dc 100%);
+  backdrop-filter: blur(16px) saturate(1.05);
+  -webkit-backdrop-filter: blur(16px) saturate(1.05);
+  box-shadow:
+    0 30px 70px -24px rgba(2, 10, 22, 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+.water--teal .water-card::before {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0) 16%),
+    radial-gradient(120% 90% at 50% -18%, rgba(214, 234, 246, 0.32) 0%, rgba(214, 234, 246, 0) 55%);
+}
+.water--teal .water-card::after {
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.65) 0%, rgba(196, 226, 244, 0.14) 40%, rgba(140, 180, 214, 0.24) 100%);
+}
+
+/* Navy / deep slate typography on the light aqua surface */
+.water--teal .water-title {
+  color: #0e3a4d;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+.water--teal .water-subtitle { color: rgba(58, 96, 124, 0.85); }
+.water--teal .water-subtitle .font-medium { color: #1a4a62; }
+.water--teal .water-pct { color: rgba(58, 96, 124, 0.5); }
+.water--teal .water-note { color: rgba(58, 96, 124, 0.45); }
+
+/* Loader: refined satellite/sonar scan, restrained glow */
+.water--teal .water-ring-scan {
+  border-color: rgba(88, 150, 200, 0.16);
+  background: conic-gradient(
+    from 0deg,
+    rgb(var(--wa-accent), 0) 0deg,
+    rgb(var(--wa-accent), 0) 250deg,
+    rgb(var(--wa-accent), 0.30) 340deg,
+    rgb(var(--wa-hi), 0.5) 356deg,
+    rgb(var(--wa-accent), 0) 360deg
+  );
+  filter: drop-shadow(0 0 3px rgb(var(--wa-accent), 0.22));
+}
+.water--teal .water-card .absolute.h-20.w-20.rounded-full {
+  border-color: rgba(120, 168, 200, 0.28) !important;
+  background: radial-gradient(closest-side, rgba(120, 178, 212, 0.28) 0%, rgba(42, 92, 128, 0.20) 70%, rgba(150, 200, 230, 0.10) 100%) !important;
+  box-shadow: 0 0 8px -2px rgba(96, 150, 195, 0.2), inset 0 0 8px rgba(96, 150, 195, 0.08) !important;
+}
+.water--teal .water-orbit-dot {
+  background: #cfe6f4 !important;
+  box-shadow: 0 0 5px rgb(var(--wa-hi), 0.45) !important;
+}
+.water--teal .water-ring-pulse {
+  border-color: rgba(116, 160, 200, 0.28) !important;
+  box-shadow: 0 0 8px rgb(var(--wa-accent), 0.10) inset !important;
+}
+.water--teal .water-ripple { border-color: rgba(88, 140, 180, 0.24); }
+.water--teal .water-mote { box-shadow: 0 0 5px rgb(var(--wa-accent2), 0.18); }
+
+/* Progress: deep azure ? aqua ? soft cyan, restrained scanning highlight */
+.water--teal .water-track {
+  background: rgba(12, 36, 52, 0.75);
+  box-shadow: inset 0 1px 3px rgba(2, 10, 20, 0.75), 0 0 0 1px rgba(96, 148, 190, 0.14);
+}
+.water--teal .water-fill-flow {
+  background: linear-gradient(90deg, #15668f 0%, #2c8fb4 45%, #5fb9d6 78%, #a8d5ea 100%);
+  box-shadow: 0 0 5px rgba(96, 160, 205, 0.3);
+}
+.water--teal .water-fill-flow::after {
+  background: radial-gradient(closest-side, rgba(214, 240, 252, 0.65), rgba(140, 190, 224, 0));
+}
+
+/* Pipeline pills: professional geospatial styling, minimal glow */
+.water--teal .flood-badge { backdrop-filter: blur(6px); }
+.water--teal .flood-badge.flood-done {
+  background: rgba(168, 202, 226, 0.34) !important;
+  border-color: rgba(202, 226, 246, 0.5) !important;
+  color: #1e3d52 !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+}
+.water--teal .flood-badge.flood-done span { color: #24608a !important; }
+.water--teal .flood-badge.flood-up {
+  background: rgba(104, 140, 172, 0.14) !important;
+  border-color: rgba(150, 182, 210, 0.28) !important;
+  color: rgba(96, 132, 162, 0.8) !important;
+  box-shadow: none !important;
+}
+.water--teal .water-step-active {
+  background: linear-gradient(180deg, rgba(216, 234, 246, 0.86) 0%, rgba(160, 196, 222, 0.76) 100%) !important;
+  border-color: rgba(96, 148, 190, 0.5) !important;
+  color: #123346 !important;
+  box-shadow: 0 1px 4px rgba(18, 48, 66, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+  animation: waterTStepPulse 2.6s ease-in-out infinite;
+}
+@keyframes waterTStepPulse {
+  0%, 100% { box-shadow: 0 1px 4px rgba(18, 48, 66, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.5); }
+  50%      { box-shadow: 0 2px 8px rgba(18, 48, 66, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.66); }
+}
+.water--teal .water-step-dot {
+  background: #1e6a92 !important;
+  box-shadow: none !important;
+  animation: none;
+}
+
+/* Router badge: pastel aqua inset */
+.water--teal .flood-router {
+  border-color: rgba(130, 176, 210, 0.32) !important;
+  background: rgba(196, 218, 238, 0.28) !important;
+}
+.water--teal .flood-router > span:first-child { color: #1a4a66 !important; }
+.water--teal .flood-router > span:last-child { color: rgba(62, 98, 128, 0.8) !important; }
+
+/* -- Agricultural Monitoring � muted moss/sage/seafoam color theme --
+   Scoped to html[data-theme="olive-sage"] (only active while the
+   Agricultural Monitoring dashboard is selected) and the dashboard
+   container [data-theme="agriculture"]. Other categories are untouched. */
+
+/* Layered, medium-dark atmospheric background for the agri dashboard.
+   Edges: deep moss/sage � central: subtle muted seafoam illumination. */
+html[data-theme="olive-sage"] .app-shell {
+  background:
+    radial-gradient(100% 70% at 50% -8%, rgba(148, 178, 138, 0.16) 0%, transparent 55%),
+    radial-gradient(90% 80% at 90% 110%, rgba(45, 70, 54, 0.55) 0%, transparent 60%),
+    radial-gradient(80% 70% at 8% 100%, rgba(60, 92, 68, 0.40) 0%, transparent 60%),
+    linear-gradient(172deg, #22352b 0%, #2a4036 34%, #345046 66%, #3c5a4c 100%) !important;
+}
+
+/* -- Dashboard container (only Agriculture renders this wrapper) -- */
+[data-theme="agriculture"] > div {
+  /* header panel ? pastel sage surface */
+  background: linear-gradient(178deg, rgba(196, 214, 196, 0.28) 0%, rgba(166, 192, 176, 0.22) 100%);
+  border-color: rgba(178, 200, 178, 0.30);
+}
+[data-theme="agriculture"] [class*="bg-[rgba(0,0,0"]:not([data-theme]) {
+  background: linear-gradient(180deg, rgba(196, 214, 196, 0.30) 0%, rgba(172, 196, 180, 0.24) 100%) !important;
+}
+[data-theme="agriculture"] [class*="bg-[rgba(255,255,255,0.02)"] {
+  background: rgba(178, 202, 186, 0.12) !important;
+  border-color: rgba(178, 198, 180, 0.26);
+}
+[data-theme="agriculture"] [class*="border-[rgba(255,255,255,0.08)"],
+[data-theme="agriculture"] [class*="border-[rgba(255,255,255,0.1)"] {
+  border-color: rgba(176, 198, 178, 0.30);
+}
+
+
+
+
+
+
+
+
+/* -- Disaster Management � smoky rust / charcoal / ember color theme --
+   Scoped to .app-shell.disaster-mode (only applied while the Disaster
+   Management dashboard is active on the upload step) and the dashboard
+   container [data-theme="disaster"]. Water Resource Assessment (which
+   shares the aqua-teal theme) is NOT affected. */
+
+/* Layered, medium-dark smoky rust/charcoal background for the disaster
+   dashboard. Deep smoky charcoal edges with muted burnt-ember warmth. */
+.app-shell.disaster-mode {
+  background:
+    radial-gradient(100% 70% at 50% -8%, rgba(214, 92, 44, 0.20) 0%, transparent 55%),
+    radial-gradient(90% 80% at 92% 112%, rgba(54, 22, 10, 0.62) 0%, transparent 60%),
+    radial-gradient(80% 70% at 6% 100%, rgba(68, 26, 12, 0.50) 0%, transparent 60%),
+    linear-gradient(172deg, #200c06 0%, #2a1209 34%, #3a180c 66%, #471e0e 100%) !important;
+}
+
+/* Disaster dashboard accent overrides (only inside the Disaster container).
+   Muted amber / terracotta � NOT warning red or neon orange. */
+[data-theme="disaster"] {
+  --primary:   #e08545;
+  --primary-dark:#c2692e;
+  --primary-50:rgba(224,133,69,0.16);
+  --primary-glow:rgba(224,133,69,0.34);
+  --primary-rgb:224,133,69;
+  --violet:   #f0a466;
+  --violet-50:rgba(240,164,102,0.14);
+  --violet-rgb:240,164,102;
+  --cyan:   #e09962;
+  --cyan-50:rgba(224,153,98,0.14);
+  --cyan-rgb:224,153,98;
+}
+
+/* Header panel -> translucent warm apricot (white text readable) */
+[data-theme="disaster"] [class*="bg-[var(--color-surface-50)]"] {
+  background: linear-gradient(178deg, rgba(255,214,188,0.20) 0%, rgba(255,196,170,0.14) 100%);
+  border-color: rgba(255,196,158,0.30);
+}
+
+/* Metric cards -> soft muted apricot/peach surface */
+[data-theme="disaster"] [class*="bg-[rgba(0,0,0"]:not([data-theme]) {
+  background: linear-gradient(180deg, rgba(255,214,188,0.18) 0%, rgba(255,202,172,0.14) 100%);
+}
+
+/* Chart area -> subtle warm apricot tint */
+[data-theme="disaster"] [class*="bg-[rgba(255,255,255,0.02)"] {
+  background: rgba(255,206,176,0.10);
+  border-color: rgba(255,194,158,0.26);
+}
+
+/* Borders -> soft muted apricot/amber, no neon outlines */
+[data-theme="disaster"] [class*="border-[rgba(255,255,255,0.05)"],
+[data-theme="disaster"] [class*="border-[rgba(255,255,255,0.08)"],
+[data-theme="disaster"] [class*="border-[rgba(255,255,255,0.1)"] {
+  border-color: rgba(255,200,166,0.30);
+}
+
+/* Hero tagline + supporting line reveal */
+.hero-header-tagline { display: inline-flex; }
+.ht-word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(6px);
+  animation: htWordIn 0.9s cubic-bezier(0.2, 0.6, 0.3, 1) forwards;
+  will-change: opacity, transform;
+}
+.ht-word-a { animation-delay: 0.25s; }
+.ht-word-b { animation-delay: 0.6s; }
+@keyframes htWordIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hero-sub {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: heroSubIn 1s cubic-bezier(0.2, 0.6, 0.3, 1) forwards;
+  will-change: opacity, transform;
+}
+@keyframes heroSubIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ht-word,
+  .hero-sub {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }

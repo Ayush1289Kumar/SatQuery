@@ -24,7 +24,7 @@ export default function CategoryPanel({ activeCategory, onCategoryChange }: Cate
         <button
           key={cat.id}
           onClick={() => onCategoryChange(cat.id)}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-md border text-sm font-medium transition-all duration-200 shadow-sm ${
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-md border text-sm font-medium transition-all duration-200 shadow-sm category-btn ${
             activeCategory === cat.id
               ? 'bg-[var(--color-primary-50)] border-[var(--color-primary)] text-[var(--color-primary)] shadow-[0_2px_10px_var(--color-primary-glow)] scale-[1.02]'
               : 'bg-black/20 border-white/10 text-white/70 hover:bg-white/10 hover:text-white hover:border-white/20'

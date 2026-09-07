@@ -43,7 +43,7 @@ export default function ResultsScreen({ images, question, result, onRestart, wat
   return (
     <>
       {water && (
-        <div aria-hidden className={`water-env ${variant === 'teal' ? 'water--teal' : ''}`}>
+        <div aria-hidden className={`water-env ${variant === 'teal' ? 'water--teal' : 'water--indigo'}`}>
           <div className="water-base" />
           <div className="water-blob water-blob-a" />
           <div className="water-blob water-blob-b" />
@@ -59,7 +59,7 @@ export default function ResultsScreen({ images, question, result, onRestart, wat
           <div className="water-mote water-mote-4" />
         </div>
       )}
-      <div className={`grid gap-6 lg:grid-cols-[1.6fr_1fr] ${water ? `wr-root ${variant === 'teal' ? 'water--teal' : ''}` : ''}`}>
+      <div className={`grid gap-6 lg:grid-cols-[1.6fr_1fr] ${water ? `wr-root ${variant === 'teal' ? 'water--teal' : 'water--indigo'}` : ''}`}>
       {/* Left: map evidence */}
       <div className="space-y-4">
         <div className={water ? 'water-panel wr-map overflow-hidden rounded-2xl' : 'overflow-hidden rounded-2xl border border-[rgba(255,255,255,0.10)] bg-[rgba(255,255,255,0.03)]'}>

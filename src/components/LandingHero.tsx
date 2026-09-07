@@ -37,29 +37,21 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
         }}
       />
       
-      <div className="flex h-full w-full flex-col md:flex-row relative z-10">
-        {/* Left side: Content (approx 45%) */}
-        <div className="relative z-10 flex h-full flex-col justify-center px-6 pt-32 pb-12 md:pt-32 md:pb-16 md:w-[45%] md:pl-16 xl:pl-24">
-          <div className="max-w-lg">
-            <span className="mb-4 inline-block text-xs font-semibold uppercase tracking-[0.35em] text-[var(--color-primary)]">
-              India &middot; Satellite Intelligence
-            </span>
-            <h1 className="font-display text-3xl font-medium leading-[1.15] text-white sm:text-4xl lg:text-5xl">
-              Purposeful, evidence-based
-              <br />
-              <span className="italic text-[var(--color-primary)] drop-shadow-[0_0_15px_rgba(100,255,218,0.3)]">land &amp; disaster</span> intelligence.
-            </h1>
-            <p className="mt-4 text-xs font-light leading-relaxed text-white/70 sm:text-sm max-w-md">
-              Explore the subcontinent, ask a satellite image a plain-English question,
-              and get an answer backed by visual proof on the map.
-            </p>
-          </div>
-        </div>
-
-        {/* Right side: 3D Visualization (approx 55%) */}
-        <div className="relative z-0 h-[50vh] w-full md:h-full md:w-[55%]">
+      <div className="flex h-full w-full relative z-10">
+        {/* 3D Visualization — primary hero focus */}
+        <div className="relative z-0 h-[50vh] w-full md:h-full md:w-full">
           <EarthObservationScene />
         </div>
+      </div>
+
+      {/* Supporting tagline — independent lower-left hero position (not a model caption) */}
+      <div className="absolute bottom-44 left-6 z-30 max-w-sm text-left sm:left-12">
+        <p
+          className="hero-sub text-left text-xs font-light leading-relaxed text-white/65 sm:text-sm"
+          style={{ animationDelay: '1.8s' }}
+        >
+          Satellite intelligence, translated into insight.
+        </p>
       </div>
       
       {/* Centered Bottom "Get Started" Button with floating animation */}

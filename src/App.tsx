@@ -39,6 +39,7 @@ export default function App() {
   const selectCategory = (cat: Category) => {
     setActiveCategory(cat)
     setTheme(CATEGORY_THEME[cat])
+    setDisasterMode(cat === 'disaster')
   }
   const [step, setStep] = useState<Step>('upload')
   const [mode, setMode] = useState<UploadMode>('twoDate')
@@ -49,6 +50,9 @@ export default function App() {
   // Visual-only flag: the flood-extent demo runs inside an aquatic environment.
   const [waterAnalysis, setWaterAnalysis] = useState(false)
   const [waterVariant, setWaterVariant] = useState<'azure' | 'teal'>('azure')
+  const [floodMode, setFloodMode] = useState(false)
+  const [waterMode, setWaterMode] = useState(false)
+  const [disasterMode, setDisasterMode] = useState(false)
   const timersRef = useRef<number[]>([])
 
   useEffect(() => {
@@ -85,6 +89,8 @@ export default function App() {
     // Aquatic analysis environments: flood extent (deep ocean) + water body mapping (deep teal)
     setWaterAnalysis(scenario.id === 'flood' || scenario.id === 'water')
     setWaterVariant(scenario.id === 'water' ? 'teal' : 'azure')
+    setFloodMode(scenario.id === 'flood')
+    setWaterMode(scenario.id === 'water')
     startAnalysis(() => scenario.result)
   }
 
@@ -101,12 +107,14 @@ export default function App() {
     setActiveStep(0)
     setWaterAnalysis(false)
     setWaterVariant('azure')
+    setFloodMode(false)
+    setWaterMode(false)
     setStep('upload')
   }
 
   return (
     <SmoothScroll>
-      <div className="app-shell relative flex min-h-full flex-col bg-[var(--color-surface)]">
+      <div className={`app-shell relative flex min-h-full flex-col bg-[var(--color-surface)]${floodMode ? ' flood-mode' : ''}${waterMode ? ' water-mode' : ''}${disasterMode && step === 'upload' ? ' disaster-mode' : ''}`}>
         {/* Viewport glow frame */}
         <div className="glow-frame" aria-hidden />
 
@@ -206,7 +214,20 @@ function Header() {
   return (
     <header className="sticky top-0 z-30 border-b border-[rgba(255,255,255,0.08)] bg-[var(--color-surface-50)] backdrop-blur-xl">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-3.5">
-        <Logo />
+        <div className="flex min-w-0 items-center gap-3">
+          <Logo />
+          <span
+            className="hero-header-tagline hidden min-w-0 md:inline-flex items-center gap-2 text-sm sm:text-[0.95rem]"
+            aria-label="Ask Earth. See the Answer."
+          >
+            <span className="ht-word ht-word-a whitespace-nowrap font-display font-medium tracking-wide text-white/95">
+              Ask Earth.
+            </span>
+            <span className="ht-word ht-word-b whitespace-nowrap font-display font-medium tracking-wide text-[var(--color-primary)]">
+              See the Answer.
+            </span>
+          </span>
+        </div>
         <div className="flex items-center gap-3">
           <span className="hidden rounded-full border border-[var(--color-primary-glow)] bg-[var(--color-primary-50)] px-3 py-1 text-xs font-semibold text-[var(--color-primary)] sm:inline-flex">
             MVP Prototype

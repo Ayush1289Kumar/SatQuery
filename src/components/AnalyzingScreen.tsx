@@ -14,10 +14,10 @@ const STEPS = ['Validate', 'Route', 'Analyze', 'Explain']
 
 /* Water-themed pipeline badge (same information as StepBadge, aquatic styling). */
 function WaterStepBadge({ label, active, complete }: { label: string; active: boolean; complete: boolean }) {
-  const base = 'flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold backdrop-blur-sm transition-all duration-300'
+  const base = 'flood-badge flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold backdrop-blur-sm transition-all duration-300'
   if (complete) {
     return (
-      <span className={`${base} border border-[rgba(150,222,250,0.38)] bg-[rgba(74,150,196,0.26)] text-[rgba(214,240,252,0.92)] shadow-[inset_0_1px_0_rgba(220,244,254,0.22),0_0_12px_-4px_rgba(125,211,252,0.45)]`}>
+      <span className={`${base} flood-done border border-[rgba(150,222,250,0.38)] bg-[rgba(74,150,196,0.26)] text-[rgba(214,240,252,0.92)] shadow-[inset_0_1px_0_rgba(220,244,254,0.22),0_0_12px_-4px_rgba(125,211,252,0.45)]`}>
         <span className="text-[10px] text-[#9BE4FF]">✓</span> {label}
       </span>
     )
@@ -31,7 +31,7 @@ function WaterStepBadge({ label, active, complete }: { label: string; active: bo
     )
   }
   return (
-    <span className={`${base} border border-[rgba(160,196,228,0.22)] bg-[rgba(70,110,150,0.16)] text-[rgba(198,224,244,0.62)] shadow-[inset_0_1px_0_rgba(210,236,250,0.10)]`}>
+    <span className={`${base} flood-up border border-[rgba(160,196,228,0.22)] bg-[rgba(70,110,150,0.16)] text-[rgba(198,224,244,0.62)] shadow-[inset_0_1px_0_rgba(210,236,250,0.10)]`}>
       {label}
     </span>
   )
@@ -42,9 +42,9 @@ export default function AnalyzingScreen({ question, activeStep, workflowLabel, w
   const Step = water ? WaterStepBadge : StepBadge
 
   return (
-    <div className="relative mx-auto max-w-2xl">
+    <div className={`relative mx-auto max-w-2xl ${water ? (variant === 'teal' ? 'water--teal' : 'water--indigo') : ''}`}>
       {water && (
-        <div aria-hidden className={`water-env ${variant === 'teal' ? 'water--teal' : ''}`}>
+        <div aria-hidden className={`water-env ${variant === 'teal' ? 'water--teal' : 'water--indigo'}`}>
           {/* Layer 1 — deep ocean base gradient */}
           <div className="water-base" />
           {/* Layer 2 — large blurred organic current shapes */}
@@ -61,6 +61,13 @@ export default function AnalyzingScreen({ question, activeStep, workflowLabel, w
           <div className="water-spot" />
           {/* Extremely subtle underwater caustic light */}
           <div className="water-caustics" />
+          {/* Flood-only: occasional deep-surface disturbance ripples */}
+          {variant !== 'teal' && (
+            <>
+              <span className="flood-ripple flood-ripple-1" />
+              <span className="flood-ripple flood-ripple-2" />
+            </>
+          )}
           {/* Sparse floating light particles */}
           <span className="water-mote water-mote-1" />
           <span className="water-mote water-mote-2" />
@@ -161,7 +168,7 @@ export default function AnalyzingScreen({ question, activeStep, workflowLabel, w
           <div
             className={`mx-auto mt-6 inline-flex max-w-md items-center gap-2.5 rounded-xl px-5 py-2.5 text-sm ${
               water
-                ? 'water-in water-in-5 border border-[rgba(125,211,252,0.22)] bg-[rgba(30,80,130,0.18)]'
+                ? 'water-in water-in-5 flood-router border border-[rgba(125,211,252,0.22)] bg-[rgba(30,80,130,0.18)]'
                 : 'border border-[rgba(var(--primary-rgb),0.25)] bg-[rgba(var(--primary-rgb),0.10)]'
             }`}
           >
