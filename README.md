@@ -1,10 +1,10 @@
-# 🛰️ SatQuery AI — Satellite Image Q&A
+# 🛰️ PrithviQ AI — Satellite Image Q&A
 
 Upload a satellite image, ask a question in plain English, and get a clear answer with map-based proof. Built for disaster response, agriculture, forestry and urban-planning teams.
 
 ## 🔗 Live
 
-**Live Link:** [https://satquery-iota.vercel.app/](https://satquery-iota.vercel.app/)
+**Live Link:** [https://prithviq-iota.vercel.app/](https://prithviq-iota.vercel.app/)
 
 > Deployed on Vercel.
 
@@ -38,8 +38,8 @@ Upload a satellite image, ask a question in plain English, and get a clear answe
 ### Installation
 
 ```bash
-git clone https://github.com/Ayush1289Kumar/SatQuery.git
-cd SatQuery
+git clone https://github.com/Ayush1289Kumar/PrithviQ.git
+cd PrithviQ
 npm install
 ```
 
@@ -85,7 +85,7 @@ Serves the production build locally.
 
 ## 🤝 Contributing
 
-Feel free to open issues or submit pull requests on the [GitHub repository](https://github.com/Ayush1289Kumar/SatQuery).
+Feel free to open issues or submit pull requests on the [GitHub repository](https://github.com/Ayush1289Kumar/PrithviQ).
 
 ## 📄 License
 

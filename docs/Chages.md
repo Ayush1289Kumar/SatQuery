@@ -1,4 +1,4 @@
-# SatQuery AI - Change Log
+# PrithviQ AI - Change Log
 
 This file records changes to the project. Newest entries appear at the top.
 

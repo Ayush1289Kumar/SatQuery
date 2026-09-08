@@ -1,11 +1,11 @@
-# GEO-NIUS Frontend Technology Stack
+# PrithviQ Frontend Technology Stack
 
-> Audit of the actual frontend implementation (project: `satquery-ai-frontend`, version 0.1.0).
+> Audit of the actual frontend implementation (project: `prithviq-ai-frontend`, version 0.1.0).
 > Every technology listed below was verified against the source code — no assumptions or defaults.
 
 ## 1. Project Overview
 
-GEO-NIUS is a single-page React application that simulates a satellite-imagery analysis platform. Users pick a category, upload imagery, ask a question, and view results on an interactive map. There is no backend — all analysis results are mock data driven by timed state transitions. Navigation is state-driven (no router), styling is Tailwind v4 plus one global CSS file with a `data-theme` token system, and the hero section features a real-time Three.js cinematic environment with dynamic shaders and smooth scrolling physics.
+PrithviQ is a single-page React application that simulates a satellite-imagery analysis platform. Users pick a category, upload imagery, ask a question, and view results on an interactive map. There is no backend — all analysis results are mock data driven by timed state transitions. Navigation is state-driven (no router), styling is Tailwind v4 plus one global CSS file with a `data-theme` token system, and the hero section features a real-time Three.js cinematic environment with dynamic shaders and smooth scrolling physics.
 
 ## 2. Technology Stack Summary
 

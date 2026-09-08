@@ -1,4 +1,4 @@
-# SatQuery AI — Design System Specification
+# PrithviQ AI — Design System Specification
 
 > Persistent design tokens for AI coding agents and developers. These tokens are wired into
 > `frontend/src/index.css` (Tailwind v4 `@theme`). Keep this file and the CSS in sync.

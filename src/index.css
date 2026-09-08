@@ -4,7 +4,7 @@
 @import "@fontsource-variable/fraunces";
 
 /* ============================================================
-   SatQuery AI — design tokens (Forest Canopy theme)
+   PrithviQ AI — design tokens (Forest Canopy theme)
    Earthy greens, browns, and sage palette
    ============================================================ */
 @theme {
@@ -607,7 +607,7 @@ a.hero-earthy:hover {
 }
 
 /* ============================================================
-   GEO-NIUS — brand lockup (3D mark + wordmark)
+   PrithviQ — brand lockup (3D mark + wordmark)
    - .logo-halo   : atmospheric light behind the 3D mark (pure
                     radial gradients — deliberately NOT a card/box)
    - .geo-word    : wordmark; breathes subtly and brightens on hover
@@ -691,7 +691,7 @@ a.hero-earthy:hover {
 }
 
 /* ============================================================
-   GEO-NIUS — Aquatic analysis environment (flood-extent mode)
+   PrithviQ — Aquatic analysis environment (flood-extent mode)
    Visual-only overlay scoped to AnalyzingScreen `water` variant.
    ============================================================ */
 

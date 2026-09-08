@@ -5,7 +5,7 @@ import * as THREE from 'three'
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
 
 /**
- * GEO-NIUS — animated 3D brand lockup.
+ * PrithviQ — animated 3D brand lockup.
  *
  * A single cohesive Three.js composition (no drei/gsap — the entrance
  * choreography, hover glow, idle pulse and parallax are driven in useFrame so
@@ -432,16 +432,16 @@ function GeoScene({ reduced, hover, pointer }: GeoSceneProps) {
     </>
   )
 }
-/** Sequential "GEO-NIUS" reveal: GEO → hyphen (energy pulse) → NIUS. */
+/** Sequential "PrithviQ" reveal. */
 const WORDMARK: { ch: string; delay: number; cls?: string }[] = [
-  { ch: 'G', delay: 0, cls: 'geo-geo' },
-  { ch: 'E', delay: 80, cls: 'geo-geo' },
-  { ch: 'O', delay: 160, cls: 'geo-o' },
-  { ch: '-', delay: 430, cls: 'geo-hyphen' },
-  { ch: 'N', delay: 320 },
-  { ch: 'I', delay: 410 },
-  { ch: 'U', delay: 500 },
-  { ch: 'S', delay: 590 },
+  { ch: 'P', delay: 0, cls: 'geo-geo' },
+  { ch: 'r', delay: 80, cls: 'geo-geo' },
+  { ch: 'i', delay: 160, cls: 'geo-o' },
+  { ch: 't', delay: 240 },
+  { ch: 'h', delay: 320 },
+  { ch: 'v', delay: 400 },
+  { ch: 'i', delay: 480 },
+  { ch: 'Q', delay: 560, cls: 'geo-hyphen' },
 ]
 
 /**
@@ -523,7 +523,7 @@ export default function Logo({ variant = 'header' }: { variant?: 'header' | 'her
         </Canvas>
       </div>
 
-      <div className={`geo-word whitespace-nowrap leading-none font-sans ${textCls} text-white`} aria-label="GEO-NIUS" role="img">
+      <div className={`geo-word whitespace-nowrap leading-none font-sans ${textCls} text-white`} aria-label="PrithviQ" role="img">
         {WORDMARK.map(({ ch, delay, cls }) => (
           <span
             key={ch + String(delay)}

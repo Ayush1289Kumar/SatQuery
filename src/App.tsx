@@ -291,7 +291,7 @@ function Footer() {
     <footer className="relative z-10 border-t border-[rgba(255,255,255,0.07)] bg-[rgba(0,0,0,0.50)] px-4 py-5">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between">
         <span className="text-xs text-[rgba(255,255,255,0.30)]">
-          GEO-NIUS — demo prototype. Results are simulated and not for operational use.
+          PrithviQ — demo prototype. Results are simulated and not for operational use.
         </span>
         <span className="text-xs text-[rgba(255,255,255,0.20)]">© 2024</span>
       </div>

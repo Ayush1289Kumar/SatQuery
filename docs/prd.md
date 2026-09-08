@@ -1,4 +1,4 @@
-# SatQuery AI - Product Requirements Document
+# PrithviQ AI - Product Requirements Document
 
 ## 1. Product Goal
 
@@ -128,4 +128,4 @@ Build a web app where users upload satellite image(s), ask a question in simple 
 
 ## 10. Presentation Line
 
-> SatQuery AI makes satellite-image analysis simple, fast, secure, and evidence-based for non-expert decision-makers.
+> PrithviQ AI makes satellite-image analysis simple, fast, secure, and evidence-based for non-expert decision-makers.

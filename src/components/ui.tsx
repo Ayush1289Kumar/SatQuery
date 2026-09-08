@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 
 /* ============================================================
-   SatQuery AI — Shared UI primitives (Midnight / Glass theme)
+   PrithviQ AI — Shared UI primitives (Midnight / Glass theme)
    ============================================================ */
 
 /* ── Card ──────────────────────────────────────────────────── */

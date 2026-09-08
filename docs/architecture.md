@@ -1,4 +1,4 @@
-# SatQuery AI - Architecture Document
+# PrithviQ AI - Architecture Document
 
 ## 1. Architecture Overview
 
