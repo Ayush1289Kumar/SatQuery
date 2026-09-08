@@ -27,7 +27,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
   componentDidCatch(error: Error, info: ErrorInfo) {
     // Log to console in development; in production you'd send this to a monitoring service
-    if (import.meta.env.DEV) {
+    if ((import.meta as any).env?.DEV) {
       console.error('ErrorBoundary caught an error:', error, info)
     }
   }

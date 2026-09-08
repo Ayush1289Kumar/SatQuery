@@ -1,4 +1,4 @@
-import React, { useRef, useMemo } from 'react';
+import { useRef, useMemo } from 'react';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
@@ -8,7 +8,7 @@ interface MarkerProps {
   position: [number, number, number];
   title: string;
   value: string;
-  icon: React.ElementType<any>;
+  icon: any;
   delay?: number;
 }
 
@@ -16,6 +16,7 @@ function Marker({ position, title, value, icon: Icon, delay = 0 }: MarkerProps) 
   const floatingGroupRef = useRef<THREE.Group>(null);
   const lineRef = useRef<THREE.Line<THREE.BufferGeometry, THREE.LineBasicMaterial>>(null);
   const startY = position[1];
+  const ThreeLine = 'line' as any;
 
   // Memoize geometry positions so they aren't reallocated every render
   const lineGeometry = useMemo(() => {
@@ -53,9 +54,9 @@ function Marker({ position, title, value, icon: Icon, delay = 0 }: MarkerProps) 
       </mesh>
 
       {/* Connecting tether line */}
-      <line ref={lineRef} geometry={lineGeometry}>
+      <ThreeLine ref={lineRef as any} geometry={lineGeometry}>
         <lineBasicMaterial color="#ffffff" transparent opacity={0.2} />
-      </line>
+      </ThreeLine>
 
       {/* Hovering UI card */}
       <group ref={floatingGroupRef}>

@@ -1,4 +1,4 @@
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas } from '@react-three/fiber';
 import { CameraControls } from '@react-three/drei';
 import { Suspense, useRef, useEffect } from 'react';
 import TerrainTile from './TerrainTile';
