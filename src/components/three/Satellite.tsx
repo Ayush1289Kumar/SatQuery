@@ -25,15 +25,15 @@ export default function Satellite() {
     
     // Pulsating scanning beam and lens glow
     if (lightConeRef.current && lensGlowRef.current) {
-      const pulse = 0.6 + Math.sin(time * 3) * 0.4;
+      const pulse = 0.8 + Math.sin(time * 3) * 0.2;
       
       const coneMaterial = lightConeRef.current.material as THREE.ShaderMaterial;
       if (coneMaterial.uniforms) {
-        coneMaterial.uniforms.opacity.value = 0.8 * pulse; // adjusted baseline opacity
+        coneMaterial.uniforms.opacity.value = 0.06 * pulse; // much lower opacity
       }
       
       const glowMaterial = lensGlowRef.current.material as THREE.MeshBasicMaterial;
-      glowMaterial.opacity = 1.0 * pulse;
+      glowMaterial.opacity = 0.6 * pulse;
     }
   });
 
@@ -43,30 +43,30 @@ export default function Satellite() {
         SATELLITE BODY
       */}
       <group>
-        {/* Core Bus (Gold foil/metallic) */}
+        {/* Core Bus (Bright Gold foil) */}
         <mesh>
           <boxGeometry args={[0.9, 0.9, 1.0]} />
-          <meshStandardMaterial color="#cfae60" metalness={0.9} roughness={0.3} />
+          <meshStandardMaterial color="#ffd700" metalness={0.6} roughness={0.4} />
         </mesh>
         
-        {/* Outer Dark Armor/Panels */}
+        {/* Outer Silver Armor/Panels */}
         <mesh position={[0, 0.05, 0]}>
           <boxGeometry args={[0.95, 0.8, 0.8]} />
-          <meshStandardMaterial color="#2a2a2a" metalness={0.8} roughness={0.4} />
+          <meshStandardMaterial color="#e0e0e0" metalness={0.5} roughness={0.2} />
         </mesh>
         <mesh position={[0, -0.05, 0]}>
           <boxGeometry args={[0.8, 0.95, 0.8]} />
-          <meshStandardMaterial color="#2a2a2a" metalness={0.8} roughness={0.4} />
+          <meshStandardMaterial color="#e0e0e0" metalness={0.5} roughness={0.2} />
         </mesh>
         
         {/* Antenna/Instruments on top */}
         <mesh position={[0, 0.6, -0.2]}>
-          <cylinderGeometry args={[0.05, 0.05, 0.4]} />
-          <meshStandardMaterial color="#888888" metalness={1} roughness={0.2} />
+          <cylinderGeometry args={[0.03, 0.03, 0.6]} />
+          <meshStandardMaterial color="#ffffff" metalness={0.8} roughness={0.2} />
         </mesh>
-        <mesh position={[0, 0.8, -0.2]}>
-          <sphereGeometry args={[0.15, 16, 16]} />
-          <meshStandardMaterial color="#ffffff" metalness={0.1} roughness={0.9} />
+        <mesh position={[0, 0.9, -0.2]}>
+          <sphereGeometry args={[0.1, 16, 16]} />
+          <meshStandardMaterial color="#ffffff" metalness={0.2} roughness={0.1} />
         </mesh>
       </group>
 
@@ -74,70 +74,69 @@ export default function Satellite() {
         SOLAR PANELS
       */}
       {/* Left Panel Array */}
-      <group position={[-1.8, 0, 0]}>
+      <group position={[-2.4, 0, 0]}>
         {/* Truss */}
-        <mesh position={[0.9, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
-          <cylinderGeometry args={[0.03, 0.03, 0.9]} />
-          <meshStandardMaterial color="#555555" metalness={0.8} roughness={0.2} />
+        <mesh position={[1.4, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+          <cylinderGeometry args={[0.03, 0.03, 1.0]} />
+          <meshStandardMaterial color="#aaaaaa" metalness={0.8} roughness={0.2} />
         </mesh>
         {/* Panel Base */}
         <mesh>
-          <boxGeometry args={[2.2, 0.05, 1.2]} />
-          <meshStandardMaterial color="#0a1526" metalness={0.9} roughness={0.1} />
+          <boxGeometry args={[3.2, 0.04, 1.4]} />
+          <meshStandardMaterial color="#0f2540" metalness={0.6} roughness={0.4} />
         </mesh>
         {/* Panel Grid Lines */}
-        <mesh position={[0, 0.026, 0]}>
-          <planeGeometry args={[2.1, 1.1]} />
-          <meshBasicMaterial color="#0a1526" />
+        <mesh position={[0, 0.021, 0]}>
+          <planeGeometry args={[3.1, 1.3]} />
+          <meshBasicMaterial color="#0f2540" />
         </mesh>
-        <lineSegments position={[0, 0.03, 0]} rotation={[Math.PI / 2, 0, 0]}>
-          <edgesGeometry args={[new THREE.PlaneGeometry(2.1, 1.1, 6, 3)]} />
-          <lineBasicMaterial color="#4a7eb0" transparent opacity={0.6} />
+        <lineSegments position={[0, 0.025, 0]} rotation={[Math.PI / 2, 0, 0]}>
+          <edgesGeometry args={[new THREE.PlaneGeometry(3.1, 1.3, 8, 3)]} />
+          <lineBasicMaterial color="#64ffda" transparent opacity={0.7} />
         </lineSegments>
       </group>
 
       {/* Right Panel Array */}
-      <group position={[1.8, 0, 0]}>
+      <group position={[2.4, 0, 0]}>
         {/* Truss */}
-        <mesh position={[-0.9, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
-          <cylinderGeometry args={[0.03, 0.03, 0.9]} />
-          <meshStandardMaterial color="#555555" metalness={0.8} roughness={0.2} />
+        <mesh position={[-1.4, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+          <cylinderGeometry args={[0.03, 0.03, 1.0]} />
+          <meshStandardMaterial color="#aaaaaa" metalness={0.8} roughness={0.2} />
         </mesh>
         {/* Panel Base */}
         <mesh>
-          <boxGeometry args={[2.2, 0.05, 1.2]} />
-          <meshStandardMaterial color="#0a1526" metalness={0.9} roughness={0.1} />
+          <boxGeometry args={[3.2, 0.04, 1.4]} />
+          <meshStandardMaterial color="#0f2540" metalness={0.6} roughness={0.4} />
         </mesh>
         {/* Panel Grid Lines */}
-        <mesh position={[0, 0.026, 0]}>
-          <planeGeometry args={[2.1, 1.1]} />
-          <meshBasicMaterial color="#0a1526" />
+        <mesh position={[0, 0.021, 0]}>
+          <planeGeometry args={[3.1, 1.3]} />
+          <meshBasicMaterial color="#0f2540" />
         </mesh>
-        <lineSegments position={[0, 0.03, 0]} rotation={[Math.PI / 2, 0, 0]}>
-          <edgesGeometry args={[new THREE.PlaneGeometry(2.1, 1.1, 6, 3)]} />
-          <lineBasicMaterial color="#4a7eb0" transparent opacity={0.6} />
+        <lineSegments position={[0, 0.025, 0]} rotation={[Math.PI / 2, 0, 0]}>
+          <edgesGeometry args={[new THREE.PlaneGeometry(3.1, 1.3, 8, 3)]} />
+          <lineBasicMaterial color="#64ffda" transparent opacity={0.7} />
         </lineSegments>
       </group>
 
       {/* 
         CAMERA / LENS (pointing forward/down towards the terrain)
-        Since lookAt points the local Z-axis towards the target, the lens should be on the +Z face.
       */}
       <group position={[0, 0, 0.55]}>
-        {/* Lens Housing */}
+        {/* Lens Housing (Smaller so it doesn't look like a projector) */}
         <mesh position={[0, 0, 0]} rotation={[Math.PI / 2, 0, 0]}>
-          <cylinderGeometry args={[0.25, 0.3, 0.3, 32]} />
-          <meshStandardMaterial color="#111111" metalness={0.9} roughness={0.2} />
+          <cylinderGeometry args={[0.15, 0.18, 0.15, 32]} />
+          <meshStandardMaterial color="#888888" metalness={0.5} roughness={0.5} />
         </mesh>
         
         {/* Glowing Lens Core */}
-        <mesh ref={lensGlowRef} position={[0, 0, 0.16]} rotation={[Math.PI / 2, 0, 0]}>
-          <cylinderGeometry args={[0.2, 0.2, 0.02, 32]} />
-          <meshBasicMaterial color="#ffffff" transparent opacity={1.0} />
+        <mesh ref={lensGlowRef} position={[0, 0, 0.08]} rotation={[Math.PI / 2, 0, 0]}>
+          <cylinderGeometry args={[0.1, 0.1, 0.02, 32]} />
+          <meshBasicMaterial color="#ffffff" transparent opacity={0.8} />
         </mesh>
         
         {/* Volumetric Scanning Beam (Cone) */}
-        <mesh ref={lightConeRef} position={[0, 0, 6.16]} rotation={[-Math.PI / 2, 0, 0]}>
+        <mesh ref={lightConeRef} position={[0, 0, 6.08]} rotation={[-Math.PI / 2, 0, 0]}>
           <coneGeometry args={[3.5, 12, 32, 1, true]} />
           <shaderMaterial
             transparent={true}
@@ -146,7 +145,7 @@ export default function Satellite() {
             side={THREE.DoubleSide}
             uniforms={{
               color: { value: new THREE.Color('#ffffff') },
-              opacity: { value: 0.4 }
+              opacity: { value: 0.06 } // Default low opacity
             }}
             vertexShader={`
               varying vec3 vPosition;
@@ -163,18 +162,15 @@ export default function Satellite() {
                 // vPosition.y goes from -6 (base) to +6 (tip)
                 float y = (vPosition.y + 6.0) / 12.0; 
                 
-                // Fade out near the base (y=0) and be brightest near the tip (y=1)
-                float fade = smoothstep(0.0, 0.6, y);
+                // Very soft fade
+                float fade = smoothstep(0.0, 0.8, y);
                 
-                // Make edges brighter to simulate volumetric scattering
+                // Subtle edge glow
                 float dist = length(vPosition.xz);
-                float radius = 3.5 * y; // radius is 0 at tip (y=1), wait!
-                // Tip is at y=6 (normalized 1.0), base is at y=-6 (normalized 0.0).
-                // At tip, radius is 0. At base, radius is 3.5.
                 float currentRadius = 3.5 * (1.0 - y);
-                float edge = smoothstep(currentRadius * 0.6, currentRadius, dist);
+                float edge = smoothstep(currentRadius * 0.3, currentRadius, dist);
                 
-                float alpha = fade * (0.3 + edge * 0.7) * opacity;
+                float alpha = fade * (0.1 + edge * 0.9) * opacity;
                 
                 gl_FragColor = vec4(color, alpha);
               }
