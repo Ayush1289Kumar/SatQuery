@@ -20,12 +20,7 @@ function SceneSetup() {
     }
   }, []);
 
-  useFrame((_, delta) => {
-    if (controlsRef.current) {
-      // Gentle auto-rotation
-      controlsRef.current.azimuthAngle += 0.05 * delta;
-    }
-  });
+
 
   return (
     <CameraControls 
