@@ -1,1 +1,21 @@
-{"0": "App.tsx", "1": "dependencies", "2": "devDependencies", "3": "ResultsScreen.tsx", "4": "compilerOptions", "5": "Logo.tsx", "6": "RegionMap.tsx", "7": "compilerOptions", "8": "AIQuerySuggestions.tsx", "9": "EarthObservationScene.tsx", "10": "replace_vars.cjs", "11": "tsconfig.json", "12": "vite.config.ts"}
+{
+  "0": "mock.ts",
+  "1": "dependencies",
+  "2": "devDependencies",
+  "3": "SatQuery AI - Product Requirements Document",
+  "4": "compilerOptions",
+  "5": "Logo.tsx",
+  "6": "RegionMap.tsx",
+  "7": "compilerOptions",
+  "8": "App.tsx",
+  "9": "EarthObservationScene.tsx",
+  "10": "replace_vars.cjs",
+  "11": "tsconfig.json",
+  "12": "vite.config.ts",
+  "13": "2. Component Breakdown",
+  "14": "🛰️ SatQuery AI — Satellite Image Q&A",
+  "15": "SatQuery AI - Change Log",
+  "16": "GEO-NIUS Frontend Technology Stack",
+  "17": "ErrorBoundary",
+  "18": "SatQuery AI — Design System Specification"
+}

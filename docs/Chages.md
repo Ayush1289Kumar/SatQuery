@@ -2,7 +2,17 @@
 
 This file records changes to the project. Newest entries appear at the top.
 
-## [Unreleased] - 2026-09-02
+## [Unreleased] - 2026-09-08
+
+### Added
+- **3D Satellite**: Added a new interactive satellite model to the `EarthObservationScene` 3D environment.
+- **Lighting & Design**: Improved satellite lighting and model design.
+
+### Fixed
+- **Analysis Markers**: Fixed `AnalysisMarker` layout and 3D positioning.
+- **Build & TypeScript**: Resolved strict type errors in `AnalysisMarkers`, `EarthObservationScene`, and `ErrorBoundary` that were blocking Vercel builds.
+
+## [MVP - Frontend Prototype] - 2026-09-02
 
 ### Changed
 - **Redesign**: Completely overhauled the UI to an Obsidian dark theme with glassmorphism (`backdrop-blur-xl`, semi-transparent borders).
