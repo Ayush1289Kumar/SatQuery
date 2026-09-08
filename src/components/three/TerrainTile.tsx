@@ -97,7 +97,7 @@ export default function TerrainTile() {
 
   const customShader = useMemo(() => ({
     uniforms: {
-      uScanColor: { value: new THREE.Color('#64ffda') },
+      uScanColor: { value: new THREE.Color('#c1d6cc') },
       uTime: { value: 0.0 }
     },
     vertexShader: `
@@ -117,60 +117,57 @@ export default function TerrainTile() {
       varying vec3 vNormal;
       
       void main() {
-        // Biome colors
-        vec3 waterColor = vec3(0.05, 0.2, 0.3); 
-        vec3 forestColor = vec3(0.1, 0.2, 0.1); 
-        vec3 rockColor = vec3(0.3, 0.28, 0.25); 
-        vec3 snowColor = vec3(0.8, 0.85, 0.9); 
+        // Biome colors based on realistic earth tones
+        vec3 deepWater = vec3(0.1, 0.25, 0.35);
+        vec3 shallowWater = vec3(0.2, 0.45, 0.55);
+        vec3 sandColor = vec3(0.7, 0.65, 0.5);
+        vec3 forestColor = vec3(0.15, 0.3, 0.15);
+        vec3 rockColor = vec3(0.35, 0.3, 0.28);
+        vec3 snowColor = vec3(0.9, 0.95, 1.0);
         
-        vec3 landColor = mix(forestColor, rockColor, smoothstep(0.2, 1.2, vPosition.y));
-        landColor = mix(landColor, snowColor, smoothstep(1.5, 2.2, vPosition.y));
-        vec3 solidBaseColor = mix(waterColor, landColor, smoothstep(-0.01, 0.05, vPosition.y));
+        // Elevation mapping
+        float h = vPosition.y;
+        vec3 color = mix(deepWater, shallowWater, smoothstep(-0.2, 0.0, h));
+        color = mix(color, sandColor, smoothstep(0.0, 0.05, h));
+        color = mix(color, forestColor, smoothstep(0.05, 0.3, h));
+        color = mix(color, rockColor, smoothstep(0.9, 1.5, h));
+        color = mix(color, snowColor, smoothstep(1.8, 2.4, h));
         
+        // Add subtle noise texture variation (simplified)
+        float noise = fract(sin(dot(vPosition.xz, vec2(12.9898, 78.233))) * 43758.5453);
+        color *= 0.9 + noise * 0.1;
+        
+        // Lighting
         vec3 lightDir = normalize(vec3(1.0, 1.5, 1.0));
-        float diff = max(0.0, dot(vNormal, lightDir)) * 0.7 + 0.3;
+        float diff = max(0.0, dot(vNormal, lightDir));
+        float ambient = 0.3;
+        vec3 finalColor = color * (diff * 0.8 + ambient);
         
-        // Grid lines (hologram base)
-        float gridThickness = 0.04;
-        float gridX = step(1.0 - gridThickness, fract(vPosition.x * 2.0));
-        float gridZ = step(1.0 - gridThickness, fract(vPosition.z * 2.0));
+        // Additive scan effect passing over the terrain
+        float distFromCenter = length(vPosition.xz);
+        float scanPhase = fract(uTime * 0.1); 
+        float scanRadius = scanPhase * 15.0; 
+        
+        // Scanning ring
+        float scanIntensity = smoothstep(1.5, 0.0, abs(distFromCenter - scanRadius));
+        // Fade out scan at the edges of the cycle
+        scanIntensity *= smoothstep(0.0, 0.1, scanPhase) * (1.0 - smoothstep(0.9, 1.0, scanPhase));
+        
+        // Add glowing hex grid overlay only near the scan line
+        float gridX = step(0.95, fract(vPosition.x * 4.0));
+        float gridZ = step(0.95, fract(vPosition.z * 4.0));
         float isGrid = max(gridX, gridZ);
         
-        // Contour lines
-        float contourVal = fract(vPosition.y * 4.0);
-        float isContour = smoothstep(0.95, 1.0, contourVal) + smoothstep(0.05, 0.0, contourVal);
-        float contourMask = smoothstep(-0.05, 0.05, vPosition.y); 
+        finalColor += uScanColor * scanIntensity * (0.2 + isGrid * 0.5);
         
-        // Materialization Logic
-        float distFromCenter = length(vPosition.xz);
-        
-        // Wave loops every 10 seconds
-        float wavePhase = fract(uTime * 0.1); 
-        float waveRadius = wavePhase * 15.0; 
-        
-        float isSolid = 1.0 - smoothstep(waveRadius - 2.0, waveRadius, distFromCenter);
-        // Fade wave in/out for seamless loop
-        isSolid *= smoothstep(0.0, 0.1, wavePhase); 
-        isSolid *= 1.0 - smoothstep(0.9, 1.0, wavePhase); 
-        
-        float scanIntensity = smoothstep(1.5, 0.0, abs(distFromCenter - waveRadius)) * isSolid;
-        
-        vec3 hologramColor = uScanColor * (isGrid * 0.5 + isContour * contourMask * 0.8) * 0.5;
-        vec3 solidColor = solidBaseColor * diff;
-        
-        vec3 finalColor = mix(hologramColor, solidColor, isSolid);
-        finalColor += uScanColor * scanIntensity * 1.5;
-        
-        float alpha = mix(0.4 + (isGrid * 0.3) + (isContour * 0.3), 1.0, isSolid);
-        
-        gl_FragColor = vec4(finalColor, alpha);
+        gl_FragColor = vec4(finalColor, 1.0);
       }
     `
   }), []);
 
   const baseBlockShader = useMemo(() => ({
     uniforms: {
-      uScanColor: { value: new THREE.Color('#64ffda') },
+      uScanColor: { value: new THREE.Color('#c1d6cc') },
       uTime: { value: 0.0 }
     },
     vertexShader: `
@@ -192,35 +189,33 @@ export default function TerrainTile() {
       void main() {
         float h = vPosition.y + 0.5; 
         
-        vec3 colorTop = vec3(0.15, 0.1, 0.05); 
-        vec3 colorMid = vec3(0.1, 0.08, 0.06); 
-        vec3 colorBot = vec3(0.04, 0.04, 0.05); 
+        // Realistic soil strata colors
+        vec3 soilTop = vec3(0.2, 0.16, 0.12); 
+        vec3 soilMid = vec3(0.15, 0.12, 0.09); 
+        vec3 soilBot = vec3(0.08, 0.06, 0.05); 
         
-        vec3 color = mix(colorBot, colorMid, smoothstep(0.0, 0.4, h));
-        color = mix(color, colorTop, smoothstep(0.7, 1.0, h));
+        vec3 color = mix(soilBot, soilMid, smoothstep(0.0, 0.5, h));
+        color = mix(color, soilTop, smoothstep(0.7, 1.0, h));
         
-        float strata = fract(h * 15.0 + sin(vPosition.x * 5.0 + vPosition.z * 5.0) * 0.1);
-        color *= (0.85 + 0.15 * strata);
+        // Procedural strata lines
+        float strata = fract(h * 20.0 + sin(vPosition.x * 2.0 + vPosition.z * 2.0) * 0.2);
+        color *= (0.8 + 0.2 * smoothstep(0.4, 0.6, strata));
         
-        float diff = max(0.0, dot(vNormal, normalize(vec3(1.0, 1.5, 1.0)))) * 0.8 + 0.2;
-        vec3 solidColor = color * diff;
+        // Lighting
+        float diff = max(0.0, dot(vNormal, normalize(vec3(1.0, 1.5, 1.0))));
+        vec3 finalColor = color * (diff * 0.6 + 0.4);
 
-        // Sync materialization with the surface
+        // Scan line interacting with the sides
         float distFromCenter = length(vPosition.xz);
-        float wavePhase = fract(uTime * 0.1); 
-        float waveRadius = wavePhase * 15.0; 
-        float isSolid = 1.0 - smoothstep(waveRadius - 2.0, waveRadius, distFromCenter);
-        isSolid *= smoothstep(0.0, 0.1, wavePhase); 
-        isSolid *= 1.0 - smoothstep(0.9, 1.0, wavePhase); 
+        float scanPhase = fract(uTime * 0.1); 
+        float scanRadius = scanPhase * 15.0; 
+        float scanIntensity = smoothstep(1.5, 0.0, abs(distFromCenter - scanRadius));
+        scanIntensity *= smoothstep(0.0, 0.1, scanPhase) * (1.0 - smoothstep(0.9, 1.0, scanPhase));
         
-        // Hologram wireframe for sides
         float gridY = step(0.95, fract(h * 10.0));
-        vec3 hologramColor = uScanColor * gridY * 0.3;
+        finalColor += uScanColor * scanIntensity * gridY * 0.5;
 
-        vec3 finalColor = mix(hologramColor, solidColor, isSolid);
-        float alpha = mix(0.1 + (gridY * 0.2), 1.0, isSolid);
-
-        gl_FragColor = vec4(finalColor, alpha);
+        gl_FragColor = vec4(finalColor, 1.0);
       }
     `
   }), []);

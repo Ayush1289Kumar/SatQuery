@@ -3,6 +3,7 @@ import { CameraControls } from '@react-three/drei';
 import { Suspense, useRef, useEffect } from 'react';
 import TerrainTile from './TerrainTile';
 import AnalysisMarkers from './AnalysisMarkers';
+import Satellite from './Satellite';
 
 function SceneSetup() {
   const controlsRef = useRef<any>(null);
@@ -14,7 +15,7 @@ function SceneSetup() {
       
       // Cinematic zoom in
       setTimeout(() => {
-        controlsRef.current.setLookAt(12, 10, 15, 0, 0, 0, true);
+        controlsRef.current.setLookAt(14, 12, 16, 0, 0, 0, true);
       }, 300);
     }
   }, []);
@@ -22,7 +23,7 @@ function SceneSetup() {
   useFrame((_, delta) => {
     if (controlsRef.current) {
       // Gentle auto-rotation
-      controlsRef.current.azimuthAngle += 0.1 * delta;
+      controlsRef.current.azimuthAngle += 0.05 * delta;
     }
   });
 
@@ -45,30 +46,30 @@ export default function EarthObservationScene() {
         gl={{ antialias: true, alpha: true }}
         dpr={[1, 2]} 
       >
-        {/* Soft lighting */}
-        <ambientLight intensity={0.2} />
+        {/* Soft dark lighting */}
+        <ambientLight intensity={0.3} color="#ffffff" />
+        
+        {/* Main Sun light */}
         <directionalLight 
-          position={[5, 10, -5]} 
-          intensity={1.2} 
-          color="#ffffff" 
+          position={[15, 20, 10]} 
+          intensity={2.0} 
+          color="#fdf4dc" 
+          castShadow
         />
-        {/* Cinematic rim light */}
+        
+        {/* Fill light */}
         <directionalLight 
-          position={[-10, 5, 10]} 
-          intensity={1.5} 
-          color="#64ffda" 
-        />
-        <directionalLight 
-          position={[10, 5, 10]} 
+          position={[-15, 10, -10]} 
           intensity={0.5} 
-          color="#a0c0d0" 
+          color="#8fae9f" 
         />
         
         <Suspense fallback={null}>
           <SceneSetup />
-          <group position={[0, -0.5, 0]}>
+          <group position={[0, -2, 0]}>
             <TerrainTile />
             <AnalysisMarkers />
+            <Satellite />
           </group>
         </Suspense>
       </Canvas>
