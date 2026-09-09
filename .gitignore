@@ -9,6 +9,14 @@ dist-ssr
 *.log
 npm-debug.log*
 
+# environment secrets
+.env
+.env.*
+!.env.example
+backend/.env
+backend/.env.*
+!backend/.env.example
+
 # editor / OS
 .vscode/*
 !.vscode/extensions.json

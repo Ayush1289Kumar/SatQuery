@@ -19,6 +19,34 @@ The current repository is a frontend-only prototype. The analysis timer, demo sc
 
 This guide uses the existing product name, UI states, and TypeScript types as the integration boundary.
 
+## Implementation Progress
+
+### Stage 1 - Backend foundation: complete
+
+The initial backend foundation now exists in `backend/`:
+
+- FastAPI application and versioned API prefix.
+- `/health` and `/api/v1/health` liveness endpoints.
+- `/health/ready` and `/api/v1/health/ready` dependency configuration checks.
+- Environment configuration through `backend/.env.example`.
+- CORS configured for the Vite development server.
+- `backend/requirements.txt` with the initial API dependencies.
+
+The endpoints described later in this document remain the implementation contract. Uploads, authentication, persistence, worker processing, results, and reports are planned for subsequent stages.
+
+To run the current foundation locally from the repository root:
+
+```powershell
+python -m pip install -r backend/requirements.txt
+python -m uvicorn backend.app.main:app --reload --port 8000
+```
+
+The first check is `GET /api/v1/health`. `GET /api/v1/health/ready` intentionally returns `503` until the backend dependencies and worker are configured.
+
+### Stage 2 configuration contract
+
+The backend now accepts the configuration keys required by upcoming stages: `JWT_SECRET`, `DATABASE_URL`, `REDIS_URL`, S3/MinIO object-storage settings, model-registry settings, `NOMINATIM_USER_AGENT`, and optional `SENTRY_DSN`. No provider key is required for the current health endpoint. See [api.md](api.md) and [api_key.md](api_key.md) for the complete key table, sources, and when each value becomes necessary.
+
 ## 2. Current Frontend Contract
 
 ### 2.1 Relevant files

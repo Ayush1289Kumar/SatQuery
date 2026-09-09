@@ -75,17 +75,25 @@ A three-tier web application:
 - **geo_highlights:** id, result_id, class, geometry (PostGIS geometry), confidence.
 - **audit_logs:** id, user_id, action, detail, created_at.
 
-## 4. API Endpoints (v1) - Draft
+## 4. API Endpoints (v1)
 
 | Method | Path | Purpose |
 |--------|------|---------|
 | POST | `/auth/login` | Login |
 | POST | `/auth/refresh` | Refresh token |
-| POST | `/uploads` | Upload image(s) + validate |
-| POST | `/sessions/{id}/ask` | Ask a question (triggers routing) |
-| GET  | `/sessions/{id}/status` | Poll analysis progress |
-| GET  | `/sessions/{id}/results` | Get results + geo highlights |
-| GET  | `/sessions/{id}/report` | Download report |
+| POST | `/uploads/initiate` | Request a presigned upload URL |
+| POST | `/uploads/{upload_id}/complete` | Confirm upload and start validation |
+| GET | `/uploads/{upload_id}` | Read validation and raster metadata |
+| POST | `/sessions` | Create an analysis session |
+| POST | `/sessions/{session_id}/analyses` | Submit a question and enqueue a job |
+| GET | `/jobs/{job_id}` | Poll analysis progress |
+| GET | `/sessions/{session_id}/results/latest` | Get answer and map evidence |
+| POST | `/results/{result_id}/reports` | Generate a report |
+| GET | `/reports/{report_id}` | Get report status and download URL |
+| GET | `/health` | API liveness |
+| GET | `/health/ready` | Dependency readiness |
+
+The current implementation includes the FastAPI foundation and versioned health endpoints. Upload, authentication, persistence, workers, results, and reports are staged next. See [api.md](../api.md) for payloads and [backend-integration.md](../backend-integration.md) for the complete contract.
 
 ## 5. Security & Operations
 
@@ -98,3 +106,4 @@ A three-tier web application:
 - **Data retention:** demo uploads deleted after a defined period.
 - **Deployment:** Docker containers; GPU worker for inference when available.
 - **Tech stack:** React, TypeScript, Tailwind, MapLibre/Leaflet, FastAPI, PyTorch, Hugging Face, OpenCV, Rasterio, GDAL, GeoPandas, PostgreSQL + PostGIS, S3/MinIO.
+- **Configuration:** runtime settings are environment-based; see [api_key.md](../api_key.md). No external key is required for the current health endpoints.

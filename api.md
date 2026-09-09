@@ -24,6 +24,54 @@ All JSON responses should include a request ID:
 
 Use `Authorization: Bearer <access_token>` for protected endpoints. Use `Idempotency-Key` on analysis submissions.
 
+## Implementation Status
+
+### Stage 1 - Backend foundation
+
+Implemented in `backend/`:
+
+- FastAPI application with `/health` and `/api/v1/health`.
+- Dependency-aware readiness checks at `/health/ready` and `/api/v1/health/ready`.
+- Environment-based configuration using `.env` and `backend/.env.example`.
+- CORS configuration for the Vite frontend.
+- Consistent `{ data, request_id }` response envelope for health responses.
+
+The upload, authentication, session, analysis, result, report, regional, and worker APIs below are the target contracts for the next stages. They are not implemented yet.
+
+Run the implemented backend from the repository root after installing `backend/requirements.txt`:
+
+```powershell
+python -m uvicorn backend.app.main:app --reload --port 8000
+```
+
+Check `http://localhost:8000/api/v1/health`. Readiness returns `503` until the database, Redis, object storage, and worker settings are configured.
+
+### Next stage
+
+Implement authentication, upload initiation/completion, and upload metadata validation before adding the analysis queue.
+
+## Required Keys and Services
+
+For instructions on obtaining and securely storing each value, see [api_key.md](api_key.md).
+
+No external API key is required for the current `/health` endpoint. The following values are needed as implementation progresses:
+
+| Variable | Required when | Secret? | Purpose |
+|---|---|---:|---|
+| `JWT_SECRET` | Authentication stage | Yes | Signs access tokens; use a long random value |
+| `DATABASE_URL` | Persistence stage | Yes | PostgreSQL/PostGIS connection string; contains credentials |
+| `REDIS_URL` | Queue stage | Usually | Redis connection string for jobs and rate limits |
+| `OBJECT_STORAGE_ENDPOINT` | Upload stage | No | S3/MinIO endpoint |
+| `OBJECT_STORAGE_BUCKET` | Upload stage | No | Private bucket name |
+| `OBJECT_STORAGE_ACCESS_KEY` | Upload stage | Yes | S3/MinIO access credential |
+| `OBJECT_STORAGE_SECRET_KEY` | Upload stage | Yes | S3/MinIO secret credential |
+| `MODEL_REGISTRY_URL` | Real model stage | No | Model registry or inference service URL |
+| `MODEL_REGISTRY_TOKEN` | Real model stage | Yes | Token for a private model registry |
+| `NOMINATIM_USER_AGENT` | Region boundary stage | No | Identifies the backend when proxying Nominatim |
+| `SENTRY_DSN` | Observability stage | No | Optional error-reporting project DSN |
+
+Do not send passwords, JWT secrets, storage secrets, or model tokens in chat or commit them to Git. Put them in a local `.env` file or deployment secret manager. The committed `backend/.env.example` contains placeholders only.
+
 ## API List
 
 ### Required for the first integration

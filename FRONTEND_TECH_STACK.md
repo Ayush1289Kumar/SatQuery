@@ -5,7 +5,13 @@
 
 ## 1. Project Overview
 
-PrithviQ is a single-page React application that simulates a satellite-imagery analysis platform. Users pick a category, upload imagery, ask a question, and view results on an interactive map. There is no backend — all analysis results are mock data driven by timed state transitions. Navigation is state-driven (no router), styling is Tailwind v4 plus one global CSS file with a `data-theme` token system, and the hero section features a real-time Three.js cinematic environment with dynamic shaders and smooth scrolling physics.
+PrithviQ is a single-page React frontend for a satellite-imagery analysis platform. Users pick a category, upload imagery, ask a question, and view results on an interactive map. The production analysis path is being integrated with the FastAPI service under `backend/`; the current frontend still uses mock data and timed transitions for demo scenarios. Navigation is state-driven (no router), styling is Tailwind v4 plus one global CSS file with a `data-theme` token system, and the hero section features a real-time Three.js cinematic environment with dynamic shaders and smooth scrolling physics.
+
+Backend integration status:
+
+- Implemented: FastAPI app, environment settings, CORS, `/health`, and `/api/v1/health` readiness routes.
+- Planned next: authentication, upload validation/storage, analysis jobs, results, reports, and regional APIs.
+- Contract references: [api.md](api.md), [api_key.md](api_key.md), and [backend-integration.md](backend-integration.md).
 
 ## 2. Technology Stack Summary
 
@@ -59,5 +65,11 @@ Secondary (significant): hand-written CSS in `src/index.css` providing:
 ## 7. State Management & Data Fetching
 
 - **React local state only** — `useState`/`useRef` lifted into `App.tsx` (`step`, `theme`, `activeCategory`, etc.). No Redux/Context.
-- **Single real network call:** native `fetch` to Nominatim (OpenStreetMap) geocoder.
-- **Mock data:** `src/data/mock.ts` simulates analysis pipelines.
+- **Current state:** React local state only — `useState`/`useRef` lifted into `App.tsx` (`step`, `theme`, `activeCategory`, etc.).
+- **Current network call:** native `fetch` to Nominatim (OpenStreetMap) geocoder; this is scheduled to move behind the backend boundary API.
+- **Demo data:** `src/data/mock.ts` simulates analysis pipelines until the frontend API client is connected.
+- **Backend:** FastAPI is scaffolded in `backend/` with configuration-driven CORS and versioned health endpoints.
+
+## 8. Frontend Integration Boundary
+
+The eventual client flow is `upload initiation -> direct object upload -> upload validation -> session creation -> analysis job polling -> result retrieval -> report download`. The frontend should use `VITE_API_BASE_URL` and keep access tokens in memory with refresh handled by the backend contract.

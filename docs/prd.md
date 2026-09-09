@@ -6,6 +6,12 @@ Build a web app where users upload satellite image(s), ask a question in simple 
 
 **Example:** "Which areas are newly flooded?"
 
+## 1.1 Implementation Status
+
+The frontend prototype is active and the FastAPI backend foundation is now scaffolded under `backend/`. Health and readiness endpoints are implemented. Authentication, upload persistence, asynchronous analysis, result storage, and report generation remain staged deliverables.
+
+The API contract is maintained in [api.md](../api.md), credential setup is documented in [api_key.md](../api_key.md), and the full integration plan is in [backend-integration.md](../backend-integration.md).
+
 ## 2. Problem We Solve
 
 - Satellite images are difficult for normal users to understand.
@@ -108,6 +114,7 @@ Build a web app where users upload satellite image(s), ask a question in simple 
 - **Geospatial:** Rasterio, GDAL, GeoPandas.
 - **Database:** PostgreSQL + PostGIS.
 - **Storage:** Local storage for demo; S3/MinIO for deployment.
+- **API contract:** Versioned FastAPI endpoints under `/api/v1`, with OpenAPI as the source for generated frontend types.
 - **Deployment:** Docker and GPU server if available.
 
 ## 8. Success Criteria
