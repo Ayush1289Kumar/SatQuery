@@ -37,6 +37,8 @@ export interface UploadedImage {
   location?: string
   /** Optional object URL for a locally previewed image. */
   previewUrl?: string
+  /** The local File, kept so the API client can upload the bytes. */
+  file?: File
 }
 
 export interface SuggestedQuestion {

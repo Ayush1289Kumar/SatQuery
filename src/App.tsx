@@ -17,6 +17,18 @@ import LandingHero from './components/LandingHero'
 import Logo from './components/Logo'
 import { INDIA_STATES } from './data/indiaMockData'
 import { Satellite, Microscope } from 'lucide-react'
+import {
+  ApiError,
+  completeUpload,
+  createSession,
+  getLatestResult,
+  initiateUpload,
+  isDemoMode,
+  mapResultToAnalysisResult,
+  pollJobUntilCompleted,
+  submitAnalysis,
+  uploadBytesToStorage,
+} from './lib/api'
 
 type Step = 'landing' | 'upload' | 'ask' | 'analyzing' | 'results'
 
@@ -50,12 +62,20 @@ export default function App() {
   const [waterAnalysis, setWaterAnalysis] = useState(false)
   const [waterVariant, setWaterVariant] = useState<'azure' | 'teal'>('azure')
   const timersRef = useRef<number[]>([])
+  // --- Backend integration (VITE_DEMO_MODE=true keeps the mock flow) ---
+  const demoMode = isDemoMode()
+  const [apiBusy, setApiBusy] = useState(false)
+  const [apiError, setApiError] = useState<string | null>(null)
+  const [workflowLabel, setWorkflowLabel] = useState('')
+  const sessionIdRef = useRef<string | null>(null)
+  const pollAbortRef = useRef<AbortController | null>(null)
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
   }, [theme])
 
   useEffect(() => () => timersRef.current.forEach((t) => window.clearTimeout(t)), [])
+  useEffect(() => () => pollAbortRef.current?.abort(), [])
 
   const schedule = (fn: () => void, ms: number) => {
     const t = window.setTimeout(() => {
@@ -93,7 +113,94 @@ export default function App() {
     setStep('ask')
   }
 
+  // Upload pipeline: initiate -> direct PUT -> complete -> session (api.md 2-3).
+  const handleContinue = async () => {
+    if (apiBusy) return
+    if (demoMode) {
+      goAsk()
+      return
+    }
+    setApiError(null)
+    setApiBusy(true)
+    try {
+      const uploadIds: string[] = []
+      for (const image of images) {
+        if (!image.file) {
+          throw new Error(`"${image.name}" must be picked again before uploading.`)
+        }
+        const initiated = await initiateUpload({
+          filename: image.name,
+          contentType: fileContentType(image.file),
+          sizeBytes: image.file.size,
+          kind: image.kind,
+          mode,
+        })
+        await uploadBytesToStorage(initiated, image.file)
+        await completeUpload(initiated.upload_id)
+        uploadIds.push(initiated.upload_id)
+      }
+      const session = await createSession(mode, uploadIds, activeCategory)
+      sessionIdRef.current = session.session_id
+      goAsk()
+    } catch (err) {
+      setApiError(err instanceof Error ? err.message : 'Upload failed. Please try again.')
+    } finally {
+      setApiBusy(false)
+    }
+  }
+
+  // Analysis pipeline: submit -> poll stages -> fetch latest result (api.md 4-5).
+  const handleAnalyze = async () => {
+    if (apiBusy) return
+    if (demoMode) {
+      startAnalysis(() => defaultResultFor(question))
+      return
+    }
+    const sessionId = sessionIdRef.current
+    if (!sessionId) {
+      setApiError('No analysis session found. Please re-select your images.')
+      return
+    }
+    setApiError(null)
+    setResult(null)
+    setActiveStep(0)
+    setWorkflowLabel('')
+    setStep('analyzing')
+    pollAbortRef.current?.abort()
+    const controller = new AbortController()
+    pollAbortRef.current = controller
+    setApiBusy(true)
+    try {
+      const accepted = await submitAnalysis(sessionId, question, activeCategory)
+      await pollJobUntilCompleted(
+        accepted.job_id,
+        {
+          onStage: (_stage, step, job) => {
+            setActiveStep(step)
+            if (job.workflow_label) setWorkflowLabel(job.workflow_label)
+          },
+        },
+        controller.signal,
+      )
+      const payload = await getLatestResult(sessionId)
+      setResult(mapResultToAnalysisResult(payload))
+      setStep('results')
+    } catch (err) {
+      if (err instanceof ApiError && err.code === 'ABORTED') return
+      setApiError(err instanceof Error ? err.message : 'Analysis failed. Please try again.')
+      setStep('ask')
+    } finally {
+      setApiBusy(false)
+      if (pollAbortRef.current === controller) pollAbortRef.current = null
+    }
+  }
+
   const reset = () => {
+    pollAbortRef.current?.abort()
+    pollAbortRef.current = null
+    sessionIdRef.current = null
+    setApiError(null)
+    setWorkflowLabel('')
     setMode('twoDate')
     setImages([])
     setQuestion('')
@@ -129,6 +236,24 @@ export default function App() {
         <Header />
 
         <main id="main" className="relative z-10 mx-auto w-full max-w-6xl flex-1 px-4 pb-16 pt-6">
+          {apiError && (
+            <div
+              role="alert"
+              className="mx-auto mb-6 flex max-w-3xl items-center justify-between gap-4 rounded-xl border border-[rgba(255,99,99,0.30)] bg-[rgba(0,0,0,0.30)] px-5 py-3.5"
+            >
+              <p className="text-sm text-[rgba(255,255,255,0.75)]">
+                <span className="mr-2 font-semibold text-[rgba(255,120,120,0.90)]">API error:</span>
+                {apiError}
+              </p>
+              <button
+                onClick={() => setApiError(null)}
+                aria-label="Dismiss error"
+                className="shrink-0 rounded-full border border-[rgba(255,255,255,0.15)] px-3 py-1 text-xs font-semibold text-[rgba(255,255,255,0.60)] transition-colors hover:border-[rgba(255,99,99,0.40)] hover:text-white"
+              >
+                Dismiss
+              </button>
+            </div>
+          )}
           {step === 'upload' && (
             <Reveal>
               <CategoryPanel activeCategory={activeCategory} onCategoryChange={selectCategory} />
@@ -145,7 +270,7 @@ export default function App() {
                     onSelectMode={setMode}
                     onAddImages={(imgs) => setImages(imgs)}
                     onRemoveImage={(id) => setImages((prev) => prev.filter((i) => i.id !== id))}
-                    onContinue={goAsk}
+                    onContinue={handleContinue}
                     onRunScenario={runScenario}
                   />
                 </div>
@@ -167,7 +292,7 @@ export default function App() {
               images={images}
               question={question}
               onQuestionChange={setQuestion}
-              onAnalyze={() => startAnalysis(() => defaultResultFor(question))}
+              onAnalyze={() => { void handleAnalyze() }}
               onBack={() => setStep('upload')}
             />
           )}
@@ -175,7 +300,7 @@ export default function App() {
             <AnalyzingScreen
               question={question}
               activeStep={activeStep}
-              workflowLabel="sat-query/router (demo)"
+              workflowLabel={workflowLabel || 'sat-query/router (demo)'}
               water={waterAnalysis}
               variant={waterVariant}
             />
@@ -189,6 +314,14 @@ export default function App() {
       </div>
     </SmoothScroll>
   )
+}
+
+function fileContentType(file: File): string {
+  const ext = file.name.split('.').pop()?.toLowerCase() ?? ''
+  if (ext === 'tif' || ext === 'tiff') return 'image/tiff'
+  if (ext === 'png') return 'image/png'
+  if (ext === 'jpg' || ext === 'jpeg') return 'image/jpeg'
+  return file.type || 'application/octet-stream'
 }
 
 function defaultResultFor(_q: string): AnalysisResult {

@@ -56,6 +56,7 @@ export default function UploadScreen({
         date: undefined,
         location: undefined,
         previewUrl: URL.createObjectURL(f),
+        file: f,
       }))
       onAddImages(next)
     },

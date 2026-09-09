@@ -1,4 +1,5 @@
 from functools import lru_cache
+from typing import Literal
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -23,6 +24,21 @@ class Settings(BaseSettings):
     nominatim_base_url: str = "https://nominatim.openstreetmap.org"
     nominatim_user_agent: str | None = None
     sentry_dsn: str | None = None
+
+    # Real AI provider (Task 4): 'mock' keeps the deterministic demo worker;
+    # 'gemini' enables real Gemini answer generation with automatic fallback.
+    ai_provider: Literal["mock", "gemini"] = "mock"
+    gemini_api_key: str | None = None
+    gemini_model: str = "gemini-2.0-flash"
+    gemini_timeout_s: float = 45.0
+
+    # Demo milestone (api.md section 11): deterministic in-memory lifecycle.
+    demo_mode: bool = True
+    strict_pair_validation: bool = False
+    max_upload_bytes: int = 1_073_741_824
+    demo_user_id: str = "usr_demo_analyst"
+    demo_user_email: str = "demo@prithviq.local"
+    demo_user_role: str = "analyst"
 
     model_config = SettingsConfigDict(
         env_file=".env",
