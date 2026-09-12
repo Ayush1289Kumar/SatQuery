@@ -49,17 +49,23 @@ export default function UploadScreen({
   const handleFiles = useCallback(
     (fileList: FileList | null) => {
       if (!fileList || fileList.length === 0) return
-      const next: UploadedImage[] = Array.from(fileList).slice(0, required).map((f, i) => ({
-        id: `${Date.now()}-${i}-${f.name}`,
-        name: f.name,
-        kind: mode === 'opticalSar' && i === 1 ? 'sar' : 'optical',
-        date: undefined,
-        location: undefined,
-        previewUrl: URL.createObjectURL(f),
-      }))
-      onAddImages(next)
+      
+      const newImages: UploadedImage[] = Array.from(fileList).map((f, i) => {
+        const targetIndex = images.length + i
+        return {
+          id: `${Date.now()}-${i}-${f.name}`,
+          name: f.name,
+          kind: mode === 'opticalSar' && targetIndex === 1 ? 'sar' : 'optical',
+          date: undefined,
+          location: undefined,
+          previewUrl: URL.createObjectURL(f),
+          file: f,
+        }
+      })
+      
+      onAddImages([...images, ...newImages].slice(0, required))
     },
-    [required, mode, onAddImages],
+    [required, mode, images, onAddImages],
   )
 
   return (
@@ -137,9 +143,9 @@ export default function UploadScreen({
                   </div>
                   {img ? (
                     <div className="flex items-center justify-between rounded-xl border border-[var(--he-border)] bg-white/50 p-3.5 shadow-sm transition-shadow duration-200 hover:shadow-md">
-                      <div className="flex items-center gap-3">
+                      <div className="flex min-w-0 flex-1 items-center gap-3">
                         <div
-                          className={`flex h-10 w-10 items-center justify-center rounded-lg border ${
+                          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border ${
                             img.kind === 'sar'
                               ? 'border-[var(--he-accent-border)] bg-[var(--he-accent-50)] text-[var(--he-accent-strong)]'
                               : 'border-[var(--he-accent-border)] bg-[var(--he-accent-50)] text-[var(--he-accent-strong)]'
@@ -147,11 +153,11 @@ export default function UploadScreen({
                         >
                           {img.kind === 'sar' ? <Radar className="h-4.5 w-4.5" /> : <Satellite className="h-4.5 w-4.5" />}
                         </div>
-                        <div>
-                          <div className="max-w-[180px] truncate text-sm font-medium text-[var(--he-ink)]">
+                        <div className="min-w-0 flex-1">
+                          <div className="truncate text-sm font-medium text-[var(--he-ink)]">
                             {img.name}
                           </div>
-                          <div className="text-xs text-[var(--he-ink-soft)]">
+                          <div className="truncate text-xs text-[var(--he-ink-soft)]">
                             {img.kind === 'sar' ? 'SAR · Synthetic aperture' : 'Optical · Multispectral'}
                             {img.date ? ` · ${img.date}` : ''}
                           </div>
