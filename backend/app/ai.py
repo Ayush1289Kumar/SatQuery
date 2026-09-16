@@ -29,6 +29,16 @@ SUPPORTED_IMAGE_MIME = {"image/png", "image/jpeg", "image/webp"}
 # Gemini inline-data budget (per request); larger uploads are not retained.
 MAX_INLINE_IMAGE_BYTES = 19 * 1024 * 1024
 
+# Transient provider failures worth a bounded retry: Google returns 503
+# ("high demand ... try again later") and 504 ("deadline expired") for
+# image-bearing requests on freshly GA'd models; 429 is quota pressure.
+# Client-side read/connection timeouts are retried too — under congestion the
+# API often hangs instead of answering with a 5xx. Non-retryable failures
+# (400/401/403/404) surface immediately as used=False.
+_RETRYABLE_STATUS = {429, 500, 502, 503, 504}
+_MAX_ATTEMPTS = 3
+_RETRY_BACKOFF_S = (2.0, 6.0)
+
 
 @dataclass(frozen=True)
 class AiAnswer:
@@ -83,8 +93,11 @@ def generate_ai_answer(
 ) -> AiAnswer:
     """Call Gemini with the question + image bytes. Sync; runs in a worker thread.
 
-    Every failure mode returns ``used=False`` with a sanitized error string
-    (exception *type* only — never SDK messages, never the API key).
+    Transient provider errors (5xx overload/deadline, 429 quota, and client
+    read/connection timeouts) are retried a bounded number of times with a
+    short backoff. Every failure mode — retries exhausted included — returns
+    ``used=False`` with a sanitized error string (exception *type* only —
+    never SDK messages, never the API key).
     """
     settings = get_settings()
     if not settings.gemini_api_key:
@@ -95,7 +108,10 @@ def generate_ai_answer(
             error="GEMINI_API_KEY is not configured.",
         )
     try:
+        import requests.exceptions as requests_exceptions
+
         from google import genai  # lazy import: mock mode and tests never need the SDK
+        from google.genai import errors as genai_errors
         from google.genai import types as genai_types
     except Exception:  # pragma: no cover - only when the SDK is absent
         return AiAnswer(
@@ -116,14 +132,33 @@ def generate_ai_answer(
             contents.append(
                 genai_types.Part.from_bytes(data=image_bytes, mime_type=mime_type)
             )
-        response = client.models.generate_content(
-            model=settings.gemini_model,
-            contents=contents,
-            config=genai_types.GenerateContentConfig(
-                response_mime_type="application/json",
-                temperature=0.2,
-            ),
+        config = genai_types.GenerateContentConfig(
+            response_mime_type="application/json",
+            temperature=0.2,
         )
+        def _is_transient(exc: BaseException) -> bool:
+            """HTTP 5xx/429, or a client read/connection timeout under load."""
+            if isinstance(exc, genai_errors.APIError):
+                return getattr(exc, "code", None) in _RETRYABLE_STATUS
+            return isinstance(
+                exc, (requests_exceptions.Timeout, requests_exceptions.ConnectionError)
+            )
+
+        response: Any = None
+        for attempt in range(_MAX_ATTEMPTS):
+            try:
+                response = client.models.generate_content(
+                    model=settings.gemini_model,
+                    contents=contents,
+                    config=config,
+                )
+                break
+            except Exception as exc:
+                if not _is_transient(exc) or attempt == _MAX_ATTEMPTS - 1:
+                    raise
+                time.sleep(_RETRY_BACKOFF_S[min(attempt, len(_RETRY_BACKOFF_S) - 1)])
+        if response is None:  # pragma: no cover - the loop always breaks or raises
+            raise RuntimeError("Gemini call did not return a response.")
         raw = (response.text or "").strip()
         parsed: Any = json.loads(raw) if raw else {}
         if not isinstance(parsed, dict):

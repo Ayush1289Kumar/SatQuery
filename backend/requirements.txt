@@ -3,3 +3,5 @@ uvicorn[standard]>=0.30,<1.0
 pydantic-settings>=2.6,<3.0
 # Real AI provider (Task 4) — lazily imported; AI_PROVIDER=mock does not need it.
 google-genai>=1.0,<2.0
+# Google Earth Engine (planned integration) — lazily imported; not needed for mock mode.
+earthengine-api

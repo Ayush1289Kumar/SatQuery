@@ -11,7 +11,21 @@ import pytest
 from fastapi.testclient import TestClient
 
 from backend.app import store as store_module
+from backend.app.config import get_settings
 from backend.app.main import app
+
+
+@pytest.fixture(autouse=True)
+def mock_ai_provider(monkeypatch):
+    """Pin the deterministic worker as the default provider in tests.
+
+    backend/.env is now loaded regardless of the working directory, so a
+    developer's AI_PROVIDER=gemini would otherwise leak into tests that expect
+    the mock 9-second timeline (see config.py). Tests exercising the real-AI
+    path call ``_enable_gemini(monkeypatch)`` in the test body, which runs
+    after this fixture and therefore wins.
+    """
+    monkeypatch.setattr(get_settings(), "ai_provider", "mock")
 
 
 @pytest.fixture()

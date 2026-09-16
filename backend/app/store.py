@@ -17,6 +17,7 @@ from datetime import datetime, timezone
 from typing import Any, Optional
 
 from . import ai
+from . import tools
 from . import worker
 from .config import get_settings
 from .schemas import ApiError
@@ -491,6 +492,30 @@ class Store:
                     job.ai_finished = True
                 self.ensure_result(job)
 
+    def _dispatch_layers(
+        self, job: Any, session: Any, uploads: list[Any]
+    ) -> Optional[list[dict[str, Any]]]:
+        """Thin tool-registry dispatch (M1): evidence layers for one job.
+
+        Fail-closed by design: any dispatch error returns None so
+        worker.build_result keeps the deterministic workflow template layers
+        and the job completes exactly as before the registry existed.
+        """
+        try:
+            context = tools.ToolContext(
+                session_id=job.session_id,
+                mode=session.mode,
+                category=job.category,
+                question=job.question,
+                upload_ids=tuple(session.upload_ids),
+                upload_kinds=tuple(upload.kind for upload in uploads),
+                acquisition_times=tuple(upload.acquisition_time for upload in uploads),
+            )
+            tool_result = tools.dispatch(job.workflow["id"], context)
+            return list(tool_result.layers)
+        except Exception:  # noqa: BLE001 - the registry layer must never break a job
+            return None
+
     def ensure_result(self, job: JobRecord) -> Optional[dict[str, Any]]:
         """Build the result once the job completes (lazy timeline or real AI)."""
         with self._lock:
@@ -511,6 +536,7 @@ class Store:
                 answer_text=job.ai_answer,
                 gemini_model=(get_settings().gemini_model if job.ai_answer else None),
                 ai_elapsed_s=job.ai_elapsed_s,
+                layers_override=self._dispatch_layers(job, session, uploads),
             )
             self._results[job.job_id] = result
             session.status = "completed"

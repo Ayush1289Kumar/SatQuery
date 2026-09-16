@@ -372,6 +372,7 @@ def build_result(
     answer_text: str | None = None,
     gemini_model: str | None = None,
     ai_elapsed_s: float | None = None,
+    layers_override: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Result payload per the documented result schema (api.md section 5).
 
@@ -379,9 +380,13 @@ def build_result(
     produced the answer (provenance honesty); the defaults keep the
     deterministic mock output byte-identical. Gemini never generates the GIS
     layers — those always come from the deterministic templates.
+
+    ``layers_override`` carries tool-registry-dispatched evidence layers
+    (M1: the deterministic executor returns the same template layers);
+    ``None`` keeps the exact pre-registry behavior.
     """
     workflow = job.workflow
-    layers = workflow["layers"]
+    layers = list(workflow["layers"]) if layers_override is None else list(layers_override)
     if workflow["id"] == "change_detection" and len(uploads) == 2:
         ordered = sorted(uploads, key=lambda upload: upload.acquisition_time)
         layers = [

@@ -17,6 +17,9 @@ backend/.env
 backend/.env.*
 !backend/.env.example
 
+# service-account credentials (e.g. Earth Engine) — never commit
+backend/credentials/
+
 # editor / OS
 .vscode/*
 !.vscode/extensions.json
