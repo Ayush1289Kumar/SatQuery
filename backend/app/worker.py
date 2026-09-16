@@ -364,6 +364,73 @@ def confidence_band(confidence: float) -> str:
     return "low"
 
 
+# --- M4.1: additive provenance ------------------------------------------------------
+
+# Evidence whitelist: the authoritative EE measurements that may surface in a
+# result. Values are copied VERBATIM from the already-sanitized executor
+# metrics and only when present — nothing is invented or re-derived here.
+# "collection" and any internal keys (credentials/paths/project ids) are
+# deliberately excluded.
+_EVIDENCE_METRIC_KEYS: tuple[str, ...] = (
+    "scene_id",
+    "scene_date",
+    "cloud_pct",
+    "anchor_date",
+    "window_start",
+    "window_end",
+    "ndwi_threshold",
+    "water_area_m2",
+    "aoi_area_m2",
+    "water_fraction",
+    "confidence",
+    "feature_count",
+    "aoi_source",
+)
+
+# ToolTrace fields safe for the API surface (already sanitized at the source:
+# ``error`` is an exception type name only, ``detail`` carries non-secret facts).
+_TRACE_FIELD_KEYS: tuple[str, ...] = (
+    "tool_id",
+    "op",
+    "ok",
+    "duration_s",
+    "error",
+    "detail",
+)
+
+
+def _earthengine_evidence(tool_metrics: Any) -> dict[str, Any] | None:
+    """Whitelisted EE measurements, or None for any non-EE execution.
+
+    Only ``engine == "earthengine"`` qualifies — template, template-fallback
+    and mock/default executions must keep the payload byte-identical.
+    """
+    if not isinstance(tool_metrics, dict):
+        return None
+    if tool_metrics.get("engine") != "earthengine":
+        return None
+    return {
+        key: tool_metrics[key] for key in _EVIDENCE_METRIC_KEYS if key in tool_metrics
+    }
+
+
+def _provenance_traces(tool_traces: Any) -> list[dict[str, Any]]:
+    """Serialize sanitized ToolTrace records field-by-field (whitelist only).
+
+    Defensive: the ToolTrace contract keeps ``error`` as an exception type
+    name; enforce it here so raw exception text can never reach the payload.
+    """
+    records: list[dict[str, Any]] = []
+    for trace in tool_traces or ():
+        error = getattr(trace, "error", None)
+        if error is not None and not isinstance(error, str):
+            error = type(error).__name__
+        record = {key: getattr(trace, key, None) for key in _TRACE_FIELD_KEYS}
+        record["error"] = error
+        records.append(record)
+    return records
+
+
 def build_result(
     *,
     job: Any,
@@ -373,6 +440,8 @@ def build_result(
     gemini_model: str | None = None,
     ai_elapsed_s: float | None = None,
     layers_override: list[dict[str, Any]] | None = None,
+    tool_metrics: dict[str, Any] | None = None,
+    tool_traces: tuple[Any, ...] = (),
 ) -> dict[str, Any]:
     """Result payload per the documented result schema (api.md section 5).
 
@@ -384,6 +453,17 @@ def build_result(
     ``layers_override`` carries tool-registry-dispatched evidence layers
     (M1: the deterministic executor returns the same template layers);
     ``None`` keeps the exact pre-registry behavior.
+
+    M4.1: ``tool_metrics``/``tool_traces`` carry the full retained ToolResult
+    (from ``store._dispatch_tools``). They are purely additive: ONLY when the
+    metrics prove genuine Earth Engine execution (``engine == "earthengine"``)
+    are the additive ``answer_source``/``evidence``/``provenance.traces``
+    fields emitted, reusing the already-sanitized executor values verbatim
+    (no raw exceptions, credentials, paths or Settings values). Template,
+    template-fallback and mock/default paths keep the payload byte-identical.
+    ``answer_source`` records the payload provenance — the answer-text source
+    plus the EE evidence; in M4.1 Gemini answers are not yet evidence-grounded
+    (that is M4.2).
     """
     workflow = job.workflow
     layers = list(workflow["layers"]) if layers_override is None else list(layers_override)
@@ -409,7 +489,7 @@ def build_result(
     completed_at = job.ai_finished_wall or (
         job.started_wall + timedelta(seconds=DURATION_SECONDS)
     )
-    return {
+    result: dict[str, Any] = {
         "result_id": f"res_{uuid.uuid4().hex[:12]}",
         "session_id": job.session_id,
         "job_id": job.job_id,
@@ -446,5 +526,17 @@ def build_result(
             for layer in layers
         ],
     }
+    # M4.1: additive provenance — emitted ONLY when the tool metrics prove
+    # genuine Earth Engine execution. Template, template-fallback and the
+    # mock/default paths keep the payload byte-identical (no new fields).
+    evidence = _earthengine_evidence(tool_metrics)
+    if evidence is not None:
+        if answer_text is not None:
+            result["answer_source"] = "gemini+earthengine"
+        else:
+            result["answer_source"] = "deterministic+earthengine"
+        result["evidence"] = evidence
+        result["provenance"] = {"traces": _provenance_traces(tool_traces)}
+    return result
 
 

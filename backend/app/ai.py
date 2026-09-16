@@ -58,7 +58,13 @@ class AiAnswer:
     error: str | None = None
 
 
-def _build_prompt(question: str, mode: str, image_count: int, context_note: str | None) -> str:
+def _build_prompt(
+    question: str,
+    mode: str,
+    image_count: int,
+    context_note: str | None,
+    measurements: str | None = None,
+) -> str:
     context = {
         "single": "one satellite image",
         "twoDate": (
@@ -79,6 +85,22 @@ def _build_prompt(question: str, mode: str, image_count: int, context_note: str 
         '- for optical+SAR: "optical_sar_fusion"',
         "or null if none applies.",
     ]
+    if measurements:
+        # M4.2 grounded composition: the structured facts block is appended
+        # only when authoritative Earth Engine measurements exist. The rules
+        # below are the contract that keeps Gemini a composer — never a
+        # source — of geospatial measurements.
+        lines.extend(
+            [
+                "Structured facts block — authoritative Earth Engine measurements for the analyzed area, computed by Google Earth Engine from the selected satellite scene:",
+                measurements,
+                "These measurements are authoritative; compose your answer from them:",
+                "- Repeat every supplied numeric value exactly; never invent, round, alter, or substitute any number.",
+                "- Never add measurements that are not supplied, and never infer numeric measurements that are not listed.",
+                "- If a fact is absent above, do not claim it.",
+                "- anchor_date is the user-declared acquisition date derived from the upload; scene_date is the actual acquisition date of the selected scene. They are different concepts: never conflate them.",
+            ]
+        )
     if context_note:
         lines.append(context_note)
     return "\n".join(lines) + f"\n\nUser question: {question}"
@@ -90,6 +112,7 @@ def generate_ai_answer(
     mode: str,
     timeout_s: float,
     context_note: str | None = None,
+    measurements: str | None = None,
 ) -> AiAnswer:
     """Call Gemini with the question + image bytes. Sync; runs in a worker thread.
 
@@ -127,7 +150,9 @@ def generate_ai_answer(
             api_key=settings.gemini_api_key,
             http_options=genai_types.HttpOptions(timeout=int(timeout_s * 1000)),
         )
-        contents: list[Any] = [_build_prompt(question, mode, len(images), context_note)]
+        contents: list[Any] = [
+            _build_prompt(question, mode, len(images), context_note, measurements)
+        ]
         for image_bytes, mime_type in images:
             contents.append(
                 genai_types.Part.from_bytes(data=image_bytes, mime_type=mime_type)

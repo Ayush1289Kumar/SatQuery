@@ -19,6 +19,7 @@ from typing import Any, Optional
 from . import ai
 from . import tools
 from . import worker
+from .tools.base import MeasurementFacts
 from .config import get_settings
 from .schemas import ApiError
 
@@ -110,6 +111,10 @@ class Store:
         self._jobs: dict[str, JobRecord] = {}
         self._session_jobs: dict[str, list[str]] = {}
         self._results: dict[str, dict[str, Any]] = {}
+        # M4.1: full retained ToolResult per job (layers + metrics + traces),
+        # guarded by ``_lock`` like every other dict above. Guarantees the
+        # registered tool executes strictly once per job.
+        self._tool_results: dict[str, Any] = {}
         self._idempotency: dict[str, str] = {}
         self._ai_threads: list[threading.Thread] = []
 
@@ -455,12 +460,35 @@ class Store:
                 if skipped
                 else None
             )
+            # M4.2 grounded composition (explicit opt-in only): run the
+            # registered tool BEFORE Gemini so authoritative Earth Engine
+            # measurements can ground the answer. _dispatch_tools caches per
+            # job, so the later ensure_result build reuses this exact
+            # ToolResult — the tool still executes strictly once. Any other
+            # configuration keeps the pre-M4.2 ordering (Gemini first) and
+            # sends no facts. Template-fallback metrics never become facts.
+            measurements: str | None = None
+            if (
+                settings.ai_provider == "gemini"
+                and settings.tools_engine == "earthengine"
+                and settings.answer_composition == "gemini_facts"
+            ):
+                with self._lock:
+                    uploads = [self._uploads[uid] for uid in session.upload_ids]
+                tool_result = self._dispatch_tools(job, session, uploads)
+                facts = (
+                    MeasurementFacts.from_metrics(tool_result.metrics)
+                    if tool_result is not None
+                    else None
+                )
+                measurements = facts.to_prompt_digest() if facts is not None else None
             outcome = ai.generate_ai_answer(
                 question=job.question,
                 images=images,
                 mode=session.mode,
                 timeout_s=settings.gemini_timeout_s,
                 context_note=context_note,
+                measurements=measurements,
             )
             with self._lock:
                 job.ai_elapsed_s = outcome.elapsed_s or None
@@ -492,15 +520,27 @@ class Store:
                     job.ai_finished = True
                 self.ensure_result(job)
 
-    def _dispatch_layers(
+    def _dispatch_tools(
         self, job: Any, session: Any, uploads: list[Any]
-    ) -> Optional[list[dict[str, Any]]]:
-        """Thin tool-registry dispatch (M1): evidence layers for one job.
+    ) -> Optional[Any]:
+        """Full tool-registry dispatch (M1 layers; M4.1 metrics + traces).
+
+        Returns the complete ``ToolResult`` for the job's workflow, cached per
+        job in ``self._tool_results`` (guarded by ``_lock``) so the registered
+        tool executes strictly once per job — repeated ``ensure_result`` calls
+        (job polling, results fetches, the real-AI thread's final build) reuse
+        the retained object. ``metrics`` and ``traces`` feed the additive
+        provenance fields in ``worker.build_result``; ``layers`` remain the
+        only map-evidence source, exactly as before.
 
         Fail-closed by design: any dispatch error returns None so
         worker.build_result keeps the deterministic workflow template layers
         and the job completes exactly as before the registry existed.
         """
+        with self._lock:
+            cached = self._tool_results.get(job.job_id)
+        if cached is not None:
+            return cached
         try:
             context = tools.ToolContext(
                 session_id=job.session_id,
@@ -512,9 +552,11 @@ class Store:
                 acquisition_times=tuple(upload.acquisition_time for upload in uploads),
             )
             tool_result = tools.dispatch(job.workflow["id"], context)
-            return list(tool_result.layers)
         except Exception:  # noqa: BLE001 - the registry layer must never break a job
             return None
+        with self._lock:
+            self._tool_results[job.job_id] = tool_result
+        return tool_result
 
     def ensure_result(self, job: JobRecord) -> Optional[dict[str, Any]]:
         """Build the result once the job completes (lazy timeline or real AI)."""
@@ -529,6 +571,7 @@ class Store:
                 return None
             session = self._sessions[job.session_id]
             uploads = [self._uploads[upload_id] for upload_id in session.upload_ids]
+            tool_result = self._dispatch_tools(job, session, uploads)
             result = worker.build_result(
                 job=job,
                 session=session,
@@ -536,7 +579,13 @@ class Store:
                 answer_text=job.ai_answer,
                 gemini_model=(get_settings().gemini_model if job.ai_answer else None),
                 ai_elapsed_s=job.ai_elapsed_s,
-                layers_override=self._dispatch_layers(job, session, uploads),
+                layers_override=(
+                    None if tool_result is None else list(tool_result.layers)
+                ),
+                # M4.1: metrics/traces flow through as additive provenance;
+                # build_result emits fields only for engine == "earthengine".
+                tool_metrics=None if tool_result is None else dict(tool_result.metrics),
+                tool_traces=() if tool_result is None else tool_result.traces,
             )
             self._results[job.job_id] = result
             session.status = "completed"

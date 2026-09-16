@@ -55,6 +55,13 @@ class Settings(BaseSettings):
     # automatic fail-closed fallback to the template executor.
     tools_engine: Literal["template", "earthengine"] = "template"
 
+    # Answer composition (M4.2, explicit opt-in): "template" keeps the
+    # deterministic answer text; "gemini_facts" grounds the Gemini answer in
+    # authoritative Earth Engine measurements. The grounded path activates
+    # only when ai_provider="gemini" AND tools_engine="earthengine" AND this
+    # is "gemini_facts"; every other combination keeps pre-M4.2 behavior.
+    answer_composition: Literal["template", "gemini_facts"] = "template"
+
     # M3 Sentinel-2 scene selection (explicit + documented values from the M3
     # investigation). The bounded search window is anchored on the
     # upload-derived acquisition date — never on "today" — and the least-cloudy
