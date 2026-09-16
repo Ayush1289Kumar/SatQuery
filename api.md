@@ -26,17 +26,33 @@ Use `Authorization: Bearer <access_token>` for protected endpoints. Use `Idempot
 
 ## Implementation Status
 
-### Stage 1 - Backend foundation
+### Implemented in `backend/` (through milestone M4.3)
 
-Implemented in `backend/`:
+The deterministic demo lifecycle is complete and covered by the backend test suite
+(117 passing). Implemented endpoints (all under `/api/v1`):
 
-- FastAPI application with `/health` and `/api/v1/health`.
-- Dependency-aware readiness checks at `/health/ready` and `/api/v1/health/ready`.
-- Environment-based configuration using `.env` and `backend/.env.example`.
-- CORS configuration for the Vite frontend.
-- Consistent `{ data, request_id }` response envelope for health responses.
+| Method | Endpoint | Notes |
+|---|---|---|
+| `POST` | `/uploads/initiate` | JSON body; returns a **mock** presigned `upload_url` |
+| `PUT` | `/uploads/{upload_id}/data` | Mock object-storage sink for the returned `upload_url` |
+| `POST` | `/uploads/{upload_id}/complete` | Confirms upload; status becomes `ready` |
+| `GET` | `/uploads/{upload_id}` | Demo raster metadata; `acquisition_time` derives from the filename date |
+| `POST` | `/sessions` | Mode pair rules enforced (`single`/`twoDate`/`opticalSar`) |
+| `POST` | `/sessions/{session_id}/analyses` | `202 Accepted`; honors `Idempotency-Key` |
+| `GET` | `/jobs/{job_id}` | Stage/progress polling (also finalizes the result) |
+| `GET` | `/sessions/{session_id}/results/latest` | Result for `ResultsScreen`/`MapView` (see section 5) |
+| `GET` | `/health`, `/health/ready` | Liveness/readiness |
 
-The upload, authentication, session, analysis, result, report, regional, and worker APIs below are the target contracts for the next stages. They are not implemented yet.
+**Not implemented yet** (the sections below remain the target contracts):
+authentication (no `/auth/*`; see the demo bearer note), `/jobs/{job_id}/cancel`,
+`/jobs/{job_id}/events` (SSE), `/results/{result_id}/reports`, `/reports/{report_id}`,
+`/regions/*`, `/suggestions`, and the result `artifacts` block.
+
+**Authentication (demo):** protected endpoints expect `Authorization: Bearer <token>`
+when a header is present. With `DEMO_MODE=true` (the default) any or no bearer token
+is accepted and a fixed demo identity is stamped. With `DEMO_MODE=false` a bearer
+token is required but still treated as an opaque demo identity. No real JWT
+verification exists yet.
 
 Run the implemented backend from the repository root after installing `backend/requirements.txt`:
 
@@ -44,11 +60,49 @@ Run the implemented backend from the repository root after installing `backend/r
 python -m uvicorn backend.app.main:app --reload --port 8000
 ```
 
-Check `http://localhost:8000/api/v1/health`. Readiness returns `503` until the database, Redis, object storage, and worker settings are configured.
+Check `http://localhost:8000/api/v1/health`. Readiness returns `503` until the
+database, Redis, object storage, and worker settings are configured. The demo
+lifecycle itself needs only the defaults.
 
-### Next stage
+### Analysis engine modes (M2-M4)
 
-Implement authentication, upload initiation/completion, and upload metadata validation before adding the analysis queue.
+The result payload depends on the tool engine and the answer composition
+(see the configuration table below):
+
+| Path | Configuration | Result behavior |
+|---|---|---|
+| A. Template (default) | `TOOLS_ENGINE=template` | Deterministic template layers **and** template answer text; no `answer_source`/`evidence`/`provenance` fields |
+| B. EE + Gemini grounded | `TOOLS_ENGINE=earthengine` + `AI_PROVIDER=gemini` + `ANSWER_COMPOSITION=gemini_facts` | Real Earth Engine layers; the tool runs **before** Gemini; Gemini composes the answer from authoritative EE measurements; `answer_source="gemini+earthengine"` |
+| C. EE + no Gemini | `TOOLS_ENGINE=earthengine` (provider `mock`, Gemini failed, or `ANSWER_COMPOSITION=template`) | Real EE layers; deterministic answer composed from the same EE measurements; `answer_source="deterministic+earthengine"` |
+| D. EE failure | `TOOLS_ENGINE=earthengine`, EE execution fails | Fail-closed fallback to the template layers and template answer; no provenance fields (never claims EE facts) |
+
+Hardcoded workflow templates are an **intentional fallback**, not dead code: paths A
+and D are the safety net for every workflow without a real Earth Engine executor
+(currently only `water_mapping` has one).
+
+### Engine configuration switches
+
+Environment names (pydantic-settings; set in `backend/.env` or the OS environment):
+
+| Variable | Values (default first) | Purpose |
+|---|---|---|
+| `AI_PROVIDER` | `mock`, `gemini` | `mock` keeps the deterministic 9-second demo timeline; `gemini` enables real answer generation with automatic fallback |
+| `GEMINI_API_KEY` | — | Server-side only; never a `VITE_` variable |
+| `GEMINI_MODEL` | `gemini-3.8-flash` | Gemini model id |
+| `GEMINI_TIMEOUT_S` | `45.0` | Gemini call timeout |
+| `TOOLS_ENGINE` | `template`, `earthengine` | Template executor (default) vs real Earth Engine executor |
+| `ANSWER_COMPOSITION` | `template`, `gemini_facts` | `gemini_facts` opts into the grounded Gemini path (requires `AI_PROVIDER=gemini` and `TOOLS_ENGINE=earthengine`) |
+| `EE_ENABLED` | `false`, `true` | Allows Earth Engine client initialization; EE calls fail closed when false |
+| `EE_CREDENTIALS_PATH` | `backend/credentials/satquery-earth-engine.json` | Service-account JSON path (the file itself is never committed) |
+| `EE_SCENE_LOOKBACK_DAYS` | `45` (0-365) | Scene-search lookback, anchored on the upload-derived acquisition date |
+| `EE_SCENE_FORWARD_DAYS` | `4` (0-365) | Forward window days (end exclusive) |
+| `EE_MAX_CLOUD_PERCENT` | `50.0` (0-100) | Maximum accepted scene cloud cover |
+| `DEMO_MODE` | `true`, `false` | Demo authentication bypass (see above) |
+
+Note: `TOOLS_ENGINE`, `ANSWER_COMPOSITION`, `EE_ENABLED`, `EE_CREDENTIALS_PATH`,
+`EE_SCENE_LOOKBACK_DAYS`, `EE_SCENE_FORWARD_DAYS`, and `EE_MAX_CLOUD_PERCENT` are
+**not yet listed** in `backend/.env.example` (that file predates the M2-M4
+milestones); they work through pydantic-settings regardless.
 
 ## Required Keys and Services
 
@@ -420,6 +474,10 @@ created | validating | queued | routing | processing | explaining |
 completed | failed | cancelled | expired
 ```
 
+Implemented demo statuses: `validating`, `queued`, `routing`, `processing`,
+`explaining`, `completed`, `cancelled`. `error` stays `null` on the mock path
+(failures fall back to the deterministic result instead of failing the job).
+
 Frontend stage mapping:
 
 | API stage | Current UI label |
@@ -430,6 +488,12 @@ Frontend stage mapping:
 | `explain` | Explain |
 
 The frontend should poll this endpoint every 1 to 2 seconds, or use the optional SSE endpoint below.
+
+Implemented demo timing: the deterministic timeline completes in about 9 seconds
+(`AI_PROVIDER=mock`) with a `~20 s` estimate in Gemini mode. Poll until
+`status == "completed"`, then fetch `/sessions/{session_id}/results/latest`
+(`GET /jobs/{job_id}` finalizes the result on completion, so the follow-up fetch
+does not race the 409 `RESULT_NOT_READY` window).
 
 ### `POST /jobs/{job_id}/cancel`
 
@@ -517,11 +581,14 @@ Response:
         ]
       }
     ],
-    "artifacts": {
-      "evidence_geojson_url": "https://storage.example/signed-url",
-      "thumbnail_url": "https://storage.example/signed-url",
-      "before_after_preview_url": "https://storage.example/signed-url"
-    }
+    "inputs": [
+      {
+        "upload_id": "upl_01J...",
+        "original_name": "scene_2026-08-18_optical.tif",
+        "kind": "optical",
+        "acquisition_time": "2026-08-18T05:22:00Z"
+      }
+    ]
   },
   "request_id": "req_01J..."
 }
@@ -543,6 +610,41 @@ Supported highlight types:
 ```text
 water | built | flood | vegetation | land
 ```
+
+### Implemented result fields (M4.3)
+
+The example above now mirrors the implemented payload; note that `artifacts` is a
+planned contract and is **not** returned today. All fields below are present on
+every result unless marked additive:
+
+| Field | Presence | Notes |
+|---|---|---|
+| `result_id`, `session_id`, `job_id`, `question` | always | Stable ids and the submitted question |
+| `answer` | always | Template text (paths A/D), facts-composed text (path C), or Gemini text (path B) |
+| `confidence`, `confidence_band` | always | `high` (>= 0.8), `medium` (>= 0.6), else `low`; the frontend low-confidence warning threshold is `0.6` |
+| `workflow` | always | `{ id, label, router_version }` |
+| `models` | always | Workflow models; the Gemini model is **prepended** only when Gemini genuinely produced the answer |
+| `usage_time_sec` | always | Gemini elapsed time when Gemini answered; the workflow template value otherwise |
+| `created_at`, `completed_at` | always | ISO 8601 UTC (`Z`) |
+| `inputs` | always | `upload_id`, `original_name`, `kind`, `acquisition_time` per upload |
+| `layers` | always | GeoJSON evidence (see below) |
+| `answer_source` | **additive** | Only on EE-success paths: `gemini+earthengine` (B) or `deterministic+earthengine` (C) |
+| `evidence` | **additive** | Only on EE-success paths: whitelisted EE measurements (`scene_id`, `scene_date`, `cloud_pct`, `anchor_date`, `window_start`, `window_end`, `ndwi_threshold`, `water_area_m2`, `aoi_area_m2`, `water_fraction`, `confidence`, plus `feature_count`/`aoi_source` when the executor supplies them). Authoritative values, copied verbatim |
+| `provenance.traces` | **additive** | Only on EE-success paths: sanitized tool steps `{ tool_id, op, ok, duration_s, error, detail }` (`error` is an exception *type name* only, never a message) |
+
+**The three provenance fields are additive and OPTIONAL.** They are absent on the
+template path (A) and the EE-failure fallback (D). The frontend must treat them as
+optional metadata (ignore when absent) and must keep rendering `answer`,
+`confidence`, `workflow`, `models`, `usage_time_sec`, `inputs`, and `layers`
+regardless. No existing field is ever removed or renamed when the additive fields
+appear.
+
+GeoJSON contract (unchanged): `geometry_format: "geojson"`, `EPSG:4326`, closed
+polygon rings, coordinates `[longitude, latitude]`; per-feature
+`{ id, type, label, confidence, area_m2, geometry }`; layer
+`{ id, label, opacity, geometry_format, features }`. `anchor_date` (declared,
+upload-derived) and `scene_date` (actual selected scene) are different concepts and
+are never conflated in `evidence` or in composed answers.
 
 ## 6. Report APIs
 

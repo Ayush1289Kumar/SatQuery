@@ -17,6 +17,16 @@ The product workflow is:
 
 The current repository is a frontend-only prototype. The analysis timer, demo scenarios, result data, suggested questions, regional metrics, and report download are local or mock implementations. There is currently no API client, authentication state, backend proxy, persistent session, upload transport, job polling, or backend error state.
 
+> **Update (M4.3):** the backend is no longer a stub. The upload → session → analysis
+> → job polling → results lifecycle, the deterministic template engine, the Earth
+> Engine engine option, and the grounded-answer paths are implemented and covered by
+> 117 backend tests. See the **Implementation Status** section at the top of
+> [api.md](api.md) for the exact implemented endpoint list, the demo authentication
+> behavior, the engine configuration switches, and the additive result fields
+> (`answer_source`, `evidence`, `provenance.traces`) that may be absent on
+> template/fallback paths. The frontend must treat those provenance fields as
+> optional; every documented base field is always present.
+
 This guide uses the existing product name, UI states, and TypeScript types as the integration boundary.
 
 ## Implementation Progress
