@@ -442,6 +442,7 @@ def build_result(
     layers_override: list[dict[str, Any]] | None = None,
     tool_metrics: dict[str, Any] | None = None,
     tool_traces: tuple[Any, ...] = (),
+    facts_answer: str | None = None,
 ) -> dict[str, Any]:
     """Result payload per the documented result schema (api.md section 5).
 
@@ -462,8 +463,11 @@ def build_result(
     (no raw exceptions, credentials, paths or Settings values). Template,
     template-fallback and mock/default paths keep the payload byte-identical.
     ``answer_source`` records the payload provenance — the answer-text source
-    plus the EE evidence; in M4.1 Gemini answers are not yet evidence-grounded
-    (that is M4.2).
+    plus the EE evidence. M4.2 grounds the Gemini answer in the EE facts; M4.3
+    composes the deterministic answer from ``facts_answer`` (derived from the
+    same EE facts) ONLY for water_mapping when the EE execution succeeded but
+    Gemini produced no answer. The hardcoded workflow template answer remains
+    the final safety net for every other path.
     """
     workflow = job.workflow
     layers = list(workflow["layers"]) if layers_override is None else list(layers_override)
@@ -534,6 +538,12 @@ def build_result(
         if answer_text is not None:
             result["answer_source"] = "gemini+earthengine"
         else:
+            # M4.3: with genuine EE measurements but no Gemini answer, the
+            # deterministic facts-honest composer replaces the hardcoded
+            # template text (water_mapping only; every other workflow keeps
+            # the template answer as the safety net). Provenance stays true.
+            if facts_answer and workflow["id"] == "water_mapping":
+                result["answer"] = facts_answer
             result["answer_source"] = "deterministic+earthengine"
         result["evidence"] = evidence
         result["provenance"] = {"traces": _provenance_traces(tool_traces)}

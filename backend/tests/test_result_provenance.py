@@ -312,8 +312,11 @@ def test_existing_fields_unchanged_with_ee_metrics(
         "evidence",
         "provenance",
     }
-    # ...and every existing field keeps its exact template value.
-    assert result["answer"] == template["answer"]
+    # ...and every existing field keeps its exact template value (the answer
+    # is the M4.3 facts-honest composition for genuine EE executions).
+    assert result["answer"] == tools_base.compose_water_answer(
+        tools_base.MeasurementFacts.from_metrics(dict(EE_METRICS))
+    )
     assert result["confidence"] == template["confidence"]
     assert result["confidence_band"] == worker.confidence_band(
         float(template["confidence"])

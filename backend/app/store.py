@@ -19,7 +19,7 @@ from typing import Any, Optional
 from . import ai
 from . import tools
 from . import worker
-from .tools.base import MeasurementFacts
+from .tools.base import MeasurementFacts, compose_water_answer
 from .config import get_settings
 from .schemas import ApiError
 
@@ -572,6 +572,16 @@ class Store:
             session = self._sessions[job.session_id]
             uploads = [self._uploads[upload_id] for upload_id in session.upload_ids]
             tool_result = self._dispatch_tools(job, session, uploads)
+            # M4.3: for genuine Earth Engine executions, pre-derive the
+            # facts-honest answer. build_result uses it ONLY when Gemini did
+            # not produce an answer; every other path keeps the template.
+            facts_answer = (
+                compose_water_answer(
+                    MeasurementFacts.from_metrics(tool_result.metrics)
+                )
+                if tool_result is not None
+                else None
+            )
             result = worker.build_result(
                 job=job,
                 session=session,
@@ -586,6 +596,8 @@ class Store:
                 # build_result emits fields only for engine == "earthengine".
                 tool_metrics=None if tool_result is None else dict(tool_result.metrics),
                 tool_traces=() if tool_result is None else tool_result.traces,
+                # M4.3: deterministic facts-honest fallback answer.
+                facts_answer=facts_answer,
             )
             self._results[job.job_id] = result
             session.status = "completed"

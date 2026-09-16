@@ -8,6 +8,7 @@ must reuse these exact contracts. Keep this module small — no I/O, no SDKs.
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import dataclass, field
 from typing import Any, Callable, Optional
 
@@ -147,3 +148,81 @@ class MeasurementFacts:
             if getattr(self, key) is not None
         }
         return json.dumps(supplied, ensure_ascii=False, sort_keys=True)
+
+
+# --- M4.3: deterministic facts-honest composer ---------------------------------
+
+# A fact may reach the composed answer only in its expected shape: numbers as
+# real numbers, dates as strict ISO YYYY-MM-DD strings. Anything else (hostile
+# strings, arbitrary objects, booleans) is omitted — never echoed into the
+# answer — so no credential, exception text, or internal value can leak.
+_ISO_DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+
+
+def _clean_number(value: Any) -> Any:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return None
+    return value
+
+
+def _clean_date(value: Any) -> Any:
+    if isinstance(value, str) and _ISO_DATE_RE.match(value):
+        return value
+    return None
+
+
+def compose_water_answer(facts: "MeasurementFacts | None") -> "str | None":
+    """Deterministic water-mapping answer built ONLY from MeasurementFacts.
+
+    Pure function of the supplied facts: no I/O, no Gemini, no templates. The
+    same facts always produce the byte-identical answer. Only facts actually
+    present are used — authoritative values verbatim (never invented, rounded,
+    or substituted); absent facts omit their sentence cleanly. The declared
+    acquisition anchor and the actual selected scene date are stated as
+    distinct concepts whenever they differ. Returns None when no usable facts
+    exist, so callers keep the hardcoded template answer as the safety net.
+    """
+    if facts is None:
+        return None
+    scene_date = _clean_date(facts.scene_date)
+    anchor_date = _clean_date(facts.anchor_date)
+    water = _clean_number(facts.water_area_m2)
+    aoi = _clean_number(facts.aoi_area_m2)
+    fraction = _clean_number(facts.water_fraction)
+    threshold = _clean_number(facts.ndwi_threshold)
+    cloud = _clean_number(facts.cloud_pct)
+    confidence = _clean_number(facts.confidence)
+    features = _clean_number(facts.feature_count)
+
+    sentences: list[str] = []
+    if scene_date and anchor_date and anchor_date != scene_date:
+        sentences.append(
+            f"Requested analysis date: {anchor_date}. "
+            f"Selected Sentinel-2 scene: {scene_date}."
+        )
+    elif scene_date:
+        sentences.append(f"Selected Sentinel-2 scene: {scene_date}.")
+    elif anchor_date:
+        sentences.append(
+            f"Requested analysis date: {anchor_date} (scene date unavailable)."
+        )
+    if cloud is not None:
+        sentences.append(f"Scene cloud cover: {cloud}%.")
+    if water is not None:
+        if aoi is not None:
+            sentences.append(
+                f"Mapped water: {water} m² of a {aoi} m² analysis area."
+            )
+        else:
+            sentences.append(f"Mapped water: {water} m².")
+    if fraction is not None:
+        sentences.append(f"Water fraction: {fraction}.")
+    if threshold is not None:
+        sentences.append(f"Water detected where NDWI exceeds {threshold}.")
+    if features is not None:
+        sentences.append(f"Distinct water bodies: {features}.")
+    if confidence is not None:
+        sentences.append(f"Confidence: {confidence}.")
+    if not sentences:
+        return None
+    return " ".join(sentences)

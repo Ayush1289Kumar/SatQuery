@@ -402,11 +402,13 @@ def test_gemini_failure_keeps_safe_fallback_and_truthful_provenance(
     result = _latest_result(client, session["session_id"])
 
     # Facts were supplied to Gemini, but Gemini did not produce the answer —
-    # provenance must NOT claim gemini+earthengine (no fake numeric template;
-    # the deterministic facts composer is reserved for M4.3).
+    # provenance must NOT claim gemini+earthengine (the answer is the M4.3
+    # facts-honest composition of the real EE metrics, never a fake template).
     assert gemini_calls[0]["measurements"] is not None
     assert result["answer_source"] == "deterministic+earthengine"
-    assert result["answer"] == worker.workflow_template("water_mapping")["answer"]
+    assert result["answer"] == tools_base.compose_water_answer(
+        tools_base.MeasurementFacts.from_metrics(dict(EE_METRICS))
+    )
     assert result["models"] == worker.workflow_template("water_mapping")["models"]
 
 
