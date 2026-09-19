@@ -29,7 +29,7 @@ class Settings(BaseSettings):
     # 'gemini' enables real Gemini answer generation with automatic fallback.
     ai_provider: Literal["mock", "gemini"] = "mock"
     gemini_api_key: str | None = None
-    gemini_model: str = "gemini-2.0-flash"
+    gemini_model: str = "gemini-3.6-flash"
     gemini_timeout_s: float = 45.0
 
     # Demo milestone (api.md section 11): deterministic in-memory lifecycle.
