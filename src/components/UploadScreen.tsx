@@ -1,9 +1,10 @@
 import { useCallback, useState } from 'react'
 import type { UploadMode, UploadedImage } from '../types'
 import { DEMO_SCENARIOS, type DemoScenario } from '../data/mock'
-import { Satellite, CalendarRange, Radar, UploadCloud, X, ArrowRight, Waves, Droplets, Building2, CircleCheck } from 'lucide-react'
+import { Satellite, CalendarRange, Radar, UploadCloud, X, ArrowRight, Waves, Droplets, Building2, CircleCheck, AlertTriangle } from 'lucide-react'
 import AmbientCanvas from './AmbientCanvas'
 import Reveal from './Reveal'
+
 
 const MODES: { id: UploadMode; label: string; desc: string; slots: number; Icon: typeof Satellite }[] = [
   { id: 'single', label: 'Single Image', desc: 'One optical satellite image', slots: 1, Icon: Satellite },
@@ -28,39 +29,50 @@ interface UploadScreenProps {
   mode: UploadMode
   images: UploadedImage[]
   onSelectMode: (m: UploadMode) => void
-  onAddImages: (imgs: UploadedImage[]) => void
+  /** Called with the new image and the slot index it should occupy. */
+  onAddImage: (img: UploadedImage, slotIndex: number) => void
   onRemoveImage: (id: string) => void
   onContinue: () => void
   onRunScenario: (s: DemoScenario) => void
+  /** Upload/API error to display inline inside the card. */
+  error?: string | null
+  onDismissError?: () => void
+  /** When true, the Continue button shows a loading spinner. */
+  loading?: boolean
 }
 
 export default function UploadScreen({
   mode,
   images,
   onSelectMode,
-  onAddImages,
+  onAddImage,
   onRemoveImage,
   onContinue,
   onRunScenario,
+  error,
+  onDismissError,
+  loading = false,
 }: UploadScreenProps) {
-  const [dragging, setDragging] = useState(false)
+  // Track dragging per slot index so only the hovered zone highlights.
+  const [draggingSlot, setDraggingSlot] = useState<number | null>(null)
   const required = MODES.find((m) => m.id === mode)?.slots ?? 1
 
   const handleFiles = useCallback(
-    (fileList: FileList | null) => {
+    (fileList: FileList | null, slotIndex: number) => {
       if (!fileList || fileList.length === 0) return
-      const next: UploadedImage[] = Array.from(fileList).slice(0, required).map((f, i) => ({
-        id: `${Date.now()}-${i}-${f.name}`,
+      const f = fileList[0] // one file per slot
+      const img: UploadedImage = {
+        id: `${Date.now()}-${slotIndex}-${f.name}`,
         name: f.name,
-        kind: mode === 'opticalSar' && i === 1 ? 'sar' : 'optical',
+        kind: mode === 'opticalSar' && slotIndex === 1 ? 'sar' : 'optical',
         date: undefined,
         location: undefined,
         previewUrl: URL.createObjectURL(f),
         file: f,
-      }))
-      onAddImages(next)
+      }
+      onAddImage(img, slotIndex)
     },
-    [required, mode, onAddImages],
+    [mode, onAddImage],
   )
 
   return (
@@ -124,12 +136,15 @@ export default function UploadScreen({
           </div>
 
           {/* Drop zones */}
-          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+          <div className={`mt-5 grid gap-3 ${required === 1 ? 'grid-cols-1' : 'sm:grid-cols-2'}`}>
             {Array.from({ length: required }).map((_, i) => {
               const img = images[i]
+              const isDraggingHere = draggingSlot === i
               const label =
                 mode === 'opticalSar'
                   ? i === 0 ? 'Optical Band' : 'SAR Band'
+                  : mode === 'single'
+                  ? 'Satellite Image'
                   : i === 0 ? 'Image (Earlier Date)' : 'Image (Later Date)'
               return (
                 <div key={`${mode}-${i}`}>
@@ -137,19 +152,13 @@ export default function UploadScreen({
                     {label}
                   </div>
                   {img ? (
-                    <div className="flex items-center justify-between rounded-xl border border-[var(--he-border)] bg-white/50 p-3.5 shadow-sm transition-shadow duration-200 hover:shadow-md">
+                    <div className="flex items-center justify-between rounded-xl border border-[var(--he-accent-strong)]/40 bg-white/50 p-3.5 shadow-sm transition-shadow duration-200 hover:shadow-md">
                       <div className="flex items-center gap-3">
-                        <div
-                          className={`flex h-10 w-10 items-center justify-center rounded-lg border ${
-                            img.kind === 'sar'
-                              ? 'border-[var(--he-accent-border)] bg-[var(--he-accent-50)] text-[var(--he-accent-strong)]'
-                              : 'border-[var(--he-accent-border)] bg-[var(--he-accent-50)] text-[var(--he-accent-strong)]'
-                          }`}
-                        >
+                        <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-[var(--he-accent-border)] bg-[var(--he-accent-50)] text-[var(--he-accent-strong)]">
                           {img.kind === 'sar' ? <Radar className="h-4.5 w-4.5" /> : <Satellite className="h-4.5 w-4.5" />}
                         </div>
                         <div>
-                          <div className="max-w-[180px] truncate text-sm font-medium text-[var(--he-ink)]">
+                          <div className="max-w-[200px] truncate text-sm font-medium text-[var(--he-ink)]">
                             {img.name}
                           </div>
                           <div className="text-xs text-[var(--he-ink-soft)]">
@@ -168,17 +177,23 @@ export default function UploadScreen({
                     </div>
                   ) : (
                     <label
-                      onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
-                      onDragLeave={() => setDragging(false)}
-                      onDrop={(e) => { e.preventDefault(); setDragging(false); handleFiles(e.dataTransfer.files) }}
-                      className={`flex h-32 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed p-3 text-center transition-all duration-200 ease-out ${
-                        dragging
-                          ? 'border-[var(--he-accent-strong)] bg-[var(--he-accent-50)] shadow-md'
+                      onDragOver={(e) => { e.preventDefault(); setDraggingSlot(i) }}
+                      onDragLeave={() => setDraggingSlot(null)}
+                      onDrop={(e) => {
+                        e.preventDefault()
+                        setDraggingSlot(null)
+                        handleFiles(e.dataTransfer.files, i)
+                      }}
+                      className={`group flex h-32 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed p-3 text-center transition-all duration-200 ease-out ${
+                        isDraggingHere
+                          ? 'border-[var(--he-accent-strong)] bg-[var(--he-accent-50)] shadow-md scale-[1.01]'
                           : 'border-[var(--he-accent-border)] bg-white/30 hover:border-[var(--he-accent-strong)] hover:bg-[var(--he-accent-50)]'
                       }`}
                     >
                       <UploadCloud
-                        className={`h-6 w-6 text-[var(--he-accent-strong)] transition-transform duration-300 ${dragging ? 'scale-125 -translate-y-1' : 'group-hover:-translate-y-0.5'}`}
+                        className={`h-6 w-6 text-[var(--he-accent-strong)] transition-transform duration-300 ${
+                          isDraggingHere ? 'scale-125 -translate-y-1' : 'group-hover:-translate-y-0.5'
+                        }`}
                       />
                       <span className="mt-2 text-sm font-medium text-[var(--he-ink)]">Drop image here</span>
                       <span className="mt-0.5 text-xs text-[var(--he-ink-soft)]">or click to browse · GeoTIFF, PNG, JPEG</span>
@@ -186,7 +201,10 @@ export default function UploadScreen({
                         type="file"
                         accept=".tif,.tiff,.png,.jpg,.jpeg"
                         className="hidden"
-                        onChange={(e) => { handleFiles(e.target.files); e.target.value = '' }}
+                        onChange={(e) => {
+                          handleFiles(e.target.files, i)
+                          e.target.value = ''
+                        }}
                       />
                     </label>
                   )}
@@ -194,6 +212,26 @@ export default function UploadScreen({
               )
             })}
           </div>
+
+          {/* Inline error banner — shown only when there's an error */}
+          {error && (
+            <div
+              role="alert"
+              className="mt-5 flex items-start gap-3 rounded-xl border border-red-300/40 bg-red-50/70 px-4 py-3 shadow-sm"
+            >
+              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-red-500" strokeWidth={2} />
+              <p className="flex-1 text-sm text-red-700">{error}</p>
+              {onDismissError && (
+                <button
+                  onClick={onDismissError}
+                  aria-label="Dismiss error"
+                  className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-red-400 transition-colors hover:bg-red-100 hover:text-red-600"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              )}
+            </div>
+          )}
 
           <div className="mt-5 flex items-center justify-between">
             <p className="text-xs text-[var(--he-ink-soft)]">
@@ -204,11 +242,20 @@ export default function UploadScreen({
             </p>
             <button
               onClick={onContinue}
-              disabled={images.length < required}
+              disabled={images.length < required || loading}
               className="group inline-flex items-center gap-2 rounded-full bg-[var(--he-accent-strong)] px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:shadow-lg hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:brightness-100"
             >
-              Continue
-              <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+              {loading ? (
+                <>
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                  Uploading…
+                </>
+              ) : (
+                <>
+                  Continue
+                  <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+                </>
+              )}
             </button>
           </div>
         </div>

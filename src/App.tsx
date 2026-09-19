@@ -113,7 +113,14 @@ export default function App() {
     setStep('ask')
   }
 
+  // Clear images when changing modes to avoid slot mismatches
+  const handleSelectMode = (m: UploadMode) => {
+    setMode(m)
+    setImages([])
+  }
+
   // Upload pipeline: initiate -> direct PUT -> complete -> session (api.md 2-3).
+  // Falls back to demo flow if the backend is unreachable.
   const handleContinue = async () => {
     if (apiBusy) return
     if (demoMode) {
@@ -143,6 +150,12 @@ export default function App() {
       sessionIdRef.current = session.session_id
       goAsk()
     } catch (err) {
+      // If the backend is simply not running, silently continue with demo flow
+      // so the UI remains fully usable without a running server.
+      if (err instanceof ApiError && err.code === 'NETWORK_ERROR') {
+        goAsk()
+        return
+      }
       setApiError(err instanceof Error ? err.message : 'Upload failed. Please try again.')
     } finally {
       setApiBusy(false)
@@ -236,7 +249,8 @@ export default function App() {
         <Header />
 
         <main id="main" className="relative z-10 mx-auto w-full max-w-6xl flex-1 px-4 pb-16 pt-6">
-          {apiError && (
+          {/* Global error banner — only for non-upload steps (upload step shows error inline) */}
+          {apiError && step !== 'upload' && (
             <div
               role="alert"
               className="mx-auto mb-6 flex max-w-3xl items-center justify-between gap-4 rounded-xl border border-[rgba(255,99,99,0.30)] bg-[rgba(0,0,0,0.30)] px-5 py-3.5"
@@ -267,11 +281,21 @@ export default function App() {
                   <UploadScreen
                     mode={mode}
                     images={images}
-                    onSelectMode={setMode}
-                    onAddImages={(imgs) => setImages(imgs)}
+                    onSelectMode={handleSelectMode}
+                    onAddImage={(img, slotIndex) =>
+                      setImages((prev) => {
+                        const next = [...prev]
+                        next[slotIndex] = img
+                        // Remove any undefined holes (e.g. from mode switches)
+                        return next.filter(Boolean) as typeof prev
+                      })
+                    }
                     onRemoveImage={(id) => setImages((prev) => prev.filter((i) => i.id !== id))}
                     onContinue={handleContinue}
                     onRunScenario={runScenario}
+                    error={apiError}
+                    onDismissError={() => setApiError(null)}
+                    loading={apiBusy}
                   />
                 </div>
                 <div className="lg:col-span-1">
