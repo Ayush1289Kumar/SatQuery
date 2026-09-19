@@ -239,7 +239,7 @@ export default function App() {
         <Header />
 
         <main id="main" className="relative z-10 mx-auto w-full max-w-6xl flex-1 px-4 pb-16 pt-6">
-          {apiError && (
+          {apiError && step !== 'upload' && (
             <div
               role="alert"
               className="mx-auto mb-6 flex max-w-3xl items-center justify-between gap-4 rounded-xl border border-[rgba(255,99,99,0.30)] bg-[rgba(0,0,0,0.30)] px-5 py-3.5"
@@ -275,6 +275,8 @@ export default function App() {
                     onRemoveImage={(id) => setImages((prev) => prev.filter((i) => i.id !== id))}
                     onContinue={handleContinue}
                     onRunScenario={runScenario}
+                    apiError={apiError}
+                    onDismissApiError={() => setApiError(null)}
                   />
                 </div>
                 <div className="lg:col-span-1">

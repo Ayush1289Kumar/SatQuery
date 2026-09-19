@@ -93,6 +93,8 @@ interface UploadScreenProps {
   onRemoveImage: (id: string) => void
   onContinue: (orderedImages?: UploadedImage[]) => void
   onRunScenario: (s: DemoScenario) => void
+  apiError?: string | null
+  onDismissApiError?: () => void
 }
 
 export default function UploadScreen({
@@ -103,6 +105,8 @@ export default function UploadScreen({
   onRemoveImage: _onRemoveImage,
   onContinue,
   onRunScenario,
+  apiError,
+  onDismissApiError,
 }: UploadScreenProps) {
   const [draggingSlot, setDraggingSlot] = useState<number | null>(null)
   const [fileError, setFileError] = useState<string | null>(null)
@@ -343,6 +347,31 @@ export default function UploadScreen({
               >
                 <X className="h-4 w-4" />
               </button>
+            </div>
+          )}
+
+          {/* API Error (inline, specific to the upload section) */}
+          {apiError && (
+            <div
+              role="alert"
+              className="mt-4 flex items-start justify-between rounded-xl border border-red-300/80 bg-red-50 p-3.5 text-sm text-red-800 shadow-md animate-in fade-in duration-200"
+            >
+              <div className="flex items-start gap-2.5">
+                <AlertTriangle className="h-5 w-5 shrink-0 text-red-600 mt-0.5" strokeWidth={2} />
+                <div className="leading-snug text-black">
+                  <span className="font-semibold text-red-600">API error: </span>
+                  {apiError}
+                </div>
+              </div>
+              {onDismissApiError && (
+                <button
+                  onClick={onDismissApiError}
+                  className="ml-3 shrink-0 rounded-lg p-1 text-red-400 hover:bg-red-100 hover:text-red-700 transition-colors"
+                  aria-label="Dismiss error"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
             </div>
           )}
 
