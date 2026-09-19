@@ -1,7 +1,7 @@
 # PrithviQ AI — Design System Specification
 
 > Persistent design tokens for AI coding agents and developers. These tokens are wired into
-> `frontend/src/index.css` (Tailwind v4 `@theme`). Keep this file and the CSS in sync.
+> `src/index.css` (Tailwind v4 `@theme`). Keep this file and the CSS in sync.
 
 ## Mission
 
@@ -12,6 +12,16 @@ decision-makers working under pressure — never like a generic corporate dashbo
 - **Evidence always visible** — text paired next to highlighted map proof.
 - **Calm in a crisis** — high-contrast Obsidian dark mode with glassmorphism to reduce eye strain.
 - **Motion earns its place** — animate for meaningful feedback, structure, or subtle delight (e.g. Three.js Globe).
+
+## Integration-Aware Experience
+
+The visual workflow is designed around a real asynchronous backend even while demo fixtures remain available:
+
+- Upload feedback must distinguish local selection, server upload, metadata validation, and rejected files.
+- The `Validate -> Route -> Analyze -> Explain` pipeline should reflect backend job stages rather than fixed timers when the API client is connected.
+- Results must preserve the evidence-first layout: answer, confidence warning, model/workflow provenance, and map evidence remain visible together.
+- Failed, cancelled, expired, and low-confidence states need clear visual treatment without implying operational certainty.
+- Demo scenarios should remain visually compatible with live results but be explicitly labelled as demo data.
 
 ## Color Palette (Obsidian Dark Theme, Electric accents)
 
@@ -60,3 +70,4 @@ decision-makers working under pressure — never like a generic corporate dashbo
 - Keyboard-navigable throughout; visible `:focus-visible` rings.
 - High contrast text against dark backgrounds.
 - Progress/screen-transition feedback exposed via `aria-live`.
+- Upload validation, job failure, cancellation, and report-generation status exposed through accessible live feedback.

@@ -1,0 +1,262 @@
+import logging
+import re
+from uuid import uuid4
+
+from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from starlette.exceptions import HTTPException as StarletteHTTPException
+
+from .config import get_settings
+from .deps import get_request_id
+from .routers import analyses, jobs, regions, reports, results, sessions, sih_specialist, traces, uploads
+from .schemas import ApiError, problem
+
+logger = logging.getLogger("prithviq.api")
+if not logger.handlers:
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    )
+
+# Patterns for sensitive data that should never leak to users
+_PATH_PATTERN = re.compile(
+    r"([A-Za-z]:\\[^ \t\n\r\'\"]+|/(?:home|var|tmp|etc|usr|app|Users|opt)[^ \t\n\r\'\"]*)"
+)
+_CONN_STRING_PATTERN = re.compile(
+    r"(?:postgresql|postgres|mysql|redis|mongodb|sqlite)://[^\s\'\"]+"
+)
+_SQL_ERROR_PATTERN = re.compile(
+    r"(?:relation \"[^\"]+\" does not exist|syntax error at or near|SELECT .* FROM|INSERT INTO .*)",
+    re.IGNORECASE,
+)
+
+
+def sanitize_error_message(message: str) -> str:
+    """Mask file paths, database strings, and raw SQL from user-visible error details."""
+    if not message:
+        return "An error occurred."
+    if "traceback (most recent call last)" in message.lower():
+        return "An unexpected server error occurred."
+    cleaned = _CONN_STRING_PATTERN.sub("[REDACTED_CONNECTION]", message)
+    cleaned = _PATH_PATTERN.sub("[REDACTED_PATH]", cleaned)
+    if _SQL_ERROR_PATTERN.search(cleaned):
+        return "A database error occurred. Please reference your request ID."
+    return cleaned
+
+
+settings = get_settings()
+
+app = FastAPI(
+    title=settings.app_name,
+    version="0.1.0",
+    description="Backend API for PrithviQ satellite imagery analysis.",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.cors_origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+def response_data(data: object, request_id: str = "local") -> dict[str, object]:
+    return {"data": data, "request_id": request_id}
+
+
+@app.middleware("http")
+async def request_id_middleware(request: Request, call_next):
+    """Stamp every request with a request id (envelope + X-Request-ID header)."""
+    request.state.request_id = f"req_{uuid4().hex[:12]}"
+    response = await call_next(request)
+    response.headers["X-Request-ID"] = request.state.request_id
+    return response
+
+
+@app.exception_handler(ApiError)
+async def api_error_handler(request: Request, exc: ApiError) -> JSONResponse:
+    """Contract errors (404/409/413/415/422 ...) as RFC 7807-style problem bodies."""
+    request_id = get_request_id(request)
+    if exc.status >= 500:
+        logger.error(
+            "ApiError [%s] %d %s: %s",
+            request_id,
+            exc.status,
+            exc.code,
+            exc.detail,
+            exc_info=True,
+        )
+        safe_detail = f"An internal server error occurred (request ID: {request_id})."
+    else:
+        safe_detail = sanitize_error_message(exc.detail)
+
+    return JSONResponse(
+        status_code=exc.status,
+        content=problem(
+            request_id=request_id,
+            status=exc.status,
+            code=exc.code,
+            title=exc.title,
+            detail=safe_detail,
+            field_errors=exc.field_errors,
+        ),
+    )
+
+
+@app.exception_handler(StarletteHTTPException)
+async def http_exception_handler(
+    request: Request, exc: StarletteHTTPException
+) -> JSONResponse:
+    request_id = get_request_id(request)
+    titles = {
+        401: "Unauthorized",
+        403: "Forbidden",
+        404: "Not Found",
+        405: "Method Not Allowed",
+        500: "Internal Server Error",
+        502: "Bad Gateway",
+        503: "Service Unavailable",
+    }
+    codes = {
+        401: "UNAUTHORIZED",
+        403: "FORBIDDEN",
+        404: "NOT_FOUND",
+        405: "METHOD_NOT_ALLOWED",
+        500: "INTERNAL_SERVER_ERROR",
+        502: "BAD_GATEWAY",
+        503: "SERVICE_UNAVAILABLE",
+    }
+
+    if exc.status_code >= 500:
+        logger.error(
+            "HTTP %d error [%s] on %s %s: %s",
+            exc.status_code,
+            request_id,
+            request.method,
+            request.url.path,
+            exc.detail,
+            exc_info=True,
+        )
+        safe_detail = f"An internal error occurred. Please contact support with request ID '{request_id}'."
+    else:
+        safe_detail = sanitize_error_message(str(exc.detail))
+
+    return JSONResponse(
+        status_code=exc.status_code,
+        content=problem(
+            request_id=request_id,
+            status=exc.status_code,
+            code=codes.get(exc.status_code, "HTTP_ERROR"),
+            title=titles.get(exc.status_code, "Request failed"),
+            detail=safe_detail,
+        ),
+    )
+
+
+@app.exception_handler(Exception)
+async def unhandled_exception_handler(request: Request, exc: Exception) -> JSONResponse:
+    """Global catch-all for unhandled exceptions. Never leaks stack traces or paths."""
+    request_id = get_request_id(request)
+    logger.error(
+        "Unhandled exception [%s] on %s %s: %s",
+        request_id,
+        request.method,
+        request.url.path,
+        exc,
+        exc_info=True,
+    )
+    return JSONResponse(
+        status_code=500,
+        content=problem(
+            request_id=request_id,
+            status=500,
+            code="INTERNAL_SERVER_ERROR",
+            title="Internal server error",
+            detail=f"An unexpected internal error occurred. Please contact support with request ID '{request_id}'.",
+        ),
+    )
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_error_handler(
+    request: Request, exc: RequestValidationError
+) -> JSONResponse:
+    field_errors = [
+        {
+            "field": ".".join(str(part) for part in error.get("loc", [])[1:]) or "body",
+            "message": str(error.get("msg", "invalid value")),
+        }
+        for error in exc.errors()
+    ]
+    return JSONResponse(
+        status_code=422,
+        content=problem(
+            request_id=get_request_id(request),
+            status=422,
+            code="VALIDATION_ERROR",
+            title="Validation failed",
+            detail="The request body failed schema validation.",
+            field_errors=field_errors,
+        ),
+    )
+
+
+@app.get("/health", tags=["health"])
+def health() -> dict[str, object]:
+    return response_data({"status": "ok", "service": settings.app_name})
+
+
+@app.get("/health/ready", tags=["health"])
+def readiness() -> JSONResponse:
+    dependencies = {
+        "api": "ok",
+        "auth": "configured" if settings.jwt_secret else "not_configured",
+        "database": "configured" if settings.database_url else "not_configured",
+        "redis": "configured" if settings.redis_url else "not_configured",
+        "object_storage": (
+            "configured"
+            if settings.object_storage_endpoint
+            and settings.object_storage_access_key
+            and settings.object_storage_secret_key
+            else "not_configured"
+        ),
+        "worker": "not_configured",
+    }
+    ready = all(value == "ok" or value == "configured" for value in dependencies.values())
+    return JSONResponse(
+        status_code=200 if ready else 503,
+        content=response_data({"status": "ready" if ready else "not_ready", **dependencies}),
+    )
+
+
+@app.get("/ready", tags=["health"])
+def root_readiness() -> JSONResponse:
+    return readiness()
+
+
+@app.get(f"{settings.api_prefix}/health", tags=["health"])
+def versioned_health() -> dict[str, object]:
+    return health()
+
+
+@app.get(f"{settings.api_prefix}/health/ready", tags=["health"])
+def versioned_readiness() -> JSONResponse:
+    return readiness()
+
+
+# --- Demo-critical analysis lifecycle (api.md sections 2-8) ------------------
+# Uploads -> sessions -> analyses -> jobs -> results -> traces -> reports -> regions.
+
+app.include_router(uploads.router, prefix=settings.api_prefix, tags=["uploads"])
+app.include_router(sessions.router, prefix=settings.api_prefix, tags=["sessions"])
+app.include_router(analyses.router, prefix=settings.api_prefix, tags=["analyses"])
+app.include_router(jobs.router, prefix=settings.api_prefix, tags=["jobs"])
+app.include_router(results.router, prefix=settings.api_prefix, tags=["results"])
+app.include_router(traces.router, prefix=settings.api_prefix, tags=["traces"])
+app.include_router(reports.router, prefix=settings.api_prefix, tags=["reports"])
+app.include_router(regions.router, prefix=settings.api_prefix, tags=["regions"])
+app.include_router(sih_specialist.router, prefix=settings.api_prefix, tags=["specialists"])
+

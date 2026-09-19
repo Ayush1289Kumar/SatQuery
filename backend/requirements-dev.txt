@@ -1,0 +1,5 @@
+# Test-only dependencies (no runtime impact). Install with:
+#   python -m pip install -r backend/requirements-dev.txt
+-r requirements.txt
+pytest>=8.0,<9.0
+httpx>=0.27,<1.0

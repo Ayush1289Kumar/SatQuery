@@ -14,6 +14,7 @@ Upload a satellite image, ask a question in plain English, and get a clear answe
 - **Map-based evidence** — answers are paired with an interactive map (Leaflet) so you can verify claims visually.
 - **Immersive 3D visuals** — Three.js-powered real-time terrain featuring a Materialization Hologram shader, LIDAR point-cloud particles, and cinematic fly-bys using `@react-three/drei` CameraControls.
 - **Premium UI & Smooth Scrolling** — Dark theme with "Vengeance UI" animated background grids, and buttery-smooth page scrolling physics powered by Lenis.
+- **Backend foundation** — FastAPI service with versioned health/readiness endpoints, environment configuration, and CORS for the Vite client. Analysis APIs are being integrated in stages.
 
 ## 🧱 Tech Stack
 
@@ -27,6 +28,8 @@ Upload a satellite image, ask a question in plain English, and get a clear answe
 | Smooth Scroll | Lenis |
 | Fonts | Fontsource variable fonts (Fraunces, Inter, Playfair Display, Plus Jakarta Sans, Public Sans) |
 | Hosting | Vercel |
+| Backend | Python FastAPI |
+| Planned data layer | PostgreSQL + PostGIS, Redis, S3/MinIO |
 
 ## 🚀 Getting Started
 
@@ -34,6 +37,7 @@ Upload a satellite image, ask a question in plain English, and get a clear answe
 
 - Node.js (v18+ recommended)
 - npm
+- Python 3.11+ for the backend
 
 ### Installation
 
@@ -67,6 +71,27 @@ npm run preview
 
 Serves the production build locally.
 
+### Backend development
+
+Install backend dependencies and start the current API foundation:
+
+```powershell
+python -m pip install -r backend/requirements.txt
+python -m uvicorn backend.app.main:app --reload --port 8000
+```
+
+Verify `http://localhost:8000/api/v1/health`. The readiness endpoint remains unavailable until database, queue, storage, and worker services are configured.
+
+### Documentation
+
+- [API reference](api.md)
+- [API keys and environment variables](api_key.md)
+- [Backend integration plan](backend-integration.md)
+- [Architecture](docs/architecture.md)
+- [Product requirements](docs/prd.md)
+- [Design system](docs/design.md)
+- [Change log](docs/Chages.md)
+
 ## 📁 Project Structure
 
 ```
@@ -80,6 +105,10 @@ Serves the production build locally.
 │   ├── hooks/          # Custom React hooks
 │   └── lib/            # Utilities
 ├── vite.config.ts      # Vite configuration
+├── backend/             # FastAPI service and environment configuration
+├── api.md               # Versioned endpoint reference
+├── api_key.md           # Credential and provider setup guide
+├── backend-integration.md # Full backend integration contract
 └── package.json
 ```
 
