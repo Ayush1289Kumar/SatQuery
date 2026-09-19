@@ -313,10 +313,16 @@ export async function pollJobUntilCompleted(
 /** ---------- Result mapping — the single GeoJSON conversion point ---------- */
 
 function geometryRingToLatLng(geometry: ResultFeaturePayload['geometry']): [number, number][] {
-  const asPolygon = geometry.coordinates as [number, number][][]
-  const asMulti = geometry.coordinates as [number, number][][][]
+  if (!geometry || !geometry.coordinates) return []
+  const coords = geometry.coordinates as unknown
+  if (!Array.isArray(coords)) return []
+  const asPolygon = coords as [number, number][][]
+  const asMulti = coords as [number, number][][][]
   const ring = geometry.type === 'MultiPolygon' ? (asMulti[0]?.[0] ?? []) : (asPolygon[0] ?? [])
-  return ring.map(([lng, lat]) => [lat, lng])
+  if (!Array.isArray(ring)) return []
+  return ring
+    .filter((pt): pt is [number, number] => Array.isArray(pt) && pt.length >= 2)
+    .map(([lng, lat]) => [lat, lng])
 }
 
 function toHighlight(feature: ResultFeaturePayload): Highlight {
@@ -344,6 +350,101 @@ export function mapResultToAnalysisResult(payload: ResultPayload): AnalysisResul
     layers,
     usageTimeSec: payload.usage_time_sec,
   }
+}
+
+/** ---------- Traces, reports, and regional client methods ---------- */
+
+export interface TraceStep {
+  step: number
+  tool: string
+  status: string
+  duration_ms: number
+  details: Record<string, unknown>
+}
+
+export interface TraceData {
+  trace_id: string
+  analysis_id: string
+  task: string
+  started_at: string
+  completed_at: string | null
+  total_duration_ms: number
+  steps: TraceStep[]
+}
+
+export async function fetchTrace(traceId: string): Promise<TraceData> {
+  const { data } = await request<TraceData>(`/traces/${traceId}`)
+  return data
+}
+
+export interface ReportCreated {
+  report_id: string
+  status: string
+  format: string
+  download_url: string
+  expires_at: string
+}
+
+export async function requestReport(
+  resultId: string,
+  format: 'pdf' | 'json' | 'geojson' | 'png' | 'txt' = 'pdf',
+): Promise<ReportCreated> {
+  const { data } = await request<ReportCreated>(`/results/${resultId}/reports`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ format }),
+  })
+  return data
+}
+
+export async function fetchReport(reportId: string): Promise<ReportCreated> {
+  const { data } = await request<ReportCreated>(`/reports/${reportId}`)
+  return data
+}
+
+export interface StateOption {
+  id: string
+  name: string
+}
+
+export interface CityOption {
+  id: string
+  name: string
+  coordinates: [number, number]
+  state_id: string
+}
+
+export async function fetchRegionStates(): Promise<StateOption[]> {
+  const { data } = await request<StateOption[]>('/regions/states')
+  return data
+}
+
+export async function fetchRegionCities(stateId: string): Promise<CityOption[]> {
+  const { data } = await request<CityOption[]>(`/regions/${stateId}/cities`)
+  return data
+}
+
+export interface RegionBoundary {
+  region_id: string
+  geometry: { type: string; coordinates: unknown }
+  source: string
+  retrieved_at: string
+}
+
+export async function fetchRegionBoundary(regionId: string): Promise<RegionBoundary> {
+  const { data } = await request<RegionBoundary>(`/regions/${regionId}/boundary`)
+  return data
+}
+
+export interface QuerySuggestion {
+  id: string
+  label: string
+  text: string
+}
+
+export async function fetchSuggestions(category = 'general'): Promise<QuerySuggestion[]> {
+  const { data } = await request<QuerySuggestion[]>(`/suggestions?category=${encodeURIComponent(category)}`)
+  return data
 }
 
 

@@ -8,6 +8,7 @@ interface.
 """
 from __future__ import annotations
 
+import logging
 import re
 import threading
 import time
@@ -20,6 +21,8 @@ from . import ai
 from . import worker
 from .config import get_settings
 from .schemas import ApiError
+
+logger = logging.getLogger("prithviq.store")
 
 _DATE_IN_NAME = re.compile(r"(\d{4}-\d{2}-\d{2})")
 _FALLBACK_ACQUISITION = "2026-08-24T05:22:00Z"
@@ -479,6 +482,12 @@ class Store:
                         outcome.error or "AI provider returned no usable answer."
                     )
         except Exception as exc:  # last resort: never leave the job stuck
+            logger.error(
+                "AI job %s background execution error: %s",
+                job.job_id,
+                exc,
+                exc_info=True,
+            )
             with self._lock:
                 job.ai_error = f"AI execution failed ({type(exc).__name__})."
                 job.ai_finished_wall = datetime.now(timezone.utc)

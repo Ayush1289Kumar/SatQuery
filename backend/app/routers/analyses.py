@@ -1,15 +1,19 @@
 """Analysis submission endpoints (api.md section 4)."""
 from __future__ import annotations
 
+import logging
 from typing import Any
 
 from fastapi import APIRouter, Depends, Request
 
 from ..deps import get_current_user, get_request_id
+from ..planner.executor import execute_plan
+from ..planner.router import classify_intent
 from ..schemas import AnalysisCreateRequest, envelope
 from ..store import get_store
 from ..worker import DURATION_SECONDS, route_workflow
 
+logger = logging.getLogger("prithviq.analyses")
 router = APIRouter()
 
 
@@ -28,8 +32,9 @@ def submit_analysis(
     request_id = get_request_id(request)
     store = get_store()
     session = store.get_session(session_id)
+    plan = classify_intent(session.mode, body.question)
     workflow = route_workflow(session.mode, body.question)
-    job, _created = store.create_job(
+    job, created = store.create_job(
         session,
         question=body.question,
         requested_outputs=body.requested_outputs,
@@ -38,6 +43,24 @@ def submit_analysis(
         workflow=workflow,
         category=body.category or session.category,
     )
+    if created:
+        try:
+            execute_plan(
+                plan=plan,
+                analysis_id=job.job_id,
+                context_inputs={
+                    "question": body.question,
+                    "mode": session.mode,
+                    "upload_ids": session.upload_ids,
+                },
+            )
+        except Exception as exc:
+            logger.error(
+                "Planner execution failed for job %s: %s",
+                job.job_id,
+                exc,
+                exc_info=True,
+            )
     # Matches the documented submission example: the job is accepted as queued;
     # GET /jobs/{job_id} reports the live stage progression from here on.
     return envelope(

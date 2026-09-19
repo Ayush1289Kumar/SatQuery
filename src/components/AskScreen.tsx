@@ -46,7 +46,7 @@ export default function AskScreen({
                   ? 'bg-[rgba(var(--cyan-rgb),0.18)] text-[var(--color-cyan)]'
                   : 'bg-[rgba(var(--primary-rgb),0.18)] text-[var(--color-primary)]'
               }`}>
-                {i + 1}
+                {typeof img.slot === 'number' ? img.slot + 1 : i + 1}
               </span>
               <span className="max-w-[160px] truncate">{img.name}</span>
               <span className={`text-[10px] ${img.kind === 'sar' ? 'text-[var(--color-cyan)]/60' : 'text-[var(--color-primary)]/60'}`}>

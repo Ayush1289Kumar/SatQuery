@@ -1,3 +1,5 @@
+import logging
+import re
 from uuid import uuid4
 
 from fastapi import FastAPI, Request
@@ -8,8 +10,41 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from .config import get_settings
 from .deps import get_request_id
-from .routers import analyses, jobs, results, sessions, uploads
+from .routers import analyses, jobs, regions, reports, results, sessions, sih_specialist, traces, uploads
 from .schemas import ApiError, problem
+
+logger = logging.getLogger("prithviq.api")
+if not logger.handlers:
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    )
+
+# Patterns for sensitive data that should never leak to users
+_PATH_PATTERN = re.compile(
+    r"([A-Za-z]:\\[^ \t\n\r\'\"]+|/(?:home|var|tmp|etc|usr|app|Users|opt)[^ \t\n\r\'\"]*)"
+)
+_CONN_STRING_PATTERN = re.compile(
+    r"(?:postgresql|postgres|mysql|redis|mongodb|sqlite)://[^\s\'\"]+"
+)
+_SQL_ERROR_PATTERN = re.compile(
+    r"(?:relation \"[^\"]+\" does not exist|syntax error at or near|SELECT .* FROM|INSERT INTO .*)",
+    re.IGNORECASE,
+)
+
+
+def sanitize_error_message(message: str) -> str:
+    """Mask file paths, database strings, and raw SQL from user-visible error details."""
+    if not message:
+        return "An error occurred."
+    if "traceback (most recent call last)" in message.lower():
+        return "An unexpected server error occurred."
+    cleaned = _CONN_STRING_PATTERN.sub("[REDACTED_CONNECTION]", message)
+    cleaned = _PATH_PATTERN.sub("[REDACTED_PATH]", cleaned)
+    if _SQL_ERROR_PATTERN.search(cleaned):
+        return "A database error occurred. Please reference your request ID."
+    return cleaned
+
 
 settings = get_settings()
 
@@ -44,14 +79,28 @@ async def request_id_middleware(request: Request, call_next):
 @app.exception_handler(ApiError)
 async def api_error_handler(request: Request, exc: ApiError) -> JSONResponse:
     """Contract errors (404/409/413/415/422 ...) as RFC 7807-style problem bodies."""
+    request_id = get_request_id(request)
+    if exc.status >= 500:
+        logger.error(
+            "ApiError [%s] %d %s: %s",
+            request_id,
+            exc.status,
+            exc.code,
+            exc.detail,
+            exc_info=True,
+        )
+        safe_detail = f"An internal server error occurred (request ID: {request_id})."
+    else:
+        safe_detail = sanitize_error_message(exc.detail)
+
     return JSONResponse(
         status_code=exc.status,
         content=problem(
-            request_id=get_request_id(request),
+            request_id=request_id,
             status=exc.status,
             code=exc.code,
             title=exc.title,
-            detail=exc.detail,
+            detail=safe_detail,
             field_errors=exc.field_errors,
         ),
     )
@@ -61,16 +110,72 @@ async def api_error_handler(request: Request, exc: ApiError) -> JSONResponse:
 async def http_exception_handler(
     request: Request, exc: StarletteHTTPException
 ) -> JSONResponse:
-    titles = {401: "Unauthorized", 403: "Forbidden", 404: "Not Found", 405: "Method Not Allowed"}
-    codes = {401: "UNAUTHORIZED", 403: "FORBIDDEN", 404: "NOT_FOUND", 405: "METHOD_NOT_ALLOWED"}
+    request_id = get_request_id(request)
+    titles = {
+        401: "Unauthorized",
+        403: "Forbidden",
+        404: "Not Found",
+        405: "Method Not Allowed",
+        500: "Internal Server Error",
+        502: "Bad Gateway",
+        503: "Service Unavailable",
+    }
+    codes = {
+        401: "UNAUTHORIZED",
+        403: "FORBIDDEN",
+        404: "NOT_FOUND",
+        405: "METHOD_NOT_ALLOWED",
+        500: "INTERNAL_SERVER_ERROR",
+        502: "BAD_GATEWAY",
+        503: "SERVICE_UNAVAILABLE",
+    }
+
+    if exc.status_code >= 500:
+        logger.error(
+            "HTTP %d error [%s] on %s %s: %s",
+            exc.status_code,
+            request_id,
+            request.method,
+            request.url.path,
+            exc.detail,
+            exc_info=True,
+        )
+        safe_detail = f"An internal error occurred. Please contact support with request ID '{request_id}'."
+    else:
+        safe_detail = sanitize_error_message(str(exc.detail))
+
     return JSONResponse(
         status_code=exc.status_code,
         content=problem(
-            request_id=get_request_id(request),
+            request_id=request_id,
             status=exc.status_code,
             code=codes.get(exc.status_code, "HTTP_ERROR"),
             title=titles.get(exc.status_code, "Request failed"),
-            detail=str(exc.detail),
+            detail=safe_detail,
+        ),
+    )
+
+
+@app.exception_handler(Exception)
+async def unhandled_exception_handler(request: Request, exc: Exception) -> JSONResponse:
+    """Global catch-all for unhandled exceptions. Never leaks stack traces or paths."""
+    request_id = get_request_id(request)
+    logger.error(
+        "Unhandled exception [%s] on %s %s: %s",
+        request_id,
+        request.method,
+        request.url.path,
+        exc,
+        exc_info=True,
+    )
+    return JSONResponse(
+        status_code=500,
+        content=problem(
+            request_id=request_id,
+            status=500,
+            code="INTERNAL_SERVER_ERROR",
+            title="Internal server error",
+            detail=f"An unexpected internal error occurred. Please contact support with request ID '{request_id}'.",
         ),
     )
 
@@ -127,6 +232,11 @@ def readiness() -> JSONResponse:
     )
 
 
+@app.get("/ready", tags=["health"])
+def root_readiness() -> JSONResponse:
+    return readiness()
+
+
 @app.get(f"{settings.api_prefix}/health", tags=["health"])
 def versioned_health() -> dict[str, object]:
     return health()
@@ -137,13 +247,16 @@ def versioned_readiness() -> JSONResponse:
     return readiness()
 
 
-# --- Demo-critical analysis lifecycle (api.md sections 2-5) ------------------
-# Uploads -> sessions -> analyses -> jobs -> results. The worker behind these
-# routers is the deterministic in-process mock described in worker.py.
+# --- Demo-critical analysis lifecycle (api.md sections 2-8) ------------------
+# Uploads -> sessions -> analyses -> jobs -> results -> traces -> reports -> regions.
 
 app.include_router(uploads.router, prefix=settings.api_prefix, tags=["uploads"])
 app.include_router(sessions.router, prefix=settings.api_prefix, tags=["sessions"])
 app.include_router(analyses.router, prefix=settings.api_prefix, tags=["analyses"])
 app.include_router(jobs.router, prefix=settings.api_prefix, tags=["jobs"])
 app.include_router(results.router, prefix=settings.api_prefix, tags=["results"])
+app.include_router(traces.router, prefix=settings.api_prefix, tags=["traces"])
+app.include_router(reports.router, prefix=settings.api_prefix, tags=["reports"])
+app.include_router(regions.router, prefix=settings.api_prefix, tags=["regions"])
+app.include_router(sih_specialist.router, prefix=settings.api_prefix, tags=["specialists"])
 

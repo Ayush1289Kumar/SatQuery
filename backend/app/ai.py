@@ -15,11 +15,14 @@ it returns a valid one, a workflow-id suggestion the caller must validate).
 from __future__ import annotations
 
 import json
+import logging
 import time
 from dataclasses import dataclass
 from typing import Any
 
 from .config import get_settings
+
+logger = logging.getLogger("prithviq.ai")
 
 # MIME types Gemini accepts inline. GeoTIFF/TIFF is NOT supported by the API —
 # such uploads are skipped (with a prompt note) and the deterministic worker
@@ -148,6 +151,7 @@ def generate_ai_answer(
             elapsed_s=elapsed,
         )
     except Exception as exc:  # network / timeout / auth / parse — sanitized on purpose
+        logger.error("Gemini API invocation error: %s", exc, exc_info=True)
         return AiAnswer(
             answer=None,
             model_name=settings.gemini_model,

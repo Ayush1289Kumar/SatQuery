@@ -33,6 +33,8 @@ export interface UploadedImage {
   id: string
   name: string
   kind: 'optical' | 'sar'
+  /** Explicit slot index (0 = primary / earlier date / optical, 1 = secondary / later date / sar). */
+  slot?: number
   date?: string
   location?: string
   /** Optional object URL for a locally previewed image. */

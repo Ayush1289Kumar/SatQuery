@@ -196,7 +196,7 @@ export default function ResultsScreen({ images, question, result, onRestart, wat
                 className="h-1.5 w-1.5 rounded-full shadow-[0_0_6px_currentColor]"
                 style={water ? { background: '#7FD4EA', color: '#7FD4EA' } : undefined}
               />
-              {img.name.split('.')[0]}
+              {img.name.replace(/\.[^/.]+$/, '')}
             </span>
           ))}
         </div>

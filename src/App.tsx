@@ -114,8 +114,11 @@ export default function App() {
   }
 
   // Upload pipeline: initiate -> direct PUT -> complete -> session (api.md 2-3).
-  const handleContinue = async () => {
+  const handleContinue = async (orderedOverride?: UploadedImage[]) => {
     if (apiBusy) return
+    const activeImages = orderedOverride && orderedOverride.length > 0 ? orderedOverride : images
+    const orderedImages = [...activeImages].sort((a, b) => (a.slot ?? 0) - (b.slot ?? 0))
+    setImages(orderedImages)
     if (demoMode) {
       goAsk()
       return
@@ -124,7 +127,7 @@ export default function App() {
     setApiBusy(true)
     try {
       const uploadIds: string[] = []
-      for (const image of images) {
+      for (const image of orderedImages) {
         if (!image.file) {
           throw new Error(`"${image.name}" must be picked again before uploading.`)
         }
@@ -321,6 +324,7 @@ function fileContentType(file: File): string {
   if (ext === 'tif' || ext === 'tiff') return 'image/tiff'
   if (ext === 'png') return 'image/png'
   if (ext === 'jpg' || ext === 'jpeg') return 'image/jpeg'
+  if (ext === 'webp') return 'image/webp'
   return file.type || 'application/octet-stream'
 }
 

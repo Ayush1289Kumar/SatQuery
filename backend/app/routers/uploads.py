@@ -9,6 +9,7 @@ from fastapi import APIRouter, Depends, Request, Response
 from .. import ai
 from ..config import get_settings
 from ..deps import get_current_user, get_request_id
+from ..file_security import get_file_extension, sanitize_filename, validate_image_content
 from ..schemas import ApiError, UploadCompleteRequest, UploadInitiateRequest, envelope
 from ..store import get_store
 
@@ -17,13 +18,13 @@ router = APIRouter()
 # MVP accepted formats (api.md section 2 / backend-integration.md section 6.1)
 _ALLOWED_TYPES: dict[str, set[str]] = {
     "image/tiff": {"tif", "tiff"},
+    "image/geotiff": {"tif", "tiff"},
+    "image/x-tiff": {"tif", "tiff"},
     "image/png": {"png"},
     "image/jpeg": {"jpg", "jpeg"},
+    "image/webp": {"webp"},
+    "application/octet-stream": {"tif", "tiff", "png", "jpg", "jpeg", "webp"},
 }
-
-
-def _extension(filename: str) -> str:
-    return filename.rsplit(".", 1)[-1].lower() if "." in filename else ""
 
 
 @router.post("/uploads/initiate")
@@ -35,7 +36,8 @@ def initiate_upload(
     """Return a mock presigned upload target for the direct file upload."""
     request_id = get_request_id(request)
     settings = get_settings()
-    extension = _extension(body.filename)
+    clean_filename = sanitize_filename(body.filename)
+    extension = get_file_extension(clean_filename)
     allowed_extensions = _ALLOWED_TYPES.get(body.content_type.lower())
     if allowed_extensions is None or extension not in allowed_extensions:
         raise ApiError(
@@ -58,7 +60,7 @@ def initiate_upload(
             ),
         )
     record = get_store().create_upload(
-        filename=body.filename,
+        filename=clean_filename,
         content_type=body.content_type,
         size_bytes=body.size_bytes,
         sha256=body.sha256,
@@ -82,21 +84,39 @@ def initiate_upload(
 async def put_upload_data(upload_id: str, request: Request) -> Response:
     """Mock object-storage target for the returned ``upload_url``.
 
-    Emulates a presigned S3/MinIO PUT. Bytes are retained (capped at the Gemini
-    inline limit) only when the real AI provider is enabled, so the Gemini call
-    can attach them; mock mode discards them immediately. This endpoint is
-    plumbing for the presigned flow, not a contract endpoint.
+    Emulates a presigned S3/MinIO PUT. Validates size and magic byte content
+    signatures before storing in isolated storage.
     """
     store = get_store()
-    retain = get_settings().ai_provider == "gemini"
+    settings = get_settings()
+    record = store.get_upload(upload_id)
+
+    body_bytes = await request.body()
+    content_length = len(body_bytes)
+
+    if content_length > settings.max_upload_bytes:
+        raise ApiError(
+            status=413,
+            code="FILE_TOO_LARGE",
+            title="File too large",
+            detail=f"Uploaded data size {content_length} bytes exceeds the limit.",
+        )
+
+    ext = get_file_extension(record.original_name)
+    is_valid, err_msg = validate_image_content(body_bytes, ext, demo_mode=settings.demo_mode)
+    if not is_valid:
+        raise ApiError(
+            status=415,
+            code="UNSUPPORTED_MEDIA_TYPE",
+            title="Invalid file content",
+            detail=err_msg or "File content validation failed.",
+        )
+
+    retain = settings.ai_provider == "gemini"
     data: bytes | None = None
-    if retain:
-        declared = request.headers.get("content-length")
-        if declared is None or int(declared) <= ai.MAX_INLINE_IMAGE_BYTES:
-            data = await request.body()
-            if len(data) > ai.MAX_INLINE_IMAGE_BYTES:
-                data = None
-    content_length = int(request.headers.get("content-length") or 0)
+    if retain and content_length <= ai.MAX_INLINE_IMAGE_BYTES:
+        data = body_bytes
+
     store.mark_upload_data(upload_id, data, content_length)
     return Response(status_code=200, headers={"ETag": f'"mock-{upload_id}"'})
 
